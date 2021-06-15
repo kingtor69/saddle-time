@@ -11,7 +11,8 @@ CREATE TABLE users
   first_name TEXT,
   last_name TEXT,
   bio TEXT,
-  favorite_bike TEXT
+  fav_bike TEXT,
+  default_bike_type TEXT DEFAULT "regular"
 );
 
 CREATE TABLE routes
@@ -19,5 +20,15 @@ CREATE TABLE routes
   id SERIAL PRIMARY KEY,
   route_name TEXT DEFAULT "untitled",
   start TEXT NOT NULL,
-  end TEXT NOT NULL
-)
+  end TEXT NOT NULL,
+  bike_type TEXT DEFAULT "regular"
+  user_id INTEGER REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE checkpoints
+(
+  id SERIAL PRIMARY KEY,
+  route_id INTEGER NOT NULL REFERNCES routes ON DELETE CASCADE,
+  pt-x TEXT NOT NULL,
+  x INTEGER NOT NULL
+);
