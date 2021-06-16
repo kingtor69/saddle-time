@@ -10,6 +10,8 @@ from app import app
 
 db.create_all()
 
+# TODO: this fails when I run the whole file, but if I do one test at a time, they all pass. I suspect this has something to do with setUp and/or tearDown and/or cascading behavior
+
 class UserModelTestCase(TestCase):
     """Test User model."""
 
@@ -19,6 +21,8 @@ class UserModelTestCase(TestCase):
         create test client.
         """
 
+        Route.query.delete()
+        # TODO: putting Route first here is a kluge for the cascade not working in models.py. Fix that.
         User.query.delete()
 
         self.client = app.test_client()
@@ -55,8 +59,8 @@ class RouteModelTestCase(TestCase):
         create test client.
         """
 
-        User.query.delete()
         Route.query.delete()
+        User.query.delete()
 
         self.client = app.test_client()
 
@@ -80,17 +84,7 @@ class RouteModelTestCase(TestCase):
             - be associated with a user who created the route (can be guest user in app, will test both here)
         """
         ts = datetime.utcnow()
-        u = User.hashpass("test_user", "UNHASHED_PASSWORD")
-        guest = User.hashpass("guest_user", guest_pass)
-        guest.default_bike_type = "road"
-        db.session.add_all([u, guest])
-        db.session.commit()
-
-        r1 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, timestamp=ts, user_id=u.id)
-        r2 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, bike_type="mountain", route_name="go play hockey", timestamp=ts, user_id=guest.id)
-        r3 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, route_name="go play hockey", timestamp=ts, user_id=guest.id)
-        db.session.add_all([r1, r2])
-        db.session.commit()
+        (u, guest, r1, r2, r3) = users_and_route_setup(ts)
 
         self.assertEqual(r1.route_name, "untitled")
         self.assertEqual(r2.route_name, "go play hockey")
@@ -110,3 +104,94 @@ class RouteModelTestCase(TestCase):
         self.assertEqual(r1.user_id, u.id)
         self.assertEqual(r2.user_id, guest.id)
         
+class CheckpointModelTestCase(TestCase):
+    """test Checkpoint model"""
+
+    def setUp(self):
+        """Clear any leftover data,
+        add testing data,
+        create test client.
+        """
+
+        Checkpoint.query.delete()
+        Route.query.delete()
+        User.query.delete()
+
+        self.client = app.test_client()
+
+    def tearDown(self):
+        """clear away any mess left by failed tests"""
+        db.session.rollback()
+
+    def test_checkpoint_model(self):
+        """Test Checkpoint model
+        A new checkpoint should:
+         - have one new geolocation (lat and lng)
+         - have a number to keep track of where it is in the route
+         - refer to a route
+        """
+        ts = datetime.utcnow()
+        (u, guest, r1, r2, r3) = users_and_route_setup(ts)
+        cp = Checkpoint(route_id=r1.id, point_x_lat=35.174078, point_x_lng=-106.55891)
+        db.session.add(cp)
+        db.session.commit()
+        
+        self.assertTrue(cp.point_x_lat <= 180)
+        self.assertTrue(cp.point_x_lat >= -180)
+        self.assertTrue(cp.point_x_lng <= 180)
+        self.assertTrue(cp.point_x_lng >= -180)
+        self.assertTrue(type(cp.x) == int)
+        self.assertEqual(cp.route_id, r1.id)
+
+class CascadeTestCase(TestCase):
+    """test all cascades"""
+
+    def setUp(self):
+        """Clear any leftover data,
+        add testing data,
+        create test client.
+        """
+
+        Checkpoint.query.delete()
+        Route.query.delete()
+        User.query.delete()
+
+        self.client = app.test_client()
+
+    def tearDown(self):
+        """clear away any mess left by failed tests"""
+        db.session.rollback()
+
+    def test_cascades(self):
+        """test cascade behavior for all models
+            - when a user is deleted, all routes associated with that user should be deleted
+            - when a route is deleted, all checkpoints associated with that route should be deleted
+            - when a checkpoint is deleted, the route should stay intact
+        """
+        ts = datetime.utcnow()
+        (u, guest, r1, r2, r3) = users_and_route_setup(ts)
+        
+        
+
+
+
+
+def users_and_route_setup(timestamp):
+    """Set up testing data:
+    1 generic user, 1 guest user
+    3 routes (1 with defaults, 1 with customized data, 1 with a mixture)
+    (argument timestamp is used for routes)
+    return a tuple of those 5 ORMs in that order
+    """
+    u = User.hashpass("test_user", "UNHASHED_PASSWORD")
+    guest = User.hashpass("guest_user", guest_pass)
+    guest.default_bike_type = "road"
+    db.session.add_all([u, guest])
+    db.session.commit()
+    r1 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, timestamp=timestamp, user_id=u.id)
+    r2 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, bike_type="mountain", route_name="go play hockey", timestamp=timestamp, user_id=guest.id)
+    r3 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, route_name="go play hockey", timestamp=timestamp, user_id=guest.id)
+    db.session.add_all([r1, r2, r3])
+    db.session.commit()
+    return (u, guest, r1, r2, r3)
+    
