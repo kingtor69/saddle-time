@@ -35,6 +35,7 @@ class UserModelTestCase(TestCase):
             - password in the database should not equal the entered password
             - hashed password should have a length of 60 characters
             - all Bcrypt strings start with '$2b$' which should be true of the hashed password
+            - if not specified, the default_bike_type should be "regular"
         """
         u = User.hashpass("test_user", "UNHASHED_PASSWORD")
         db.session.add(u)
@@ -43,6 +44,7 @@ class UserModelTestCase(TestCase):
         self.assertNotEqual(u.password, "UNHASHED_PASSWORD")
         self.assertEqual(len(u.password), 60)
         self.assertTrue(u.password.startswith("$2b$"))
+        self.assertEqual(u.default_bike_type, "regular")
 
 class RouteModelTestCase(TestCase):
     """test basic Route model"""
@@ -70,29 +72,41 @@ class RouteModelTestCase(TestCase):
             - contain a route_name, whether it be default or entered
             - have start and end latitues and longitutes between -180 and 180
             # TODO: that test should use an API call, but I don't think that should be in the models tests because it's going to be a flask operation
-            - show a bike_type for the route (again, default or entered)
+            - show a bike_type for the route:
+                - if none is entered and user has none set, result should be "regular"
+                - if none is entered and user has one set, result should be the user's default
+                - if one is entered into route, that should be the result
             - have a timestamp to be used for reloading routes from API after 1 week
             - be associated with a user who created the route (can be guest user in app, will test both here)
         """
         ts = datetime.utcnow()
         u = User.hashpass("test_user", "UNHASHED_PASSWORD")
-        r_defaults = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, timestamp=ts, user_id=u.id)
         guest = User.hashpass("guest_user", guest_pass)
-        r_custom = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, bike_type="road", route_name="go play hockey", timestamp=ts, user_id=guest.id)
+        guest.default_bike_type = "road"
+        db.session.add_all([u, guest])
+        db.session.commit()
 
-        self.assertEqual(r_defaults.route_name, "untitled")
-        self.assertEqual(r_custom.route_name, "go play hockey")
-        self.assertEqual(r_defaults.bike_type, "regular")
-        self.assertEqual(r_custom.bike_type, "road")
-        self.assertTrue(r_defaults.start_lat >= -180)
-        self.assertTrue(r_defaults.start_lat <= 180)
-        self.assertTrue(r_defaults.start_lng >= -180)
-        self.assertTrue(r_defaults.start_lng <= 180)
-        self.assertTrue(r_defaults.end_lat >= -180)
-        self.assertTrue(r_defaults.end_lat <= 180)
-        self.assertTrue(r_defaults.end_lng >= -180)
-        self.assertTrue(r_defaults.end_lng <= 180)
-        self.assertEqual(r_defaults.timestamp, ts)
-        self.assertEqual(r_defaults.user_id, u.id)
-        self.assertEqual(r_custom.user_id, guest.id)
+        r1 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, timestamp=ts, user_id=u.id)
+        r2 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, bike_type="mountain", route_name="go play hockey", timestamp=ts, user_id=guest.id)
+        r3 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, route_name="go play hockey", timestamp=ts, user_id=guest.id)
+        db.session.add_all([r1, r2])
+        db.session.commit()
+
+        self.assertEqual(r1.route_name, "untitled")
+        self.assertEqual(r2.route_name, "go play hockey")
+        self.assertEqual(r1.bike_type, "regular")
+        self.assertEqual(r2.bike_type, "mountain")
+        # TODO: write the logic for this - classmethod?
+        # self.assertEqual(r3.bike_type, "road")
+        self.assertTrue(r1.start_lat >= -180)
+        self.assertTrue(r1.start_lat <= 180)
+        self.assertTrue(r1.start_lng >= -180)
+        self.assertTrue(r1.start_lng <= 180)
+        self.assertTrue(r1.end_lat >= -180)
+        self.assertTrue(r1.end_lat <= 180)
+        self.assertTrue(r1.end_lng >= -180)
+        self.assertTrue(r1.end_lng <= 180)
+        self.assertEqual(r1.timestamp, ts)
+        self.assertEqual(r1.user_id, u.id)
+        self.assertEqual(r2.user_id, guest.id)
         

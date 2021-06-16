@@ -73,7 +73,7 @@ class Route(db.Model):
     # TODO: this route_name default is failing in test_models.py
     route_name = db.Column(db.String,
                            default="untitled")                   
-    start_lat = db.Column(db.String,
+    start_lat = db.Column(db.Float,
                       nullable=False)                           
     start_lng = db.Column(db.Float,
                       nullable=False)                           
@@ -81,12 +81,12 @@ class Route(db.Model):
                     nullable=False)                      
     end_lng = db.Column(db.Float,
                     nullable=False)                      
-    bike_type = db.Column(db.Float,
+    bike_type = db.Column(db.String,
                           default="regular")
     timestamp = db.Column(db.DateTime,
                           default=datetime.utcnow())
     user_id = db.Column(db.Integer,
-                        db.ForeignKey('users.id'))
+                        db.ForeignKey("users.id"))
 
 class Checkpoint(db.Model):
     """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route."""

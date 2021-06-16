@@ -1,6 +1,8 @@
+import os
+
 from flask import Flask, request, redirect, render_template, flash, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db
+from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm
 import requests
 # from secrets import ORS_API_KEY, MQ_API_KEY
@@ -11,7 +13,8 @@ from londons import londons_string_from_hell as londons
 
 app=Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///saddle_time_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    os.environ.get('DATABASE_URL', 'postgresql:///saddle_time_db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
