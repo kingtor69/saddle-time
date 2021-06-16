@@ -11,7 +11,7 @@ from londons import londons_string_from_hell as londons
 
 app=Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bike_friendly_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///saddle_time_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 

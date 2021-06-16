@@ -1,6 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 db = SQLAlchemy()
+
+bcrypt = Bcrypt()
 
 def connect_db(app):
     db.app = app
@@ -20,8 +24,7 @@ class User(db.Model):
                          nullable=False, 
                          unique=True)
     profile_pic_image_url = db.Column(db.String)
-    email = db.Column(db.String,
-                      nullable=False)
+    email = db.Column(db.String)
     password = db.Column(db.String,
                          nullable=False)                      
     first_name = db.Column(db.String)                         
@@ -34,6 +37,28 @@ class User(db.Model):
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
 
+    @classmethod
+    def hashpass(cls, username, password):
+        """generate new user with username and hashed password only, other fields still to be populated"""
+
+        hashed = bcrypt.generate_password_hash(password)
+        hashed_utf8 = hashed.decode("utf8")
+
+        return cls(username=username, password=hashed_utf8)
+
+    @classmethod
+    def authenticate(cls, username, password):
+        """Validate correct username and password combination.
+        Return user if valid, False if not.
+        """
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            return user
+
+        return False
+
 class Route(db.Model):
     """Route model for basic routes. 
     Stores geocoded start and end points, bicycle/route type, 
@@ -45,15 +70,22 @@ class Route(db.Model):
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
+    # TODO: this route_name default is failing in test_models.py
     route_name = db.Column(db.String,
                            default="untitled")                   
-    start = db.Column(db.String,
+    start_lat = db.Column(db.String,
                       nullable=False)                           
-    end = db.Column(db.String,
+    start_lng = db.Column(db.Float,
+                      nullable=False)                           
+    end_lat = db.Column(db.Float,
                     nullable=False)                      
-    bike_type = db.Column(db.String,
+    end_lng = db.Column(db.Float,
+                    nullable=False)                      
+    bike_type = db.Column(db.Float,
                           default="regular")
-    user_id = db.Column(db.Integer
+    timestamp = db.Column(db.DateTime,
+                          default=datetime.utcnow())
+    user_id = db.Column(db.Integer,
                         db.ForeignKey('users.id'))
 
 class Checkpoint(db.Model):
@@ -62,7 +94,7 @@ class Checkpoint(db.Model):
     __tablename__ = "checkpoints"
 
     route_id = db.Column(db.Integer,
-                         db.ForeignKey('routes.id')
+                         db.ForeignKey('routes.id'),
                          primary_key=True)
     x = db.Column(db.Integer,
                   primary_key=True)

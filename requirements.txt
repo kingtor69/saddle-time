@@ -1,8 +1,11 @@
+bcrypt==3.2.0
 blinker==1.4
 certifi==2021.5.30
+cffi==1.14.5
 chardet==4.0.0
 click==8.0.1
 Flask==2.0.1
+Flask-Bcrypt==0.7.1
 Flask-DebugToolbar==0.11.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
@@ -13,7 +16,9 @@ itsdangerous==2.0.1
 Jinja2==3.0.1
 MarkupSafe==2.0.1
 psycopg2-binary==2.8.6
+pycparser==2.20
 requests==2.25.1
+six==1.16.0
 SQLAlchemy==1.4.17
 typing-extensions==3.10.0.0
 urllib3==1.26.5
