@@ -75,11 +75,13 @@ class Route(db.Model):
                    autoincrement=True)
     # TODO: this route_name default is failing in test_models.py
     route_name = db.Column(db.String,
-                           default="untitled")                   
+                           default="untitled")   
+    start_display_name = db.Column(db.String)
     start_lat = db.Column(db.Float,
                       nullable=False)                           
     start_lng = db.Column(db.Float,
-                      nullable=False)                           
+                      nullable=False)     
+    end_display_name = db.Column(db.String)
     end_lat = db.Column(db.Float,
                     nullable=False)                      
     end_lng = db.Column(db.Float,
