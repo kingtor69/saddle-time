@@ -34,6 +34,7 @@ CREATE TABLE checkpoints
 (
   id SERIAL PRIMARY KEY,
   route_id INTEGER NOT NULL FOREIGN KEY REFERENCES routes ON DELETE CASCADE,
+  pt_x_display_name TEXT,
   pt_x_lat FLOAT NOT NULL,
   pt_x_lng FLOAT NOT NULL,
   x INTEGER NOT NULL
