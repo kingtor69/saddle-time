@@ -5,11 +5,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm
 import requests
-# from secrets import ORS_API_KEY, MQ_API_KEY
-# from helpers import ORS_API_BASE_URL, MQ_API_BASE_URL
-from helpers import geocode_from_location
+from api import geocode_from_location
 
-from londons import londons_string_from_hell as londons
+# from londons import londons_string_from_hell as londons
 
 app=Flask(__name__)
 
@@ -27,6 +25,7 @@ connect_db(app)
 
 @app.route('/')
 def load_home_page():
+
     return render_template('home.html')
 
 @app.route('/routes/new', methods=['GET', 'POST'])

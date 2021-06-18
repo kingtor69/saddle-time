@@ -2,15 +2,15 @@ import os
 from unittest import TestCase
 from models import db, User, Route, Checkpoint
 from datetime import datetime
-from secrets import guest_pass
 
 os.environ['DATABASE_URL'] = "postgresql:///saddle_time_test_db"
 
 from app import app
 
+db.drop_all()
 db.create_all()
 
-# TODO: this fails when I run the whole file, but if I do one test at a time, they all pass. I suspect this has something to do with setUp and/or tearDown and/or cascading behavior
+# TODO: this fails when I run the whole file, but if I do one test at a time, they all pass. I suspect this has something to do with setUp (and maybe should be doing something else on tearDown?)
 
 class UserModelTestCase(TestCase):
     """Test User model."""
@@ -132,7 +132,7 @@ class CheckpointModelTestCase(TestCase):
         """
         ts = datetime.utcnow()
         (u, guest, r1, r2, r3) = users_and_route_setup(ts)
-        cp = Checkpoint(route_id=r1.id, point_x_lat=35.174078, point_x_lng=-106.55891)
+        cp = Checkpoint(route_id=r1.id, x=1, point_x_lat=35.174078, point_x_lng=-106.55891)
         db.session.add(cp)
         db.session.commit()
         
@@ -170,8 +170,38 @@ class CascadeTestCase(TestCase):
         """
         ts = datetime.utcnow()
         (u, guest, r1, r2, r3) = users_and_route_setup(ts)
-        
-        
+        cp1 = Checkpoint(route_id=r2.id, x=1, point_x_lat=35.174078, point_x_lng=-106.55891)
+        cp2 = Checkpoint(route_id=r2.id, x=2, point_x_lat=35.132659, point_x_lng=-106.49771)
+        cp3 = Checkpoint(route_id=r3.id, x=1, point_x_lat=35.174078, point_x_lng=-106.55891)
+        db.session.add_all([cp1, cp2, cp3])
+        db.session.commit()
+        u_id = u.id
+        # guest_id = guest.id
+        r1_id = r1.id
+        r2_id = r2.id
+        r3_id = r3.id
+        # cp1_pk = (cp1.route_id, cp1.x)
+        # cp2_pk = (cp2.route_id, cp2.x)
+        cp3_pk = (cp3.route_id, cp3.x)
+        test_r3 = make_test_route(r3_id)
+        test_cp3 = make_test_checkpoint(cp3_pk, r2_id)
+        # nothing deleted yet, so tests cases should correspond to input
+        self.assertEqual(test_r3.id, r3_id)
+        self.assertEqual((test_cp3.route_id, test_cp3.x), cp3_pk)
+        db.session.delete(u)
+        db.session.delete(r3)
+        db.session.delete(cp2)
+        db.session.commit()
+        test_cascade_r3 = make_test_route(r3_id)
+        test_cascade_cp3 = make_test_checkpoint(cp3_pk, r2_id)
+        test_cascade_r2 = make_test_route(r2_id)
+        # inputs to test cases have been deleted, so test cases should NOT correspond to input 
+        self.assertNotEqual(test_cascade_r3.id, r3_id)
+        self.assertNotEqual((test_cascade_cp3.route_id, test_cascade_cp3.x), cp3_pk)
+        # but route corresponding to deleted checkpoint should still correspond to input
+        self.assertEqual(test_cascade_r2.id, r2_id)
+
+
 
 
 
@@ -184,14 +214,30 @@ def users_and_route_setup(timestamp):
     return a tuple of those 5 ORMs in that order
     """
     u = User.hashpass("test_user", "UNHASHED_PASSWORD")
-    guest = User.hashpass("guest_user", guest_pass)
+    guest = User.hashpass("guest_user", "guestPassw0rd!")
     guest.default_bike_type = "road"
     db.session.add_all([u, guest])
     db.session.commit()
     r1 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, timestamp=timestamp, user_id=u.id)
-    r2 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, bike_type="mountain", route_name="go play hockey", timestamp=timestamp, user_id=guest.id)
+    r2 = Route(start_display_name="work", start_lat=35.190564, start_lng=-106.580526, end_display_name="rink", end_lat=35.11882, end_lng=-106.71952, bike_type="mountain", route_name="go play hockey", timestamp=timestamp, user_id=guest.id)
     r3 = Route(start_lat=35.190564, start_lng=-106.580526, end_lat=35.11882, end_lng=-106.71952, route_name="go play hockey", timestamp=timestamp, user_id=guest.id)
     db.session.add_all([r1, r2, r3])
     db.session.commit()
     return (u, guest, r1, r2, r3)
     
+def make_test_route(id):
+    test_route = Route.query.filter_by(id=id).first()
+    if not test_route:
+        test_route=Route(start_lat=51.484186, start_lng=0.004834, end_lat=-33.928905, end_lng=-33.928905)
+        db.session.add(test_route)
+        db.session.commit()
+    return test_route
+
+def make_test_checkpoint(pk, rid):
+    (route_id, x) = pk
+    test_checkpoint = Checkpoint.query.get((route_id, x))
+    if not test_checkpoint:
+        test_checkpoint = Checkpoint(route_id=rid, x=2, point_x_lat=-33.928905, point_x_lng=18.417249)
+        db.session.add(test_checkpoint)
+        db.session.commit()
+    return test_checkpoint

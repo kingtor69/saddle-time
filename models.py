@@ -34,8 +34,8 @@ class User(db.Model):
     default_bike_type = db.Column(db.String,
                                   default="regular")
 
-    # TODO: that cascade isn't working. fix it.
-    # route = db.relationship("Route", cascade="all, delete")
+    route = db.relationship("Route", cascade="all, delete")
+    # TODO: user's routes should be deleted shen the user is deleted
 
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
@@ -94,7 +94,8 @@ class Route(db.Model):
                         db.ForeignKey("users.id"))
 
     # TODO: we want to keep the route if the checkpoint is deleted
-    checkpoint = db.relationship
+    # BUT we want to delete the checkpoint if the route is deleted
+    checkpoint = db.relationship("Checkpoint", cascade="all, delete")
 
 class Checkpoint(db.Model):
     """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route."""
@@ -105,11 +106,10 @@ class Checkpoint(db.Model):
                          db.ForeignKey('routes.id'),
                          primary_key=True)
     x = db.Column(db.Integer,
-                  autoincrement=True,
                   primary_key=True)
     point_x_lat = db.Column(db.Float,
                         nullable=False)
     point_x_lng = db.Column(db.Float,
                         nullable=False)
     
-    # I think that x will be an arbitrary number and Python will have logic to put these in order, but that autoincrement might change and the checkpoints might store accordingly
+    # As a route is being built, x can be changed to reorder locations in the route, but when that route is *saved*, it will have a fixed order of checkpoints

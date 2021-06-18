@@ -39,3 +39,4 @@ CREATE TABLE checkpoints
   pt_x_lng FLOAT NOT NULL,
   x INTEGER NOT NULL
 );
+
