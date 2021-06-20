@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm
 import requests
-from api import geocode_from_location
+from api import geocode_from_location, current_weather_from_geocode
 
 # from londons import londons_string_from_hell as londons
 
@@ -25,8 +25,14 @@ connect_db(app)
 
 @app.route('/')
 def load_home_page():
-
-    return render_template('home.html')
+    """loads home page.
+    If there is a logged in user, page shows weather from user's default location and most recently created route.
+    If no one is logged in, page shows weather from location data provided by browser or if blocked asks user for city to start off.
+    """
+    geocode=(35.0841,-106.651)
+    units="metric"
+    (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
+    return render_template('home.html, city=city, conditions=conditions weather_icon_url=weather_icon_url, current_weather_details=current_weather_details')
 
 @app.route('/routes/new', methods=['GET', 'POST'])
 def make_new_route():

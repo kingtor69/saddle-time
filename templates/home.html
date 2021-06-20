@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}SaddleTime{% endblock %}
+{% block content %}
+  <h2>Your current weather in {{ city }}:</h2>
+  <table class="table table-dark table-striped rounded">
+    <thead>
+      <th colspan="2" class="h3">{{ conditions }} <img src="{{ weather_icon_url }}" alt="{{ conditions }} icon"></th>
+    </thead>
+    <tbody>
+      {% for key, val in current_weather %}
+      <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}{% if key=="description" %}<img src="{{ weather_icon_url }}">{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

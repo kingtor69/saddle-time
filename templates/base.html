@@ -24,7 +24,7 @@
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/png" href="static/images/saddletime-fav-icon-32.png">
   <!-- bootstrap -->
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="static/cyborg-bootstrap.css">
   <!-- static style -->
   <link rel="stylesheet" href="{% block static_path %}{% endblock %}/static/style.css">
   {% block page_sytle %}{% endblock %}
@@ -37,7 +37,7 @@
 <body>
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top px-3">
-      <a class="navbar-brand" href="{% block home_path %}{% endblock %}">pets-<span class="reverse">r</span>-us</a>
+      <a class="navbar-brand" href="{% block home_path %}{% endblock %}"><img src="static/images/saddletime-full-logo.png" alt="" id="navbar-logo"> SaddleTime</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
