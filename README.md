@@ -11,3 +11,7 @@ APIs to be used can be found in api.py
     - electric
     - mountain
  - Open Weather: gives weather information (current and forecast) about route location
+
+### Weather API is working with hard-coded location
+
+### Home page looks good for no logged in user

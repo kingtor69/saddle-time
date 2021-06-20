@@ -1,5 +1,6 @@
 import requests
 from secret import ORS_API_KEY, MQ_API_KEY, OW_API_KEY
+from helpers import unit_markers
 
 ORS_API_BASE_URL = "https://api.openrouteservice.org/v2/directions/"
 MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
@@ -26,22 +27,21 @@ def geocode_from_location(loc):
 
 def current_weather_from_geocode(geocode, units="metric"):
     """Returns current weather data from OpenWeather API for a geocode, entered as a tuple. Defaults to metric units because cycling, but a logged in and registered user will be able to specify imperial."""
-
+    (deg, vel) = unit_markers(units)
     response = requests.get(f'{OW_API_BASE_URL}weather?appid={OW_API_KEY}&lon={geocode[1]}&lat={geocode[0]}&units={units}')
     resp = response.json()
     city = resp["name"]
-    conditions = resp["weather"][0]["main"]["description"]
+    conditions = resp["weather"][0]["description"].title()
     weather_icon_url = f'{WEATHER_ICON_BASE_URL}{resp["weather"][0]["icon"]}{WEATHER_ICON_SUFFIX}'
     current_weather_details = {
-        "temperature": f'{resp["main"]["temp"]}°',
-        "feels like": f'{resp["main"]["feels_like"]}°',
-        "high": resp["main"]["temp_max"],
-        "low": resp["main"]["temp_min"],
-        "relative humidity": resp["main"]["humidity"],
-        "wind speed": resp["wind"]["speed"],
-        "from": f'{resp["wind"]["deg"]}°'
+        "Temperature": f'{resp["main"]["temp"]}{deg}',
+        "Feels Like": f'{resp["main"]["feels_like"]}{deg}',
+        "High": f'{resp["main"]["temp_max"]}{deg}',
+        "Low": f'{resp["main"]["temp_min"]}{deg}',
+        "Relative Humidity": f'{resp["main"]["humidity"]}%',
+        "Wind Speed": f'{resp["wind"]["speed"]} {vel}',
+        "Wind Direction": f'{resp["wind"]["deg"]}°'
     }
 
     return (city, conditions, weather_icon_url, current_weather_details)
-
 

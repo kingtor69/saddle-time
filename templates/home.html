@@ -2,18 +2,49 @@
 
 {% block header %}SaddleTime{% endblock %}
 {% block content %}
-  <h2>Your current weather in {{ city }}:</h2>
-  <table class="table table-dark table-striped rounded">
-    <thead>
-      <th colspan="2" class="h3">{{ conditions }} <img src="{{ weather_icon_url }}" alt="{{ conditions }} icon"></th>
-    </thead>
-    <tbody>
-      {% for key, val in current_weather %}
-      <tr>
-        <td>{{ key }}</td>
-        <td>{{ value }}{% if key=="description" %}<img src="{{ weather_icon_url }}">{% endif %}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col col-md-1 col-lg-2 d-none d-md block"></div>
+    <div class="col col-6 col-md-5 col-lg-4">
+      <table class="table table-dark table-striped rounded">
+        <thead>
+          <tr>
+            <th colspan="2">Your current weather in {{ city }}:</th>
+          </tr>
+          <tr>
+            <th colspan="2" class="h3">{{ conditions }} <img src="{{ weather_icon_url }}" alt="{{ conditions }} icon"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key in current_weather_details.keys() %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ current_weather_details[key] }}{% if key=="description" %}<img src="{{ weather_icon_url }}">{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col col-6 col-md-5 col-lg-4">
+      <!-- if no user logged in: -->
+      <div class="row"><br></div>
+      <div class="row"><br></div>
+      <div class="row"><br></div>
+      <div class="row"><br></div>
+      <div class="row"><br></div>
+      <div class="row justify-content-center">
+        <a href="/login" class="d-block btn btn-block btn-primary m-2">make route as guest</a>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col col-6">
+          <a href="/login" class="d-block btn btn-block btn-info ml-2 my-2">login</a>
+        </div>
+        <div class="col col-6">
+          <a href="/login" class="d-block btn btn-block btn-success my-2 mr-2">sign-up</a>
+        </div>
+      </div>
+    </div>
+    <div class="col col-md-1 col-lg-2 d-none d-md block"></div>
+  </div>
+</div>
 {% endblock %}

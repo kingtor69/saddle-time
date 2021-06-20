@@ -32,7 +32,7 @@ def load_home_page():
     geocode=(35.0841,-106.651)
     units="metric"
     (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
-    return render_template('home.html, city=city, conditions=conditions weather_icon_url=weather_icon_url, current_weather_details=current_weather_details')
+    return render_template('home.html', city=city, conditions=conditions, weather_icon_url=weather_icon_url, current_weather_details=current_weather_details)
 
 @app.route('/routes/new', methods=['GET', 'POST'])
 def make_new_route():
