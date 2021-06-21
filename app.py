@@ -29,13 +29,31 @@ def load_home_page():
     If there is a logged in user, page shows weather from user's default location and most recently created route.
     If no one is logged in, page shows weather from location data provided by browser or if blocked asks user for city to start off.
     """
-    location=g.user.location or "Albuquerque, NM"
-    units=g.user.weather_units or "metric"
+    try:
+        location=g.user.location
+    except:
+        location="Albuquerque, NM 87102 USA"
+        
+    try:
+        units=g.user.weather_units
+    except:
+        units="metric"
+        
     weather_prefs_form = WeatherPrefsForm()
-    if weather_prefs.validate_on_submit():
+    if weather_prefs_form.validate_on_submit():
         location=form.data.location
         units=form.data.units
-    geocode=geocode_from_location(location)
+
+    try:
+        geocode = g.user.geocode
+    except:
+        geocode_list=geocode_from_location(location)
+        if len(geocode_list) == 0:
+            flash('Geocoding error: no results found for location.', 'warning')
+            return redirect('/')
+        if len(geocode_list) > 1:
+            return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
+        geocode = geocode_list[0]
     (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
     return render_template('home.html', city=city, conditions=conditions, weather_icon_url=weather_icon_url, current_weather_details=current_weather_details, form=weather_prefs_form)
 
