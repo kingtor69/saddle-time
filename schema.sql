@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS saddle_time_db;
 CREATE DATABASE saddle_time_db;
-/c saddle_time_db;
+\c saddle_time_db;
 
 CREATE TABLE users
 (
@@ -13,23 +13,23 @@ CREATE TABLE users
   bio VARCHAR(256),
   fav_bike VARCHAR(40),
   bike_image_url TEXT,
-  default_bike_type VARCHAR(8) DEFAULT "regular",
-  weather_units VARCHAR(8) DEFAULT "metric"
+  default_bike_type VARCHAR(8) DEFAULT 'regular',
+  weather_units VARCHAR(8) DEFAULT 'metric'
 );
 
 CREATE TABLE routes
 (
   id SERIAL PRIMARY KEY,
-  route_name VARCHAR(40) DEFAULT "untitled",
-  bike_type VARCHAR(8) DEFAULT "regular",
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-  user_id INTEGER FOREIGN KEY REFERENCES users ON DELETE CASCADE
+  route_name VARCHAR(40) DEFAULT 'untitled',
+  bike_type VARCHAR(8) DEFAULT 'regular',
+  timestamp TIMESTAMP DEFAULT NOW(),
+  user_id INTEGER 
 );
 
 CREATE TABLE checkpoints
 (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL FOREIGN KEY REFERENCES users ON DELETE CASCADE,
+  user_id INTEGER,
   checkpoint_display_name TEXT,
   checkpoint_lat FLOAT NOT NULL,
   checkpoint_lng FLOAT NOT NULL
@@ -38,7 +38,20 @@ CREATE TABLE checkpoints
 CREATE TABLE route_checkpoints
 (
   id SERIAL PRIMARY KEY,
-  route_id INTEGER NOT NULL FOREIGN KEY REFERENCES routes ON DELETE CASCADE,
-  checkpoint_id INTEGER NOT NULL FOREIGN KEY REFERENCES checkpoints ON DELETE CASCADE,
+  route_id INTEGER,
+  checkpoint_id INTEGER,
   route_order INTEGER NOT NULL
-)
+);
+
+ALTER TABLE routes
+  ADD CONSTRAINT FOREIGN KEY user_id REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE checkpoints
+  ADD CONSTRAINT FOREIGN KEY user_id REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE route_checkpoints
+  ADD CONSTRAINT FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
+
+ALTER TABLE route_checkpoints
+  ADD CONSTRAINT FOREIGN KEY (checkpoint_id) REFERENCES checkpoints(id) ON DELETE CASCADE;
+

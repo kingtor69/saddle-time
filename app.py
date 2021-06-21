@@ -1,13 +1,17 @@
 import os
 
-from flask import Flask, request, redirect, render_template, flash, jsonify, g
+from flask import Flask, request, redirect, render_template, flash, jsonify, session, g
 from flask_debugtoolbar import DebugToolbarExtension
+import requests
+
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm, WeatherPrefsForm
-import requests
 from api import geocode_from_location, current_weather_from_geocode
 
-# from londons import londons_string_from_hell as londons
+CURR_USER = "logged_in_user"
+CURR_ROUTE = "route_in_progress"
+CURR_CHECKPOINT_LIST = "checkpoints_in_use"
+GUEST = User(username="guest", password="fakepassword")
 
 app=Flask(__name__)
 
@@ -21,6 +25,37 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
+
+from routes import user_routes, route_routes
+
+@app.before_request
+def add_user_to_g():
+    """If user is logged in, add that user to `g`; 
+    otherwise, add guest user object to `g`."""
+
+    if CURR_USER in session:
+        g.user = User.query.get(session[CURR_USER])
+    else:
+        g.user = GUEST
+
+@app.before_request
+def add_route_to_g():
+    """If there is a route in progress, add it to `g`;
+    otherwise, add empty route object to `g`."""
+
+    if CURR_ROUTE in session:
+        g.route = Route.query.get(session[CURR_ROUTE])
+
+
+def loginSession(user):
+    """Log in a registered user to session."""
+
+    session[CURR_USER] = user.id
+
+def logoutSession():
+    """Remove user who is logging out from session."""
+
+    del session[CURR_USER]
 
 
 @app.route('/', methods=["GET", "POST"])
