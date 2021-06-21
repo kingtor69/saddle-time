@@ -21,12 +21,6 @@ CREATE TABLE routes
 (
   id SERIAL PRIMARY KEY,
   route_name VARCHAR(40) DEFAULT "untitled",
-  -- start_display_name VARCHAR(40),
-  -- start_lat FLOAT NOT NULL,
-  -- start_lng FLOAT NOT NULL,
-  -- end_display_name VARCHAR(40),
-  -- end_lat FLOAT NOT NULL,
-  -- end_lng FLOAT NOT NULL,
   bike_type VARCHAR(8) DEFAULT "regular",
   timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
   user_id INTEGER FOREIGN KEY REFERENCES users ON DELETE CASCADE
