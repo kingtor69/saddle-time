@@ -1,9 +1,9 @@
 import os
 
-from flask import Flask, request, redirect, render_template, flash, jsonify
+from flask import Flask, request, redirect, render_template, flash, jsonify, g
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Route, Checkpoint
-from forms import NewRouteForm, LocationForm
+from forms import NewRouteForm, WeatherPrefsForm
 import requests
 from api import geocode_from_location, current_weather_from_geocode
 
@@ -29,11 +29,13 @@ def load_home_page():
     If there is a logged in user, page shows weather from user's default location and most recently created route.
     If no one is logged in, page shows weather from location data provided by browser or if blocked asks user for city to start off.
     """
-    weather_prefs_form = WeatherPrefsForm(obj=weather_prefs)
-    if form_on_validate():
-
-    geocode=(35.0841,-106.651)
-    units="metric"
+    location=g.user.location or "Albuquerque, NM"
+    units=g.user.weather_units or "metric"
+    weather_prefs_form = WeatherPrefsForm()
+    if weather_prefs.validate_on_submit():
+        location=form.data.location
+        units=form.data.units
+    geocode=geocode_from_location(location)
     (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
     return render_template('home.html', city=city, conditions=conditions, weather_icon_url=weather_icon_url, current_weather_details=current_weather_details, form=weather_prefs_form)
 

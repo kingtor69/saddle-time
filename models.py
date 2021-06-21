@@ -31,11 +31,12 @@ class User(db.Model):
     last_name = db.Column(db.String)                         
     fav_bike = db.Column(db.String)
     bike_image_url = db.Column(db.String)
-    default_bike_type = db.Column(db.String,
+    default_bike_type = db.Column(db.String(8),
                                   default="regular")
+    weather_units = db.Column(db.String(8), default="metric")
 
     route = db.relationship("Route", cascade="all, delete")
-    # TODO: user's routes should be deleted shen the user is deleted
+    # TODO: user's routes should be deleted when the user is deleted
 
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
