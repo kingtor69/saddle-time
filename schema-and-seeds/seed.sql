@@ -3,7 +3,7 @@
 INSERT INTO users
     (username, email, password, fav_bike, default_bike_type, weather_units)
     VALUES
-    ('kingtor', 'tor@hearkitty.com', 'unhashedseedpw', '"Lafayette" -- Canondale Crit', 'metric');
+    ('kingtor', 'tor@hearkitty.com', 'unhashedseedpw', '"Lafayette" (Canondale Crit)', 'road', 'metric');
 
 -- not exactly sure how to do ensure I'm getting that ID in subsequent inserts, so I'm going about it fairly manually
 -- SELECT id FROM users
@@ -37,19 +37,19 @@ INSERT INTO checkpoints
 INSERT INTO route_checkpoints
     (route_id, checkpoint_id, route_order)
     VALUES
-    (1, 1, 1);
+    (2, 5, 1);
 
 INSERT INTO route_checkpoints
     (route_id, checkpoint_id, route_order)
     VALUES
-    (1, 2, 4);
+    (2, 6, 4);
 
 INSERT INTO route_checkpoints
     (route_id, checkpoint_id, route_order)
     VALUES
-    (1, 3, 2);
+    (2, 7, 2);
 
 INSERT INTO route_checkpoints
     (route_id, checkpoint_id, route_order)
     VALUES
-    (1, 4, 3);
+    (2, 8, 3);

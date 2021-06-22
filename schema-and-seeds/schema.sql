@@ -44,14 +44,18 @@ CREATE TABLE route_checkpoints
 );
 
 ALTER TABLE routes
-  ADD CONSTRAINT FOREIGN KEY user_id REFERENCES users(id) ON DELETE CASCADE;
+  ADD CONSTRAINT 
+  "routes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE checkpoints
-  ADD CONSTRAINT FOREIGN KEY user_id REFERENCES users(id) ON DELETE CASCADE;
+  ADD CONSTRAINT 
+  "checkpoints_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE route_checkpoints
-  ADD CONSTRAINT FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
+  ADD CONSTRAINT 
+  "route_checkpoints_route_id_fkey" FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE;
 
 ALTER TABLE route_checkpoints
-  ADD CONSTRAINT FOREIGN KEY (checkpoint_id) REFERENCES checkpoints(id) ON DELETE CASCADE;
+  ADD CONSTRAINT 
+  "route_checkpoints_checkpoint_id_fkey" FOREIGN KEY (checkpoint_id) REFERENCES checkpoints(id) ON DELETE CASCADE;
 
