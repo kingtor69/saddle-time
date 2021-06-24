@@ -4,13 +4,13 @@ from app import CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, loginSession
 def signup_new_user():
     """Sign up new users. Enter into database"""
 
-@app.route('/users/<user_id>/preferences', methods=["GET", "POST"])
-def edit_user_preferences():
-    """Edit user preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
+@app.route('api/users/<user_id>/edit', methods=["PUT", "PATCH"])
+def edit_user_profile():
+    """Edit user profile, including preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
 
-@app.route('/users/<user_id>/delete', methods=["POST"])
+@app.route('api/users/<user_id>/delete', methods=["DELETE"])
 def delete_user():
-    """Permanently deletes a user from the database."""
+    """Permanently deletes a user from the database using HTTP API call."""
 
 @app.route('/login')
 def login():
