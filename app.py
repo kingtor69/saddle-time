@@ -60,37 +60,59 @@ def logoutSession():
 
 @app.route('/', methods=["GET", "POST"])
 def load_home_page():
-    """loads home page.
+    """Loads home page.
     If there is a logged in user, page shows weather from user's default location and most recently created route.
     If no one is logged in, page shows weather from location data provided by browser or if blocked asks user for city to start off.
     """
     try:
-        location=g.user.location
+        if g.user.location:
+            location=g.user.location
+            print(f'---------------location in g: {location}')
+        else:
+            location="Albuquerque, NM 87102 USA"
+            print(f'---------------default loc: {location}')
     except:
         location="Albuquerque, NM 87102 USA"
-        
+        print(f'------------EXCEPT! default loc: {location}')
+    
     try:
-        units=g.user.weather_units
+        if g.user.weather_units:
+            units=g.user.weather_units
+            print(f'---------------weather units in g: {units}')
+        else:
+            units="metric"
+            print(f'---------------default weather units: {units}')
     except:
         units="metric"
+        print(f'------------EXCEPT!!!!!!!! default weather units: {units}')
         
     weather_prefs_form = WeatherPrefsForm()
     if weather_prefs_form.validate_on_submit():
         location=form.data.location
         units=form.data.units
+        print(f'---------------form weather prefs: location={location}, units={units}')
 
-    try:
-        geocode = g.user.geocode
-    except:
-        geocode_list=geocode_from_location(location)
-        if len(geocode_list) == 0:
-            flash('Geocoding error: no results found for location.', 'warning')
-            return redirect('/')
-        if len(geocode_list) > 1:
-            return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
-        geocode = geocode_list[0]
+    geocode_list=geocode_from_location(location)
+    if len(geocode_list) == 0:
+        flash('Geocoding error: no results found for location.', 'warning')
+        return redirect('/')
+    if len(geocode_list) > 1:
+        return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
+    geocode = geocode_list[0]
+
+    print(f'------------calling for {location} weather in {units} units')
     (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
-    return render_template('home.html', city=city, conditions=conditions, weather_icon_url=weather_icon_url, current_weather_details=current_weather_details, form=weather_prefs_form)
+    if not weather in g.keys():
+        g.weather={}
+    g.weather.conditions = conditions
+    g.weather.icon = weather_icon_url
+    g.weather.details = current_weather_details
+    if not g.user:
+        g.user={}
+    g.user.location = location
+    g.user.weather_units = units
+    return render_template('home.html', city=city, form=weather_prefs_form)
+    # , conditions=conditions, weather_icon_url=weather_icon_url, current_weather_details=current_weather_details
 
 @app.route('/routes/new', methods=['GET', 'POST'])
 def make_new_route():

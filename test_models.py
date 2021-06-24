@@ -34,7 +34,7 @@ class UserModelTestCase(TestCase):
     def test_user_model(self):
         """Does the basic User model work?
         A new user should:
-         - exist (test will fail if user was not created)
+         - exist (test will fail if user id was not created)
          - have a hashed password, which is to day:
             - password in the database should not equal the entered password
             - hashed password should have a length of 60 characters
@@ -45,6 +45,7 @@ class UserModelTestCase(TestCase):
         db.session.add(u)
         db.session.commit()
 
+        self.assertTrue(u.id)
         self.assertNotEqual(u.password, "UNHASHED_PASSWORD")
         self.assertEqual(len(u.password), 60)
         self.assertTrue(u.password.startswith("$2b$"))

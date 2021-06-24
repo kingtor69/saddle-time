@@ -43,7 +43,7 @@ cp3 = Checkpoint(user_id=u1.id, checkpoint_display_name="flying star paseo", che
 cp4 = Checkpoint(user_id=u1.id, checkpoint_display_name="7-11", checkpoint_lat=35.172107, checkpoint_lng=-106.496421)
 cp5 = Checkpoint(user_id=u2.id, checkpoint_display_name="Smith's parking lot", checkpoint_lat=35.132659, checkpoint_lng=-106.49791)
 cp6 = Checkpoint(user_id=u2.id, checkpoint_display_name="turnaround",checkpoint_lat=35.158915, checkpoint_lng=-106.496983)
-cp7 = Checkpoint(user_id=u3.id, checkpoint_display_name="el segundo", checkoint_lat=33.920861, checkpoint_lng=-118.415947)
+cp7 = Checkpoint(user_id=u3.id, checkpoint_display_name="el segundo", checkpoint_lat=33.920861, checkpoint_lng=-118.415947)
 cp8 = Checkpoint(user_id=u3.id, checkpoint_display_name="inglewood", checkpoint_lat=33.961767, checkpoint_lng=-118.353336)
 cp9 = Checkpoint(user_id=u4.id, checkpoint_display_name="Manhattan Beach", checkpoint_lat=33.885092, checkpoint_lng=-118.40971)
 cpa = Checkpoint(user_id=u4.id, checkpoint_display_name="RPV, baby", checkpoint_lat=34.052238, checkpoint_lng=-118.243344)

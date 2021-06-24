@@ -2,31 +2,38 @@
 
 {% block header %}SaddleTime{% endblock %}
 {% block content %}
+<span class="d-none">{{ g</span>
 <div class="container">
   <div class="row justify-content-center">
     <div class="col col-md-1 col-lg-2 d-none d-md block"></div>
     <div class="col col-6 col-md-5 col-lg-4">
+      <span class="d-none"></span>
       <table class="table table-dark table-striped rounded">
         <thead>
           <tr>
-            <th class="pt-4 my-3">Your current weather in <button class="btn btn-outline-dark" id="weather-city">{{ city }}</button>:</th>
+            <th class="pt-4 my-3">Your current weather in <form id="change-city"><button class="btn btn-outline-dark" id="weather-city">{{ city }}</button></form>:</th>
             <th class="form-floating">
               <select class="form-select py-0 my-0 px-4 bg-info" id="floatingSelect" aria-label="Floating label select example">
-                <option selected value="metric"></option>
-                <option value="imperial"></option>
+                {% if g.user.weather_units == 'imperial' %}
+                  <option value="metric">℃/kmph</option>
+                  <option selected value="imperial">℉/mph</option>
+                {% else %}
+                  <option selected value="metric">℃/kmph</option>
+                  <option value="imperial">℉/mph</option>
+                {% endif %}
               </select>
             </th>
           </tr>
           <tr>
-            <th class="h3">{{ conditions }} </th>
-            <th><img src="{{ weather_icon_url }}" alt="{{ conditions }} icon"></th>
+            <th class="h3">{{ g.weather.conditions }} </th>
+            <th><img src="{{ g.weather.icon }}" alt="{{ g.weather.conditions }} icon"></th>
           </tr>
         </thead>
         <tbody>
-          {% for key in current_weather_details.keys() %}
+          {% for key in g.weather.details.keys() %}
           <tr>
             <td>{{ key }}</td>
-            <td>{{ current_weather_details[key] }}{% if key=="description" %}<img src="{{ weather_icon_url }}">{% endif %}</td>
+            <td>{{ g.weather.details[key] }}{% if key=="description" %}<img src="{{ g.weather.icon }}">{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
