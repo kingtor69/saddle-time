@@ -24,19 +24,19 @@ class User(db.Model):
                          nullable=False, 
                          unique=True)
     profile_pic_image_url = db.Column(db.String)
-    email = db.Column(db.String)
+    email = db.Column(db.String,
+                      nullable=False)
     password = db.Column(db.String,
-                         nullable=False)                      
+                         nullable=False)    
     first_name = db.Column(db.String)                         
     last_name = db.Column(db.String)                         
-    fav_bike = db.Column(db.String)
+    fav_bike = db.Column(db.String(40))
     bike_image_url = db.Column(db.String)
     default_bike_type = db.Column(db.String(8),
                                   default="regular")
     weather_units = db.Column(db.String(8), default="metric")
 
     route = db.relationship("Route", cascade="all, delete")
-    # TODO: user's routes should be deleted when the user is deleted
 
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
@@ -74,20 +74,9 @@ class Route(db.Model):
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
-    # TODO: this route_name default is failing in test_models.py
-    route_name = db.Column(db.String,
-                           default="untitled")   
-    start_display_name = db.Column(db.String)
-    start_lat = db.Column(db.Float,
-                      nullable=False)                           
-    start_lng = db.Column(db.Float,
-                      nullable=False)     
-    end_display_name = db.Column(db.String)
-    end_lat = db.Column(db.Float,
-                    nullable=False)                      
-    end_lng = db.Column(db.Float,
-                    nullable=False)                      
-    bike_type = db.Column(db.String,
+    route_name = db.Column(db.String(40),
+                           default="untitled")  
+    bike_type = db.Column(db.String(8),
                           default="regular")
     timestamp = db.Column(db.DateTime,
                           default=datetime.utcnow())
@@ -103,14 +92,30 @@ class Checkpoint(db.Model):
 
     __tablename__ = "checkpoints"
 
-    route_id = db.Column(db.Integer,
-                         db.ForeignKey('routes.id'),
-                         primary_key=True)
-    x = db.Column(db.Integer,
-                  primary_key=True)
-    point_x_lat = db.Column(db.Float,
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.id"))
+    checkpoint_display_name = db.Column(db.String)
+    checkpoint_lat = db.Column(db.Float,
                         nullable=False)
-    point_x_lng = db.Column(db.Float,
+    checkpoint_lng = db.Column(db.Float,
                         nullable=False)
     
     # As a route is being built, x can be changed to reorder locations in the route, but when that route is *saved*, it will have a fixed order of checkpoints
+
+class RouteCheckpoint(db.Model):
+    """Route-checkpoint model shows in what route and in what order checkpoints are used."""
+
+    __tablename__ = "route_checkpoints"
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    route_id = db.Column(db.Integer,
+                         db.ForeignKey("routes.id"))
+    checkpoint_id = db.Column(db.Integer,
+                              db.ForeignKey("checkpoints.id"))
+    route_order = db.Column(db.Integer,
+                            nullable=False)
