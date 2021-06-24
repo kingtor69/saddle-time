@@ -11,8 +11,7 @@ def connect_db(app):
     db.init_app(app)
 
 class User(db.Model):
-    """User model.
-    There will be a guest user for routes created by people who haven't signed up and/or aren't logged in.
+    """User model. user.id is used in Route and Checkpoint models as those will both be stored within the user. 
     """
 
     __tablename__ = "users"
@@ -23,27 +22,29 @@ class User(db.Model):
     username = db.Column(db.String, 
                          nullable=False, 
                          unique=True)
-    profile_pic_image_url = db.Column(db.String)
     email = db.Column(db.String,
                       nullable=False)
     password = db.Column(db.String,
-                         nullable=False)    
+                         nullable=False)
     first_name = db.Column(db.String)                         
     last_name = db.Column(db.String)                         
+    profile_pic_image_url = db.Column(db.String)
     fav_bike = db.Column(db.String(40))
     bike_image_url = db.Column(db.String)
     default_bike_type = db.Column(db.String(8),
                                   default="regular")
     weather_units = db.Column(db.String(8), default="metric")
 
-    route = db.relationship("Route", cascade="all, delete")
+    route = db.relationship("Route", backref="user_route", cascade="all, delete")
+    checkpoint = db.relationship("Checkpoint", backref="user_checkpoint", cascade="all, delete")
 
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
 
     @classmethod
     def hashpass(cls, username, password):
-        """generate new user with username and hashed password only, other fields still to be populated"""
+        """Generate new user with username and hashed password only, other fields still to be populated.
+        """
 
         hashed = bcrypt.generate_password_hash(password)
         hashed_utf8 = hashed.decode("utf8")
@@ -64,10 +65,8 @@ class User(db.Model):
         return False
 
 class Route(db.Model):
-    """Route model for basic routes. 
-    Stores geocoded start and end points, bicycle/route type, 
-    and the user_id of the user who created or claims the route. 
-    Since a guest user can make a route, this user_id might change if a user signs up and/or logs in after defining a route."""
+    """Route model for basic routes. Routes are linked to user_id of the user who created or claims the route. If another user sees a route they like and wants to make it their own, it will be copied to a new entry so that user can change or adapt the route without changing anything for the original user. Timestamp is updated whenever a new API call is made for the route, which will be done when anyone is viewing a route with a timestamp more than a fortnight in the past.
+    """
 
     __tablename__ = "routes"
 
@@ -83,12 +82,11 @@ class Route(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.id"))
 
-    # TODO: we want to keep the route if the checkpoint is deleted
-    # BUT we want to delete the checkpoint if the route is deleted
-    checkpoint = db.relationship("Checkpoint", cascade="all, delete")
+    checkpoint_route = db.relationship("RouteCheckpoint", backref="route_checkpoint", cascade="all, delete")
 
 class Checkpoint(db.Model):
-    """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route."""
+    """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. Checkpoints are saved with user who created them and associated with routes in the ORM RouteCheckpoint (below). They can be copied by other users who see a checkpoint they want to use in their own route. 
+    """
 
     __tablename__ = "checkpoints"
 
@@ -103,10 +101,9 @@ class Checkpoint(db.Model):
     checkpoint_lng = db.Column(db.Float,
                         nullable=False)
     
-    # As a route is being built, x can be changed to reorder locations in the route, but when that route is *saved*, it will have a fixed order of checkpoints
-
 class RouteCheckpoint(db.Model):
-    """Route-checkpoint model shows in what route and in what order checkpoints are used."""
+    """Route-checkpoint model shows in what route and in what order checkpoints are used. These are not linked directly to user who created them because both the route and the checkpoint are. 
+    """
 
     __tablename__ = "route_checkpoints"
 

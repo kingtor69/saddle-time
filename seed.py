@@ -23,7 +23,7 @@ u4 = User.hashpass('TaskMaster', 'doitandlikeit!')
 u4.email="task@master.com"
 u4.default_bike_type="road"
 
-db.session.add_all([u1, u2, u3, r4])
+db.session.add_all([u1, u2, u3, u4])
 db.session.commit()
 
 # seed routes
@@ -40,7 +40,7 @@ db.session.commit()
 cp1 = Checkpoint(user_id=u1.id, checkpoint_display_name="work", checkpoint_lat=35.190564, checkpoint_lng=-106.580526)
 cp2 = Checkpoint(user_id=u1.id, checkpoint_display_name="outpost", checkpoint_lat=35.11882, checkpoint_lng=-106.71952)
 cp3 = Checkpoint(user_id=u1.id, checkpoint_display_name="flying star paseo", checkpoint_lat=35.174078, checkpoint_lng=-106.558918)
-cp4 = Checkpoint(user_id=u1.id, checkpoint_display_name="7-11", checkpoint_lat=35.172107, checkoint_lng=-106.496421)
+cp4 = Checkpoint(user_id=u1.id, checkpoint_display_name="7-11", checkpoint_lat=35.172107, checkpoint_lng=-106.496421)
 cp5 = Checkpoint(user_id=u2.id, checkpoint_display_name="Smith's parking lot", checkpoint_lat=35.132659, checkpoint_lng=-106.49791)
 cp6 = Checkpoint(user_id=u2.id, checkpoint_display_name="turnaround",checkpoint_lat=35.158915, checkpoint_lng=-106.496983)
 cp7 = Checkpoint(user_id=u3.id, checkpoint_display_name="el segundo", checkoint_lat=33.920861, checkpoint_lng=-118.415947)
