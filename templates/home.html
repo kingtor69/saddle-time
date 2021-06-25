@@ -2,7 +2,30 @@
 
 {% block header %}SaddleTime{% endblock %}
 {% block content %}
-<span class="d-none">{{ g</span>
+<table id="home-variables" class="d-none">
+  <tbody>
+    <tr>
+      <td>city</td>
+      <td>{{ city }}</td>
+    </tr>
+    <tr>
+      <td>conditions</td>
+      <td>{{ conditions }}</td>
+    </tr>
+    <tr>
+      <td>weather_icon_url</td>
+      <td>{{ weather_icon_url }}</td>
+    </tr>
+    <tr>
+      <td>current_weather_details</td>
+      <td>{{ current_weather_details }}</td>
+    </tr>
+    <tr>
+      <td>weather_units</td>
+      <td>{{ weather_units }}</td>
+    </tr>
+  </tbody>
+</table>
 <div class="container">
   <div class="row justify-content-center">
     <div class="col col-md-1 col-lg-2 d-none d-md block"></div>
@@ -11,29 +34,43 @@
       <table class="table table-dark table-striped rounded">
         <thead>
           <tr>
-            <th class="pt-4 my-3">Your current weather in <form id="change-city"><button class="btn btn-outline-dark" id="weather-city">{{ city }}</button></form>:</th>
+            <th class="pt-4 my-3">
+              <div class="row justify-content-left">
+                <div class="col align-self-start">
+                  Your current weather in 
+                </div>
+                <div class="col align-self-start">
+                  <form id="change-city" class="d-inline">
+                    <button class="btn btn-outline-dark pt-0 mt-0" id="weather-city"><b>{{ city }}</b></button>
+                  </form><br>
+                  <small class="text-muted"><i>click city to change</i></small>
+                </div>
+              </div>
+            </th>
             <th class="form-floating">
-              <select class="form-select py-0 my-0 px-4 bg-info" id="floatingSelect" aria-label="Floating label select example">
-                {% if g.user.weather_units == 'imperial' %}
-                  <option value="metric">℃/kmph</option>
-                  <option selected value="imperial">℉/mph</option>
-                {% else %}
-                  <option selected value="metric">℃/kmph</option>
-                  <option value="imperial">℉/mph</option>
-                {% endif %}
-              </select>
+              <form action="" id="weather-units" class="d-inline">
+                <select class="form-select py-0 my-0 px-4 bg-info" id="floatingSelect" aria-label="Floating label select example">
+                  {% if weather_units == 'imperial' %}
+                    <option value="metric">℃/kmph</option>
+                    <option selected value="imperial">℉/mph</option>
+                  {% else %}
+                    <option selected value="metric">℃/kmph</option>
+                    <option value="imperial">℉/mph</option>
+                  {% endif %}
+                </select>
+              </form>
             </th>
           </tr>
           <tr>
-            <th class="h3">{{ g.weather.conditions }} </th>
-            <th><img src="{{ g.weather.icon }}" alt="{{ g.weather.conditions }} icon"></th>
+            <th class="h3">{{ conditions }} </th>
+            <th><img src="{{ weather_icon_url }}" alt="{{ conditions }} icon"></th>
           </tr>
         </thead>
         <tbody>
-          {% for key in g.weather.details.keys() %}
+          {% for key in current_weather_details.keys() %}
           <tr>
             <td>{{ key }}</td>
-            <td>{{ g.weather.details[key] }}{% if key=="description" %}<img src="{{ g.weather.icon }}">{% endif %}</td>
+            <td>{{ current_weather_details[key] }}{% if key=="description" %}<img src="{{ weather_icon_url }}">{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>

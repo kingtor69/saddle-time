@@ -102,17 +102,23 @@ def load_home_page():
 
     print(f'------------calling for {location} weather in {units} units')
     (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
-    if not weather in g.keys():
-        g.weather={}
-    g.weather.conditions = conditions
-    g.weather.icon = weather_icon_url
-    g.weather.details = current_weather_details
-    if not g.user:
-        g.user={}
-    g.user.location = location
-    g.user.weather_units = units
-    return render_template('home.html', city=city, form=weather_prefs_form)
-    # , conditions=conditions, weather_icon_url=weather_icon_url, current_weather_details=current_weather_details
+    # if not weather in g.keys():
+    #     g.weather={}
+    # g.weather.conditions = conditions
+    # g.weather.icon = weather_icon_url
+    # g.weather.details = current_weather_details
+    # if not g.user:
+    #     g.user={}
+    # g.user.location = location
+    # g.user.weather_units = units
+    return render_template('home.html', 
+                            city=city, 
+                            form=weather_prefs_form, 
+                            weather_units=units,
+                            conditions=conditions, 
+                            weather_icon_url=weather_icon_url, 
+                            current_weather_details=current_weather_details
+                        )
 
 @app.route('/routes/new', methods=['GET', 'POST'])
 def make_new_route():
