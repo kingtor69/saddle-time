@@ -1,5 +1,24 @@
 console.log('u r here. r they?')
+
+const weatherCityChoice = document.querySelector('#weather-city')
+const weatherCityForm = document.querySelector('#change-city')
+const weatherCityInput = document.querySelector('#weather-city-input')
+const messageOrLocation = document.querySelectorAll('.message-or-use-location')
+
+weatherCityChoice.addEventListener('click', function(e) {
+  e.preventDefault()
+  weatherCityChoice.classList.add('d-none')
+  weatherCityInput.classList.remove('d-none')
+  weatherCityInput.focus();
+  weatherCityInput.select();
+  for (let field of messageOrLocation) {
+    field.classList.toggle('d-none')
+  }
+})
+
+
 const useBrowserLocation = document.querySelector('#use-browser-location')
+
 useBrowserLocation.onclick = function() {
     const default_location = "Albuquerque, NM 87102 USA"
     let theyAreHere;

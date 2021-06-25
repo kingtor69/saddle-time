@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
 from models import db, connect_db, User, Route, Checkpoint
-from forms import NewRouteForm, WeatherPrefsForm
+from forms import NewRouteForm
 from api import geocode_from_location, current_weather_from_geocode
 
 CURR_USER = "logged_in_user"
@@ -62,35 +62,34 @@ def logoutSession():
 def load_home_page():
     """Loads home page.
     If there is a logged in user, page shows weather from user's default location and most recently created route.
-    If no one is logged in, page shows weather from location data provided by browser or if blocked asks user for city to start off.
+    If no one is logged in, page shows weather from default location (Albuquerque, NM because that's my joint) in metric units (because cycling). Offer the user option to change the location (including to their browser's location) and the units. (Location change handled in app.js; units change handled hear)
     """
-    try:
-        if g.user.location:
-            location=g.user.location
-            print(f'---------------location in g: {location}')
-        else:
+    city = ""
+    if not request.method == "POST":
+        try:
+            if g.user.location:
+                location=g.user.location
+            else:
+                location="Albuquerque, NM 87102 USA"
+        except:
             location="Albuquerque, NM 87102 USA"
-            print(f'---------------default loc: {location}')
-    except:
-        location="Albuquerque, NM 87102 USA"
-        print(f'------------EXCEPT! default loc: {location}')
-    
-    try:
-        if g.user.weather_units:
-            units=g.user.weather_units
-            print(f'---------------weather units in g: {units}')
-        else:
-            units="metric"
-            print(f'---------------default weather units: {units}')
-    except:
-        units="metric"
-        print(f'------------EXCEPT!!!!!!!! default weather units: {units}')
         
-    weather_prefs_form = WeatherPrefsForm()
-    if weather_prefs_form.validate_on_submit():
-        location=form.data.location
-        units=form.data.units
-        print(f'---------------form weather prefs: location={location}, units={units}')
+        try:
+            if g.user.weather_units:
+                units=g.user.weather_units
+            else:
+                units="metric"
+        except:
+            units="metric"
+    else:
+        # in other words, request.method IS "POST"
+        city = request.data.citySelected
+        units = request.data.unitSelect
+        
+    # weather_prefs_form = WeatherPrefsForm()
+    # if weather_prefs_form.validate_on_submit():
+    #     location=form.data.location
+    #     units=form.data.units
 
     geocode_list=geocode_from_location(location)
     if len(geocode_list) == 0:
@@ -100,20 +99,13 @@ def load_home_page():
         return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
     geocode = geocode_list[0]
 
-    print(f'------------calling for {location} weather in {units} units')
-    (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
-    # if not weather in g.keys():
-    #     g.weather={}
-    # g.weather.conditions = conditions
-    # g.weather.icon = weather_icon_url
-    # g.weather.details = current_weather_details
-    # if not g.user:
-    #     g.user={}
-    # g.user.location = location
-    # g.user.weather_units = units
+    (city_API, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
+    if not city:
+        city = city_API
+
     return render_template('home.html', 
                             city=city, 
-                            form=weather_prefs_form, 
+                            # form=weather_prefs_form, 
                             weather_units=units,
                             conditions=conditions, 
                             weather_icon_url=weather_icon_url, 

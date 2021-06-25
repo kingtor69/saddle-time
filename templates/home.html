@@ -2,34 +2,9 @@
 
 {% block header %}SaddleTime{% endblock %}
 {% block content %}
-<table id="home-variables" class="d-none">
-  <tbody>
-    <tr>
-      <td>city</td>
-      <td>{{ city }}</td>
-    </tr>
-    <tr>
-      <td>conditions</td>
-      <td>{{ conditions }}</td>
-    </tr>
-    <tr>
-      <td>weather_icon_url</td>
-      <td>{{ weather_icon_url }}</td>
-    </tr>
-    <tr>
-      <td>current_weather_details</td>
-      <td>{{ current_weather_details }}</td>
-    </tr>
-    <tr>
-      <td>weather_units</td>
-      <td>{{ weather_units }}</td>
-    </tr>
-  </tbody>
-</table>
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col col-md-1 col-lg-2 d-none d-md block"></div>
-    <div class="col col-6 col-md-5 col-lg-4">
+    <div class="col col-12 col-md-8">
       <span class="d-none"></span>
       <table class="table table-dark table-striped rounded">
         <thead>
@@ -40,16 +15,22 @@
                   Your current weather in 
                 </div>
                 <div class="col align-self-start">
+                  <!-- this button and form handled in app.js -->
+                  <button class="weather-city" id="weather-city"><b>{{ city }}</b></button>
                   <form id="change-city" class="d-inline">
-                    <button class="btn btn-outline-dark pt-0 mt-0" id="weather-city"><b>{{ city }}</b></button>
-                  </form><br>
-                  <small class="text-muted"><i>click city to change</i></small>
+                    <input type="text" id="weather-city-input" class="weather-city d-none" placeholder="enter locatoin">
+                  </form>
+                  <br>
+                  <small class="text-muted weather-city message-or-use-location"><i>click city to change</i></small>
+                  <button class="weather-city location-button message-or-use-location d-none" id="use-location"><small><i>or click here to get location from browser</i></small></button>
                 </div>
               </div>
             </th>
             <th class="form-floating">
-              <form action="" id="weather-units" class="d-inline">
-                <select class="form-select py-0 my-0 px-4 bg-info" id="floatingSelect" aria-label="Floating label select example">
+              <!-- this form in Python/Flask -->
+              <form action="/" method="POST" id="weather-units" class="d-inline">
+                <input type="text" hidden id="citySelected" value={{ city }}>
+                <select class="form-select py-0 my-0 px-4 bg-info" id="unitSelect" aria-label="Floating label select example">
                   {% if weather_units == 'imperial' %}
                     <option value="metric">℃/kmph</option>
                     <option selected value="imperial">℉/mph</option>
@@ -76,7 +57,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col col-6 col-md-5 col-lg-4">
+    <div class="col col-12 col-md-4">
       <!-- if no user logged in: -->
       <div class="row">
         <form action=""></form>
@@ -94,7 +75,6 @@
         </div>
       </div>
     </div>
-    <div class="col col-md-1 col-lg-2 d-none d-md block"></div>
   </div>
 </div>
 {% endblock %}
