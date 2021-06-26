@@ -64,7 +64,7 @@ def load_home_page():
     If there is a logged in user, page shows weather from user's default location and most recently created route.
     If no one is logged in, page shows weather from default location (Albuquerque, NM because that's my joint) in metric units (because cycling). Offer the user option to change the location (including to their browser's location) and the units. (Location change handled in app.js; units change handled hear)
     """
-    city = ""
+    # city = ""
     if not request.method == "POST":
         try:
             if g.user.location:
@@ -83,7 +83,7 @@ def load_home_page():
             units="metric"
     else:
         # in other words, request.method IS "POST"
-        city = request.data.citySelected
+        location = request.data.location
         units = request.data.unitSelect
         
     # weather_prefs_form = WeatherPrefsForm()
@@ -99,9 +99,7 @@ def load_home_page():
         return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
     geocode = geocode_list[0]
 
-    (city_API, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
-    if not city:
-        city = city_API
+    (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
 
     return render_template('home.html', 
                             city=city, 

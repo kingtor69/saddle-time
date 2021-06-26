@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-
+{% block page_sytle %}
+  <link rel="stylesheet" href="static/weather.css">
+{% endblock %}
 {% block header %}SaddleTime{% endblock %}
 {% block content %}
 <div class="container">
@@ -11,26 +13,31 @@
           <tr>
             <th class="pt-4 my-3">
               <div class="row justify-content-left">
-                <div class="col align-self-start">
+                <!-- <div class="col align-self-start">
                   Your current weather in 
                 </div>
-                <div class="col align-self-start">
+                <div class="col align-self-start"> -->
                   <!-- this button and form handled in app.js -->
-                  <button class="weather-city" id="weather-city"><b>{{ city }}</b></button>
+                  <!-- <button class="weather-city" id="weather-city"><b>{{ city }}</b></button>
                   <form id="change-city" class="d-inline">
                     <input type="text" id="weather-city-input" class="weather-city d-none" placeholder="enter locatoin">
                   </form>
                   <br>
                   <small class="text-muted weather-city message-or-use-location"><i>click city to change</i></small>
-                  <button class="weather-city location-button message-or-use-location d-none" id="use-location"><small><i>or click here to get location from browser</i></small></button>
-                </div>
+                  <button class="weather-city location-button message-or-use-location d-none" id="use-location"><small><i>or click here to get location from browser</i></small></button> -->
+                  <!-- or maybe handled in app.js like this instead: -->
+                  <span id="weather-header">
+                    Your current weather in: &nbsp;
+                    <input type="text" class="weather-city city-is-set" id="weather-city-input" value="{{ city }}">
+                  </span>
+                  <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
+                <!-- </div> -->
               </div>
             </th>
             <th class="form-floating">
               <!-- this form in Python/Flask -->
               <form action="/" method="POST" id="weather-units" class="d-inline">
-                <input type="text" hidden id="citySelected" value={{ city }}>
-                <select class="form-select py-0 my-0 px-4 bg-info" id="unitSelect" aria-label="Floating label select example">
+                <select id="units-selector" class="form-select py-0 my-0 px-4 bg-info" id="unitSelect" aria-label="Floating label select example">
                   {% if weather_units == 'imperial' %}
                     <option value="metric">℃/kmph</option>
                     <option selected value="imperial">℉/mph</option>
@@ -77,4 +84,7 @@
     </div>
   </div>
 </div>
+{% endblock %}
+{% block scripts_after %}
+  <script src="static/weather.js"></script>
 {% endblock %}
