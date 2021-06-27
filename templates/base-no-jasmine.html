@@ -36,9 +36,6 @@
   <link rel="stylesheet" href="static/mdb.dark.min.css" />
   <!-- Regular MDB theme -->
   <!-- <link rel="stylesheet" href="static/mdb.min.css" /> -->
-  <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <link rel="stylesheet" type="text/css" href="lib/jasmine-3.6.0/jasmine.css">
-
 </head>
 <!-- TODO: and a new user direct link, maybe a new post that asks you to select your user...? -->
 <body>
@@ -106,14 +103,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <!-- axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine.js"></script>
-  <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="lib/jasmine-3.6.0/boot.js"></script>
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
   <script src="{% block scripts_path %}{% endblock %}static/app.js"></script>
-  <script src="{% block scripts_path %}{% endblock %}static/app.test.js"></script>
   {% block scripts_after %}{% endblock %}
 </body>
 </html>

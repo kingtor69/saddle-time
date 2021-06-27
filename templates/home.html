@@ -39,22 +39,22 @@
               <form action="/" method="POST" id="weather-units" class="d-inline">
                 <select id="units-selector" class="form-select py-0 my-0 px-4 bg-info" id="unitSelect" aria-label="Floating label select example">
                   {% if weather_units == 'imperial' %}
-                    <option value="metric">℃/kmph</option>
-                    <option selected value="imperial">℉/mph</option>
+                    <option class="metric-option" value="metric">℃/kmph</option>
+                    <option class="imperial-option" selected value="imperial">℉/mph</option>
                   {% else %}
-                    <option selected value="metric">℃/kmph</option>
-                    <option value="imperial">℉/mph</option>
+                    <option class="metric-option" selected value="metric">℃/kmph</option>
+                    <option class="imperial-option" value="imperial">℉/mph</option>
                   {% endif %}
                 </select>
               </form>
             </th>
           </tr>
-          <tr>
-            <th class="h3">{{ weather['conditions'] }} </th>
-            <th><img src="{{ weather['weather_icon_url'] }}" alt="{{ weather['conditions'] }} icon"></th>
+          <tr id="weather-conditions-row">
+            <th class="h3" id="weather-conditions">{{ weather['conditions'] }} </th>
+            <th id="weather-icon"><img src="{{ weather['weather_icon_url'] }}" /></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="weather-details">
           {% for key in weather['current_weather_details'].keys() %}
           <tr>
             <td>{{ key }}</td>
@@ -87,4 +87,5 @@
 {% endblock %}
 {% block scripts_after %}
   <script src="static/weather.js"></script>
+  <script src="static/weather.test.js"></script>
 {% endblock %}
