@@ -53,3 +53,6 @@ class GeocodeAPITestCase(TestCase):
             (mult_choice1_lat_lng["lat"], mult_choice1_lat_lng["lng"]), 
             mult_choice1_code
         )            
+
+class WeatherAPITestCase (TestCase):
+    """test that weather API calls are returning valid data"""

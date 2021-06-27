@@ -99,7 +99,6 @@ function updateWeatherDOM(weather) {
     // this does it in alphabetical order... wtf?
     let weatherDetailsObj = weather.current_weather_details;
     console.log(weatherDetailsObj);
-    return
     // for (let detail in weatherDetailsObj) {
     //     const weatherTr = document.createElement('tr');
     //     const categoryTd = document.createElement('td');

@@ -34,12 +34,12 @@ def current_weather_from_geocode(geocode, units="metric"):
     conditions = resp["weather"][0]["description"].title()
     weather_icon_url = f'{WEATHER_ICON_BASE_URL}{resp["weather"][0]["icon"]}{WEATHER_ICON_SUFFIX}'
     current_weather_details = {
-        "Temperature": f'{resp["main"]["temp"]}{deg}',
-        "Feels Like": f'{resp["main"]["feels_like"]}{deg}',
-        "High": f'{resp["main"]["temp_max"]}{deg}',
-        "Low": f'{resp["main"]["temp_min"]}{deg}',
+        "Temperature": f'{round(resp["main"]["temp"], 1)}{deg}',
+        "Feels Like": f'{round(resp["main"]["feels_like"], 1)}{deg}',
+        "High": f'{round(resp["main"]["temp_max"], 1)}{deg}',
+        "Low": f'{round(resp["main"]["temp_min"], 1)}{deg}',
         "Relative Humidity": f'{resp["main"]["humidity"]}%',
-        "Wind Speed": f'{resp["wind"]["speed"]} {vel}',
+        "Wind Speed": f'{round (resp["wind"]["speed"], 1)} {vel}',
         "Wind Direction": f'{resp["wind"]["deg"]}° {wind_direction_logical(resp["wind"]["deg"])}'
     }
 
