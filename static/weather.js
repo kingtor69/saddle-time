@@ -1,62 +1,48 @@
-/////////////////////////////////////
-// weather location button/input on home page
-// this was one way it kinda worked:
-////////////////////////////////////
-// const weatherCityChoice = document.querySelector('#weather-city')
-// const weatherCityForm = document.querySelector('#change-city')
-// const weatherCityInput = document.querySelector('#weather-city-input')
-// const messageOrLocation = document.querySelectorAll('.message-or-use-location')
-
-// weatherCityChoice.addEventListener('click', function(e) {
-//   e.preventDefault()
-//   weatherCityChoice.classList.add('d-none')
-//   weatherCityInput.classList.remove('d-none')
-//   weatherCityInput.focus();
-//   weatherCityInput.select();
-//   for (let field of messageOrLocation) {
-//     field.classList.toggle('d-none')
-//   }
-// })
-
-// this might be better
-/////////////////////////////////////
+// weather location button/input and units-selector on home page
+// TODO: make unitsSelector work
 const weatherCityInput = document.querySelector('#weather-city-input');
 const browserLocation = document.querySelector('#browser-location-select');
-const unitsSelector = document.querySelector('#units-selector')
+const unitsSelector = document.querySelector('#units-selector');
+const baseApiUrl = "/api/";
 
 weatherCityInput.addEventListener('click', function() {
     weatherCityInput.focus();
     weatherCityInput.select();
-    weatherCityInput.classList.remove('city-is-set')
-})
+    weatherCityInput.classList.remove('city-is-set');
+});
+
 weatherCityInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter' || e.key === 'Return') {
-      weatherCityInput.classList.add('city-is-set');
-      reloadHomePageWithNewLocation(weatherCityInput.value, unitsSelector.value);
-    }
-})
+        errorDiv.innerHTML = ""
+        weatherCityInput.classList.add('city-is-set');
+        updateWeather(weatherCityInput.value, unitsSelector.value);
+    };
+});
 
+async function updateWeather(location, units, geocode) {
+    const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&geocode=${geocode}`;
+    console.log(weatherUrl);
+    resp = await axios.get(weatherUrl);
+    if (resp.data.Errors) {
+        errorObj = resp.data.Errors;
+        errorArr = [];
+        for (let error in errorObj) {
+            if (errorObj[error] !== "No valid geocode entered.") {
+                errorArr.push([error, errorObj[error]]);
+            };
+        };
+        displayErrors(errorArr);
+    } else {
+        // 
+        // is it me?
+        updateWeatherDOM(resp.data);
+    };
+};
 
-
-async function reloadHomePageWithNewLocation(location, units) {
-    console.log ('reload home page.... now?')
-    await axios({
-        method: 'post',
-        url: '/',
-        data: {
-            location: location,
-            units: units
-        }
-    })
-}
-
-// here's a weird thing.... when I added this async function, weatherCityInput.select(); stopped working
-// async getWeather(location) {
-//     weatherResponse = await axios.get()
-// }
-// also, rewriting the geocoding *and* getWeather API calls in JS seems like a waste of time, so I'm looking at how to do this in Python/Flask
-
-// const useBrowserLocation = document.querySelector('#use-browser-location')
+function updateWeatherDOM(weather)) {
+    console.log("TODO: why the eff can't I pass an object into a function anymore?")
+    console.log(`see? updateWeatherDOM(${weather})`)
+};
 
 //////////////////////////// this isn't working, but it's here:
 browserLocation.addEventListener('click', function() {
@@ -75,10 +61,10 @@ browserLocation.addEventListener('click', function() {
     // let nudgeTimeoutId = setTimeout(showNudgeBanner, 5000);
   
     let geoSuccess = function(position) {
-        reloadHomePageWithNewLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        })
+        updateWeather(null, units, (
+            position.coords.latitude,
+            position.coords.longitude
+            ))
         // hideNudgeBanner();
         // We have the location, don't display banner
         // clearTimeout(nudgeTimeoutId); 

@@ -13,6 +13,7 @@ CURR_ROUTE = "route_in_progress"
 CURR_CHECKPOINT_LIST = "checkpoints_in_use"
 GUEST = User(username="guest", password="fakepassword")
 
+
 app=Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -26,7 +27,8 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
-# from routes import user_routes, route_routes
+from routes import weather_routes
+# , user_routes, route_routes, 
 
 @app.before_request
 def add_user_to_g():
@@ -99,16 +101,27 @@ def load_home_page():
         return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
     geocode = geocode_list[0]
 
-    (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
+    # (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
+    weather = current_weather_from_geocode(geocode)
+    # print (f'----------------{weather}')
+    # 
+    # -----------
+    # {
+        # 'city': 'Albuquerque', 
+        # 'conditions': 'Scattered Clouds', 
+        # 'weather_icon_url': 'http://openweathermap.org/img/wn/03d@2x.png', 
+        # 'current_weather_details': {
+            # 'Temperature': '31.83℃', 
+            # 'Feels Like': '29.7℃', 
+            # 'High': '34.02℃', 
+            # 'Low': '29.87℃', 
+            # 'Relative Humidity': '17%', 
+            # 'Wind Speed': '3.13 km/h', 
+            # 'Wind Direction': '315°'}}
 
-    return render_template('home.html', 
-                            city=city, 
-                            # form=weather_prefs_form, 
-                            weather_units=units,
-                            conditions=conditions, 
-                            weather_icon_url=weather_icon_url, 
-                            current_weather_details=current_weather_details
-                        )
+
+
+    return render_template('home.html', weather=weather)
 
 @app.route('/routes/new', methods=['GET', 'POST'])
 def make_new_route():

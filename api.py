@@ -40,8 +40,27 @@ def current_weather_from_geocode(geocode, units="metric"):
         "Low": f'{resp["main"]["temp_min"]}{deg}',
         "Relative Humidity": f'{resp["main"]["humidity"]}%',
         "Wind Speed": f'{resp["wind"]["speed"]} {vel}',
-        "Wind Direction": f'{resp["wind"]["deg"]}°'
+        "Wind Direction": f'{resp["wind"]["deg"]}° {wind_direction_logical(resp["wind"]["deg"])}'
     }
 
-    return (city, conditions, weather_icon_url, current_weather_details)
+    return {
+        'city': city, 
+        'conditions': conditions, 
+        'weather_icon_url': weather_icon_url, 
+        'current_weather_details': current_weather_details
+    }
 
+def wind_direction_logical(degrees):
+    """Give wind direction a logical name adapted from degrees.
+    
+    > wind_direction_logical(180) = "Southerly"
+    > wind_direction_locical(25) = "Northeasterly"
+    """
+    if degrees > (360 - 22.5):
+        biased_degrees = degrees - 360 + 22.5
+    else:
+        biased_degrees = degrees + 22.5
+
+    index = int(biased_degrees / 45)
+    indices = ["Northerly", "Northeasterly", "Easterly", "Southeasterly", "Southerly", "Southwesterly", "Westerly", "Northwesterly"]
+    return indices[index]

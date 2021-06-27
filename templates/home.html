@@ -28,7 +28,7 @@
                   <!-- or maybe handled in app.js like this instead: -->
                   <span id="weather-header">
                     Your current weather in: &nbsp;
-                    <input type="text" class="weather-city city-is-set" id="weather-city-input" value="{{ city }}">
+                    <input type="text" class="weather-city city-is-set" id="weather-city-input" value="{{ weather.city }}">
                   </span>
                   <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
                 <!-- </div> -->
@@ -50,15 +50,15 @@
             </th>
           </tr>
           <tr>
-            <th class="h3">{{ conditions }} </th>
-            <th><img src="{{ weather_icon_url }}" alt="{{ conditions }} icon"></th>
+            <th class="h3">{{ weather['conditions'] }} </th>
+            <th><img src="{{ weather['weather_icon_url'] }}" alt="{{ weather['conditions'] }} icon"></th>
           </tr>
         </thead>
         <tbody>
-          {% for key in current_weather_details.keys() %}
+          {% for key in weather['current_weather_details'].keys() %}
           <tr>
             <td>{{ key }}</td>
-            <td>{{ current_weather_details[key] }}{% if key=="description" %}<img src="{{ weather_icon_url }}">{% endif %}</td>
+            <td>{{ weather['current_weather_details'][key] }}{% if key=="description" %}<img src="{{ weather['weather_icon_url'] }}">{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
