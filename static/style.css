@@ -1,3 +1,19 @@
 img#navbar-logo {
 	height: 40px;
 }
+
+table.error-table {
+	background-color: red;
+	color: black;
+	text-emphasis: bold;
+	font-size: 1.4rem;
+	border-radius: 5px;
+}
+
+td.error-type {
+	padding-left: 20px;
+}
+
+td.error-message {
+	padding-right: 20px;
+}

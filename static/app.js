@@ -1,14 +1,15 @@
 const errorDiv = document.querySelector('#errors');
 
-function displayErrors(errorArr) {
-    console.log(`displayErrors(${errorArr})`)
+function displayErrors(errorObj) {
     const errorTable = document.createElement('table');
-    errorTable.classList.add("table","table-danger","table-striped")
-    for (let error of errorArr) {
+    errorTable.classList.add("table","error-table","table-striped")
+    for (let error in errorObj) {
         const errorTr = document.createElement('tr');
         const errorTds = [document.createElement('td'), document.createElement('td')];
-        errorTds[0].innerText = error[0];
-        errorTds[0].innerText = error[1];
+        errorTds[0].classList.add('error-type')
+        errorTds[1].classList.add('error-message')
+        errorTds[0].innerText = error;
+        errorTds[1].innerText = errorObj[error];
         for (let td of errorTds) {
             errorTr.appendChild(td);
         };

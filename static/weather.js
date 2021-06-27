@@ -21,27 +21,24 @@ weatherCityInput.addEventListener('keypress', function(e) {
 
 async function updateWeather(location, units, geocode) {
     const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&geocode=${geocode}`;
-    console.log(weatherUrl);
     resp = await axios.get(weatherUrl);
     if (resp.data.Errors) {
-        errorObj = resp.data.Errors;
-        errorArr = [];
-        for (let error in errorObj) {
-            if (errorObj[error] !== "No valid geocode entered.") {
-                errorArr.push([error, errorObj[error]]);
+        rawErrorObj = resp.data.Errors;
+        errorObj = {}
+        for (let error in rawErrorObj) {
+            if (rawErrorObj[error] !== "No valid geocode entered.") {
+                errorObj[error] = rawErrorObj[error];
             };
         };
-        displayErrors(errorArr);
+        console.log(errorObj)
+        displayErrors(errorObj);
     } else {
-        // 
-        // is it me?
         updateWeatherDOM(resp.data);
     };
 };
 
-function updateWeatherDOM(weather)) {
-    console.log("TODO: why the eff can't I pass an object into a function anymore?")
-    console.log(`see? updateWeatherDOM(${weather})`)
+function updateWeatherDOM(weather) {
+    console.log(weather.city)    
 };
 
 //////////////////////////// this isn't working, but it's here:
