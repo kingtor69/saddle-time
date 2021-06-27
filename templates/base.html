@@ -24,7 +24,7 @@
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/png" href="static/images/saddletime-fav-icon-32.png">
   <!-- static style -->
-  <link rel="stylesheet" href="{% block static_path %}{% endblock %}/static/style.css">
+  <link rel="stylesheet" href="{% block static_path %}{% endblock %}/static/css/style.css">
   {% block page_sytle %}{% endblock %}
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Goblin+One&display=swap" rel="stylesheet">
@@ -33,11 +33,11 @@
   <!-- Google Fonts Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"/>
   <!-- Dark MDB theme -->
-  <link rel="stylesheet" href="static/mdb.dark.min.css" />
+  <link rel="stylesheet" href="static/css/mdb.dark.min.css" />
   <!-- Regular MDB theme -->
-  <!-- <link rel="stylesheet" href="static/mdb.min.css" /> -->
+  <!-- <link rel="stylesheet" href="static/css/mdb.min.css" /> -->
   <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <link rel="stylesheet" type="text/css" href="lib/jasmine-3.6.0/jasmine.css">
+  <link rel="stylesheet" type="text/css" href="static/js/tests/lib/jasmine-3.6.0/jasmine.css">
 
 </head>
 <!-- TODO: and a new user direct link, maybe a new post that asks you to select your user...? -->
@@ -107,13 +107,13 @@
   <!-- axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine.js"></script>
-  <script type="text/javascript" src="lib/jasmine-3.6.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="lib/jasmine-3.6.0/boot.js"></script>
+  <script type="text/javascript" src="static/js/tests/lib/jasmine-3.6.0/jasmine.js"></script>
+  <script type="text/javascript" src="static/js/tests/lib/jasmine-3.6.0/jasmine-html.js"></script>
+  <script type="text/javascript" src="static/js/tests/lib/jasmine-3.6.0/boot.js"></script>
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
-  <script src="{% block scripts_path %}{% endblock %}static/app.js"></script>
-  <script src="{% block scripts_path %}{% endblock %}static/app.test.js"></script>
+  <script src="{% block scripts_path %}{% endblock %}static/js/app.js"></script>
+  <script src="{% block scripts_path %}{% endblock %}static/js/tests/app.test.js"></script>
   {% block scripts_after %}{% endblock %}
 </body>
 </html>
