@@ -1,7 +1,8 @@
-// weather location button/input and units-selector on home page
 // TODO: make unitsSelector work
+// TODO: make browser location work
+// weather location button/input and units-selector on home page
 const weatherCityInput = document.querySelector('#weather-city-input');
-const browserLocation = document.querySelector('#browser-location-select');
+const browserLocationButton = document.querySelector('#browser-location-select');
 const unitsSelector = document.querySelector('#units-selector');
 let units = unitsSelector.value;
 const unitsOptionMetric = document.querySelector('option.metric-option')
@@ -47,7 +48,7 @@ async function updateWeather(location, units, geocode) {
 };
 
 //TODO: this isn't working, but it's here:
-browserLocation.addEventListener('click', function() {
+browserLocationButton.addEventListener('click', function() {
     const default_location = "Albuquerque, NM 87102 USA"
     // let nudge = document.getElementById("nudge");
   
@@ -69,7 +70,7 @@ browserLocation.addEventListener('click', function() {
         // hideNudgeBanner();
         // We have the location, don't display banner
         // clearTimeout(nudgeTimeoutId); 
- 
+        
         
         // Do magic with location
         // document.getElementById('startLat').innerHTML = position.coords.latitude;
@@ -81,53 +82,38 @@ browserLocation.addEventListener('click', function() {
     };
   
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
-  });
+});
 
 // TODO: add unitsSelector eventListener
 
 function updateWeatherDOM(weather) {
     weatherConditionsHeader.innerHTML = ""
-    weatherDetails.innerHTML = ""
+    // update city:
     weatherCityInput.value = weather.city;
+    // update units:
     if (weather.units === "imperial") {
+        unitsOptionMetric.selected = '';
         unitsOptionImperial.selected = 'selected';
     } else {
         unitsOptionMetric.selected = 'selected';
+        unitsOptionImperial.selected = '';
     }
+    // update conditions headline
     weatherConditions.innerText = weather.conditions;
     weatherIcon.innerHTML = `<img src="{{ weather['weather_icon_url'] }}" />`
-    // this does it in alphabetical order... wtf?
-    let weatherDetailsObj = weather.current_weather_details;
-    console.log(weatherDetailsObj);
-    // for (let detail in weatherDetailsObj) {
-    //     const weatherTr = document.createElement('tr');
-    //     const categoryTd = document.createElement('td');
-    //     const conditionTd = document.createElement('td');
-    //     categoryTd.innerText = detail;
-    //     conditionTd.innerText = weather.current_weather_details[detail];
-    //     weatherTr.appendChild(categoryTd);
-    //     weatherTr.appendChild(conditionTd);
-    //     weatherDetails.appendChild(weatherTr);
-    // }
-    weatherDetailsKeys = keys(weatherDetailsObj);
-    for (let i=0; i < weatherDetailKeys.length; i++) {
-        console.log(`key ${i}: ${weatherDetailKeys[i]}`)        
-    //     const weatherTr = document.createElement('tr');
-    //     const categoryTd = document.createElement('td');
-    //     const conditionTd = document.createElement('td');
-    //     categoryTd.innerText = detail;
-    //     conditionTd.innerText = weather.current_weather_details[detail];
-    //     weatherTr.appendChild(categoryTd);
-    //     weatherTr.appendChild(conditionTd);
-    //     weatherDetails.appendChild(weatherTr);
+    
+    // gather DOM and data for details
+    weatherDetailKeysTds = document.querySelectorAll('td.weather-detail-key')
+    weatherDetailValueTds = document.querySelectorAll('td.weather-detail-value')
+    const weatherDetailObj = weather.current_weather_details
+    
+    // now put the right values in the existing keys
+    for (let i=0; i<weatherDetailKeysTds.length; i++) {
+        weatherDetailValueTds[i].innerText = weatherDetailObj[weatherDetailKeysTds[i].innerText]
     }
-    // temp = weather.current_weather_details["Temperature"]
-    // feelsLike = weather.current_weather_details["Feels Like"]
-    // high = weather.current_weather_details["High"]
-    // low = weather.current_weather_details["Low"]
-    // humidity = weather.current_weather_details["Relative Humidity"]
-    // windSpeed = weather.current_weather_details["Wind Speed"]
-    // windDirection = weather.current_weather_details["Wind Direction"]
-
+    return `
+        ${weatherConditionsHeader.innerHTML}
+        ${weatherDetails.innerHTML}
+    `
 };
 
