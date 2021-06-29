@@ -13,7 +13,6 @@ const weatherConditions = document.querySelector('#weather-conditions')
 const weatherIcon = document.querySelector('#weather-icon')
 const weatherDetails = document.querySelector('#weather-details')
 
-
 const baseApiUrl = "/api/";
 
 weatherCityInput.addEventListener('click', function() {
