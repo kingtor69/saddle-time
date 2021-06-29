@@ -46,9 +46,12 @@ const testWeatherInformationHeaderRowHTML = `
 const testWeatherConditionsHeaderHTML = `
   <tr id="weather-conditions-row">
     <th class="h3" id="weather-conditions">Scattered   Clouds</th>
-    <th id="weather-icon"><img src="http://openweathermap.  org/img/wn/03d@2x.png" /></th>
+    <th id="weather-icon"><img src="http://openweathermap.org/img/wn/03d@2x.png" /></th>
   </tr>
 `
+
+const testWeatherHeaderConditionsTh = `<th class="h3" id="weather-conditions">Scattered Clouds</th>`
+const testWeatherHeaderIconTh = `<th id="weather-icon"><img src="http://openweathermap.org/img/wn/03d@2x.png" /></th>`
 
 const testTemperatureTd = '<td class="weather-detail-value">25.0℃</td>'
 const testFeelsLikeTd = '<td class="weather-detail-value">24.6℃</td>'
@@ -91,9 +94,13 @@ const testWeatherDetailsHTML = `
 
 
 describe('weather display to home page', function() {
-    it('should show the weather on the home page given a specific weather input', function() {
-        expect(updateWeatherDOM(testWeatherObj).indexOf(testTemperatureTd) !== -1).toBe(true)
-        expect(updateWeatherDOM(testWeatherObj).indexOf(testFeelsLikeTd) !== -1).toBe(true)
-        expect(updateWeatherDOM(testWeatherObj).indexOf(testWindDirectionTd) !== -1).toBe(true)
+    it('should show the weather conditions and icon', function() {
+        expect(updateWeatherDOM(testWeatherObj).indexOf(testWeatherHeaderConditionsTh) !== -1).toBe(true);
+        expect(updateWeatherDOM(testWeatherObj).indexOf(testWeatherHeaderIconTh) !== -1).toBe(true);
+    });
+    it('should show the weather details in the table', function() {
+        expect(updateWeatherDOM(testWeatherObj).indexOf(testTemperatureTd) !== -1).toBe(true);
+        expect(updateWeatherDOM(testWeatherObj).indexOf(testFeelsLikeTd) !== -1).toBe(true);
+        expect(updateWeatherDOM(testWeatherObj).indexOf(testWindDirectionTd) !== -1).toBe(true);
     })
-})
+});
