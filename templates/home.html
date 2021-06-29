@@ -6,9 +6,9 @@
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col col-12 col-md-8">
+    <div class="col col-md-8">
       <span class="d-none"></span>
-      <table class="table table-dark table-striped rounded">
+      <table class="table table-dark table-striped rounded" id="weather-table">
         <thead>
           <tr id="weather-header-selectors">
             <th class="pt-4 my-3">
@@ -50,7 +50,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col col-12 col-md-4">
+    <div class="col col-md-4">
       <!-- if no user logged in: -->
       <div class="row">
         <form action=""></form>

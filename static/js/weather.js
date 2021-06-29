@@ -7,6 +7,7 @@ const unitsSelector = document.querySelector('#units-selector');
 let units = unitsSelector.value;
 const unitsOptionMetric = document.querySelector('option.metric-option')
 const unitsOptionImperial = document.querySelector('option.imperial-option')
+const weatherHeader = document.querySelector('#weather-header')
 const weatherConditionsHeader = document.querySelector('#weather-conditions-row')
 const weatherConditions = document.querySelector('#weather-conditions')
 const weatherIcon = document.querySelector('#weather-icon')
@@ -40,7 +41,6 @@ async function updateWeather(location, units, geocode) {
                 errorObj[error] = rawErrorObj[error];
             };
         };
-        console.log(errorObj)
         displayErrors(errorObj);
     } else {
         updateWeatherDOM(resp.data);
@@ -100,7 +100,9 @@ function updateWeatherDOM(weather) {
     }
     // update conditions headline
     weatherConditions.innerText = weather.conditions;
-    weatherIcon.innerHTML = `<img src="{{ weather['weather_icon_url'] }}" />`
+    weatherIcon.innerHTML = `<img src="${weather.weather_icon_url}">`
+    weatherConditionsHeader.appendChild(weatherConditions)
+    weatherConditionsHeader.appendChild(weatherIcon)
     
     // gather DOM and data for details
     weatherDetailKeysTds = document.querySelectorAll('td.weather-detail-key')
