@@ -1,5 +1,5 @@
+import os
 import requests
-from secret import ORS_API_KEY, MQ_API_KEY, OW_API_KEY
 from helpers import unit_markers
 
 ORS_API_BASE_URL = "https://api.openrouteservice.org/v2/directions/"
@@ -7,6 +7,10 @@ MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
 WEATHER_ICON_SUFFIX = "@2x.png"
+
+ORS_API_KEY = os.environ['ORS_API_KEY']
+MQ_API_KEY = os.environ['MQ_API_KEY']
+OW_API_KEY = os.environ['OW_API_KEY']
 
 def geocode_from_location(loc):
     """Returns lattitude and longitute for given location, generally an address. 
