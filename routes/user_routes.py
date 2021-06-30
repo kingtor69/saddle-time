@@ -6,10 +6,11 @@ from models import User
 from forms import NewUserForm
 # import requests
 
-
 @app.route('/users/signup', methods=["GET", "POST"])
 def signup_new_user():
     """Sign up new users. Enter into database"""
+
+    
     form = NewUserForm()
     if form.validate_on_submit():
         new_user = User.hashpass(form.data.username, form.data.password)
@@ -26,7 +27,6 @@ def signup_new_user():
         db.session.commit()
         loginSession(new_user)
         return redirect('/')
-
 
     return render_template('new-user.html', form=form)
 

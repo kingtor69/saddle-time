@@ -12,14 +12,17 @@ APIs to be used can be found in api.py
     - mountain
  - Open Weather: gives weather information (current and forecast) about route location
 
-### Python unittests were working before I changed the schema, but needs to be reworked
+### Python unittests are in root folder
+I'd like to get them in their own folder, but had trouble with `from app import app`
+
+### JS Jasmine tests are running in static/js/tests
 
 ### Weather API is working with hard-coded location
- - Still working on javascript to change location. 
-   - It partly* works for a location change, not at all for a temperature change.
-   - * by which I mean the data is arriving from the API, but not being added to the DOM correctly
- - ...and the javascript to change units is unstarted yet, except a few document.querySelectors
+ - weather.js is working for a location change
+ - still need to make units selector work to change units
+ - and using browser location is not working yet either
 
 ### Home page looks good for no logged in user
 
-### adding Jasmine testing
+### routes director is giving me some trouble right now
+Can not import app information into `user_routes.py` (presumably because `app.py` is one directory *back* from `user_routes.py`)
