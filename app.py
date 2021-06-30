@@ -7,11 +7,7 @@ import requests
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm
 from api import geocode_from_location, current_weather_from_geocode
-
-CURR_USER = "logged_in_user"
-CURR_ROUTE = "route_in_progress"
-CURR_CHECKPOINT_LIST = "checkpoints_in_use"
-GUEST = User(username="guest", password="fakepassword")
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST
 
 
 app=Flask(__name__)
@@ -27,8 +23,10 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
-from routes import weather_routes, user_routes
+# from routes import weather_routes, user_routes
 # , route_routes, 
+import weather_routes, user_routes
+# , route_routes
 
 @app.before_request
 def add_user_to_g():
@@ -49,15 +47,6 @@ def add_route_to_g():
         g.route = Route.query.get(session[CURR_ROUTE])
 
 
-def loginSession(user):
-    """Log in a registered user to session."""
-
-    session[CURR_USER] = user.id
-
-def logoutSession():
-    """Remove user who is logging out from session."""
-
-    del session[CURR_USER]
 
 
 @app.route('/', methods=["GET", "POST"])
@@ -85,13 +74,13 @@ def load_home_page():
             units="metric"
     else:
         # in other words, request.method IS "POST"
-        location = request.data.location
-        units = request.data.unitSelect
+        location = request.location.data
+        units = request.unitSelect.data
         
     # weather_prefs_form = WeatherPrefsForm()
     # if weather_prefs_form.validate_on_submit():
-    #     location=form.data.location
-    #     units=form.data.units
+    #     location=form.location.data
+    #     units=form.units.data
 
     geocode_list=geocode_from_location(location)
     if len(geocode_list) == 0:
@@ -123,14 +112,22 @@ def load_home_page():
 
     return render_template('home.html', weather=weather)
 
+
+@app.route('/pdb')
+def pdb_set_trace():
+    """defined this route for debugging purposes. Remove before production."""
+    import pdb
+    pdb.set_trace()
+    return redirect('/')
+
 @app.route('/routes/new', methods=['GET', 'POST'])
 def make_new_route():
     form = NewRouteForm()
     
     if form.validate_on_submit():
-        route_name = form.data.route_name or "untitled"
-        start_geoloc=geocode_from_location(form.data.start_location)
-        end_geoloc=geocode_from_location(form.data.end_location)
+        route_name = form.route_name.data or "untitled"
+        start_geoloc=geocode_from_location(form.start_location.data)
+        end_geoloc=geocode_from_location(form.end_location.data)
         if not start_geoloc or not end_geoloc:
             if start_geoloc:
                 flash('The ending location could not be located. Please try again.', 'warning')

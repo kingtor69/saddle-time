@@ -24,7 +24,7 @@
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/png" href="static/images/saddletime-fav-icon-32.png">
   <!-- static style -->
-  <link rel="stylesheet" href="{% block static_path %}{% endblock %}/static/css/style.css">
+  <link rel="stylesheet" href="{% block static_path %}{% endblock %}static/css/style.css">
   {% block page_sytle %}{% endblock %}
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Goblin+One&display=swap" rel="stylesheet">
@@ -33,43 +33,50 @@
   <!-- Google Fonts Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"/>
   <!-- Dark MDB theme -->
-  <link rel="stylesheet" href="static/css/mdb.dark.min.css" />
+  <link rel="stylesheet" href="{% block bootstrap_static_route %}{% endblock %}static/css/mdb.dark.min.css" />
   <!-- Regular MDB theme -->
   <!-- <link rel="stylesheet" href="static/css/mdb.min.css" /> -->
   <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <link rel="stylesheet" type="text/css" href="static/js/tests/lib/jasmine-3.6.0/jasmine.css">
+  <link rel="stylesheet" type="text/css" href="{% block jasmine_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.css">
 
 </head>
 <!-- TODO: and a new user direct link, maybe a new post that asks you to select your user...? -->
 <body>
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top px-3">
-      <a class="navbar-brand" href="{% block home_path %}{% endblock %}"><img src="static/images/saddletime-full-logo.png" alt="" id="navbar-logo"> SaddleTime</a>
+      <a class="navbar-brand" href="{% block home_path %}{% endblock %}"><img src="{% block nav_image_static_route %}{% endblock %}static/images/saddletime-full-logo.png" alt="" id="navbar-logo"> SaddleTime</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <!-- <li class="nav-item">
-            <a href="{% block users_path %}{% endblock %}users" class="nav-link">show users</a>
-          </li>
-          <li class="nav-item">
-            <a href="{% block posts_path %}{% endblock %}posts" class="nav-link">show posts</a>
-          </li>
-          <li class="nav-item">
-            <a href="{% block tags_path %}{% endblock %}tags" class="nav-link">manage tags</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a href="./posts.html" class="nav-link">show posts</a>
-          </li> -->
           {% block nav_items %}{% endblock %}
-          <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            {% block dropdown_nav_items %}{% endblock %}
-            <hr>
-            <li class="nav-item">
-              <a href="" class="nav-link">back home</a>
-            </li>
-          </div> -->
+        </ul>
+          <!-- <li>
+            <form class="navbar-form navbar-right" action="/users">
+              <input name="q" class="form-control" placeholder="Search SaddleTime" id="search">
+              <button class="btn btn-default">
+                <span class="fa fa-search"></span>
+              </button>
+            </form>
+          </li> -->
+        <ul class="navbar-nav navbar-right">
+          {% if not g.user %}
+          <li><a href="/users/signup" class="pl-5 pr-2">Sign up</a></li>
+          <li><a href="/login" class="pl-2">Log in</a></li>
+          {% else %}
+          <li>
+            <a href="/users/{{ g.user.id }}" class="pr-2">
+              {% if g.user.profile_pic_image_url %}
+              <img src="{{ g.user.profile_pic_image_url }}" alt="{{ g.user.username }}">
+              {% else %}
+              {{ g.user.username}}
+              {% endif %}
+            </a>
+          </li>
+          <li><a href="/routes/new" class="px-2">New Route</a></li>
+          <li><a href="/logout" class="pr-2">Log out</a></li>
+          {% endif %}
         </ul>
       </div>
     </nav>
@@ -107,9 +114,9 @@
   <!-- axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <script type="text/javascript" src="static/js/tests/lib/jasmine-3.6.0/jasmine.js"></script>
-  <script type="text/javascript" src="static/js/tests/lib/jasmine-3.6.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="static/js/tests/lib/jasmine-3.6.0/boot.js"></script>
+  <script type="text/javascript" src="{% block jasmine_script1_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.js"></script>
+  <script type="text/javascript" src="{% block jasmine_script2_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine-html.js"></script>
+  <script type="text/javascript" src="{% block jasmine_script3_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/boot.js"></script>
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
   <script src="{% block scripts_path %}{% endblock %}static/js/app.js"></script>

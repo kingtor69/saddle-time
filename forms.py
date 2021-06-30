@@ -1,6 +1,6 @@
 # from models import Route, User, Checkpoint
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField
+from wtforms import StringField, SelectField, PasswordField
 from wtforms.validators import InputRequired, Optional, Email, URL, Length
 
 class NewRouteForm(FlaskForm):
@@ -15,7 +15,7 @@ class NewUserForm(FlaskForm):
 
     username = StringField("username", validators=[InputRequired(message="You need a username to create an account.")])
     email = StringField("email address", validators=[InputRequired(message="You must enter an email address."), Email(message="That email address format is invalid.")])
-    password = StringField("password", validators=[InputRequired(message="You must enter a password.")])
+    password = PasswordField("password", validators=[InputRequired(message="You must enter a password.")])
     first_name = StringField("first name")
     last_name = StringField("last name")
     profile_pic_image_url = StringField("profile pic link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
@@ -24,6 +24,13 @@ class NewUserForm(FlaskForm):
     default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
     default_location = StringField('your default route starting point')
     weather_units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
+
+class LoginForm(FlaskForm):
+    """Form to log in existing user."""
+
+    username = StringField("username", validators=[InputRequired(message="You must enter a username to log in.")])
+    password = PasswordField("password", validators=[InputRequired(message="You must enter a password to log in.")])
+
 
 
 ################ not currently using this form, but not ready to delete it just yet

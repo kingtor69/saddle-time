@@ -2,6 +2,15 @@
 {% block page_sytle %}
   <link rel="stylesheet" href="static/css/weather.css">
 {% endblock %}
+{% block static_path %}{% endblock %}
+{% block bootstrap_static_route %}{% endblock %}
+{% block jasmine_route %}{% endblock %}
+{% block home_path %}{% endblock %}
+{% block jasmine_script1_static_route %}{% endblock %}
+{% block jasmine_script2_static_route %}{% endblock %}
+{% block jasmine_script3_static_route %}{% endblock %}
+{% block scripts_path %}{% endblock %}
+{% block test_scripts_path %}{% endblock %}
 {% block header %}SaddleTime{% endblock %}
 {% block content %}
 <div class="container">
@@ -51,14 +60,13 @@
       </table>
     </div>
     <div class="col col-md-4">
-      <!-- if no user logged in: -->
-      <div class="row">
-        <form action=""></form>
-      </div>
+      {% if not g.user %}
       <div class="row m-5"><br></div>
+      {% endif %}
       <div class="row justify-content-center">
-        <a href="/login" class="d-block btn btn-block btn-primary m-2">make route as guest</a>
+        <a href="/login" class="d-block btn btn-block btn-primary m-2">make{% if g.user %} new{% endif %} route{% if not g.user %} as guest{% endif %}</a>
       </div>
+      {% if not g.user %}
       <div class="row justify-content-center">
         <div class="col col-6">
           <a href="/login" class="d-block btn btn-block btn-info ml-2 my-2">login</a>
@@ -67,11 +75,12 @@
           <a href="/users/signup" class="d-block btn btn-block btn-success my-2 mr-2">sign-up</a>
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>
 {% endblock %}
 {% block scripts_after %}
   <script src="static/js/weather.js"></script>
-  <script src="static/js/tests/weather.test.js"></script>
+  <script src="static/js/tests/weather.test.js"></script>  
 {% endblock %}
