@@ -33,6 +33,8 @@ class User(db.Model):
     bike_image_url = db.Column(db.String)
     default_bike_type = db.Column(db.String(8),
                                   default="regular")
+    default_geocode_lat = db.Column(db.Float)
+    default_geocode_lng = db.Column(db.Float)
     weather_units = db.Column(db.String(8), default="metric")
 
     route = db.relationship("Route", backref="user_route", cascade="all, delete")

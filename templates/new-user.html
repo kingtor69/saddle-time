@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block header %}New User{% endblock %}
+{% block content %}
+<div class="container">
+    <form action="/users/signup" method="POST" novalidate>
+        {% for field in form %}
+            if field.widget.input_type != 'hidden' %}
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ field.label(class_="") }}
+            {{ field(class_="rounded bg-dark text-light") }}
+        </div>
+        {% endfor %} 
+        <button class="btn btn-primary">signup</button>
+    </form>
+</div>
+{% endblock %}
