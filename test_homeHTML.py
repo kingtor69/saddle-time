@@ -2,7 +2,7 @@ import os
 from flask import jsonify
 from unittest import TestCase
 
-from routes import test_routes
+from testing_routes import *
 from app import app
 
 weather_test_dic = {
@@ -75,7 +75,7 @@ class WeatherHtmlTestCase (TestCase):
     def test_weather_display(self):
         """test if weather is displaying correctly on home page using default weather settings (landing page, no JavaScript) and fixed output via varialbes in this file"""
         with app.test_client() as client:
-            res = client.post('/home_test', data = weather_test_dic)
+            res = client.post('/home-test', data = weather_test_dic)
             html = res.get_data(as_text=True)
             self.assertEqual(res.status_code, 200)
             self.assertIn('<button type="submit" class="btn btn-default">Submit</button>', html)

@@ -31,6 +31,14 @@ def signup_new_user():
     return render_template('new-user.html', form=form)
 
 
+@app.route('/users/<int:user_id>')
+def show_user_profile(user_id):
+    """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
+    user = User.query.get_or_404(user_id)
+    user.full_name = user.make_full_name()
+    return render_template ('user.html', user=user)
+
+
 @app.route('/api/users/<user_id>/edit', methods=["PUT", "PATCH"])
 def edit_user_profile():
     """Edit user profile, including preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
@@ -49,8 +57,10 @@ def login():
         user = User.authenticate(username, password)
         if user: 
             login_session(user)
+            return redirect(f'/users/{user.id}')
         else:
             flash('those credentials did not match any known user', 'warning')
+            return redirect ('/login')
 
     return render_template('login.html', form=form)
 
@@ -58,9 +68,45 @@ def login():
 def logout():
     """logs a user out"""
     if CURR_USER in session:
-        flash (f'{g.user.username} successfully logged out', 'success')
+        logging_out_user = g.user.username
+        flash (f'{logging_out_user} successfully logged out', 'success')
         logout_session()
         
     return redirect('/')
 
+
+#######################################
+##### routes for development only #####
+#####    delete on deployment     #####
+#######################################
+
+@app.route('/home_test', methods=["GET", "POST"])
+def test_home_page():
+    """Home page test with test in POST route."""
+    import pdb
+    pdb.set_trace()
+    weather={}
+    weather['city'] = request.city.data
+    weather['conditions'] = request.conditions.data
+    weather['weather_icon_url'] = request.weather_icon_url.data
+    weather['current_weather_details'] = {}
+    current_weather_details_obj = request.current_weather_details.data
+
+
+    weather['current_weather_details']['Temperature'] = current_weather_details_obj['Temperature']
+    weather['current_weather_details']['High'] = current_weather_details_obj['High']
+    weather['current_weather_details']['Low'] = current_weather_details_obj['Low']
+    weather['current_weather_details']['Feels Like'] = current_weather_details_obj['Feels Like']
+    weather['current_weather_details']['Relative Humidity'] = current_weather_details_obj['Relative Humidity']
+    weather['current_weather_details']['Wind Speed'] = current_weather_details_obj['Wind Speed']
+    weather['current_weather_details']['Wind Direction'] = current_weather_details_obj['Wind Direction']
+
+    return render_template('home.html', weather=weather)
+
+@app.route('/pdb', methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def pdb_set_trace():
+    """defined this route for debugging purposes"""
+    import pdb
+    pdb.set_trace()
+    return redirect('/')
 

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block page_sytle %}
+  <link rel="stylesheet" href="static/css/user.css">
+  <link rel="stylesheet" href="static/css/weather.css">
+  <link rel="stylesheet" href="static/css/route.css">
+{% endblock %}
+{% block static_path %}../../{% endblock %}
+{% block bootstrap_static_route %}../../{% endblock %}
+{% block jasmine_route %}../../{% endblock %}
+{% block home_path %}../../{% endblock %}
+{% block jasmine_script1_static_route %}../../{% endblock %}
+{% block jasmine_script2_static_route %}../../{% endblock %}
+{% block jasmine_script3_static_route %}../../{% endblock %}
+{% block scripts_path %}../../{% endblock %}
+{% block test_scripts_path %}../../{% endblock %}
+{% block header %}SaddleTime: {{ user.username }}{% endblock %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col col-md-6 col-lg-4">
+      <div class="card">
+        <img src="/static/saddletime-default-bike.png" alt="" class="card-image-top bike-image-profile">
+        <div class="row">
+          {% if user.profile_pic_image_url %}
+          <div class="col col-4">
+            <img src="{{ user.profile_pic_image_url }}" alt="" class="user-profile-pic">
+          </div>
+          <div class="col col-8">
+          {% else %}
+          <div class="col">
+          {% endif %}
+            <h3 class="card-title p-2">
+              {{ user.username }}<br>
+              {{ user.full_name }}
+            </h3>
+            {% if user.bio %}
+              <p class="card-text px-2">{{ user.bio }}</p>
+            {% endif %}
+            <p class="card-text px-2">default route type: &nbsp;{{ user.default_bike_type }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts_after %}
+  <script src="static/js/user.js"></script>
+  <script src="static/js/weather.js"></script>
+{% endblock %}

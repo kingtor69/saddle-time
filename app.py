@@ -57,6 +57,11 @@ def load_home_page():
     """
     # city = ""
     if not request.method == "POST":
+        try: 
+            if g.user.id:
+                return redirect(f'/users/{g.user.id}')
+        except:
+            flash ('logged in user does not have an id; this could be because it is a guest user', 'info')
         try:
             if g.user.location:
                 location=g.user.location
@@ -90,59 +95,22 @@ def load_home_page():
         return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
     geocode = geocode_list[0]
 
-    # (city, conditions, weather_icon_url, current_weather_details) = current_weather_from_geocode(geocode, units)
     weather = current_weather_from_geocode(geocode)
-    # print (f'----------------{weather}')
-    # 
-    # -----------
-    # {
-        # 'city': 'Albuquerque', 
-        # 'conditions': 'Scattered Clouds', 
-        # 'weather_icon_url': 'http://openweathermap.org/img/wn/03d@2x.png', 
-        # 'current_weather_details': {
-            # 'Temperature': '31.83℃', 
-            # 'Feels Like': '29.7℃', 
-            # 'High': '34.02℃', 
-            # 'Low': '29.87℃', 
-            # 'Relative Humidity': '17%', 
-            # 'Wind Speed': '3.13 km/h', 
-            # 'Wind Direction': '315°'}}
-
-
 
     return render_template('home.html', weather=weather)
 
 
-@app.route('/pdb')
-def pdb_set_trace():
-    """defined this route for debugging purposes. Remove before production."""
-    import pdb
-    pdb.set_trace()
-    return redirect('/')
+########################
+##### error routes #####
+########################
+@app.errorhandler(404)
+def display_404_message(err):
+    """Display error message for 404."""
+    if request.path.startswith('/users/'):
+        return render_template('users/404.html'), 404
+    if request.path.startswith('/routes/'):
+        return render_template('routes/404.html'), 404
+    return render_template('404.html'), 404
 
-@app.route('/routes/new', methods=['GET', 'POST'])
-def make_new_route():
-    form = NewRouteForm()
-    
-    if form.validate_on_submit():
-        route_name = form.route_name.data or "untitled"
-        start_geoloc=geocode_from_location(form.start_location.data)
-        end_geoloc=geocode_from_location(form.end_location.data)
-        if not start_geoloc or not end_geoloc:
-            if start_geoloc:
-                flash('The ending location could not be located. Please try again.', 'warning')
-            elif end_geoloc:
-                flash('The starting location could not be located. Please try again.', 'warning')
-            else:
-                flash('Neither of those locations could be located. Please try again')
-            return render('new-route.html', form=form)
-        if len(start_geoloc) > 1 or len(end_geoloc) > 1:
-            flash("Hey, Tor. There's more than one valid response and you haven't written the code to chose which one is right.")
-        new_route = Route(route_name=route_name, start=start_geoloc, end=end_geoloc)
-        db.session.add(new_route)
-        db.session.commit()
-        return render_template('route.html', route=new_route)
-        
-    return render('new-route.html', form=form)
 
-    
+

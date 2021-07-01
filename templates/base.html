@@ -37,14 +37,14 @@
   <!-- Regular MDB theme -->
   <!-- <link rel="stylesheet" href="static/css/mdb.min.css" /> -->
   <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <link rel="stylesheet" type="text/css" href="{% block jasmine_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.css">
+  <!-- <link rel="stylesheet" type="text/css" href="{% block jasmine_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.css"> -->
 
 </head>
 <!-- TODO: and a new user direct link, maybe a new post that asks you to select your user...? -->
 <body>
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top px-3">
-      <a class="navbar-brand" href="{% block home_path %}{% endblock %}"><img src="{% block nav_image_static_route %}{% endblock %}static/images/saddletime-full-logo.png" alt="" id="navbar-logo"> SaddleTime</a>
+      <a class="navbar-brand" href="{% block home_path %}{% endblock %}"><img src="{% block nav_image_static_route %}{% endblock %}static/images/saddletime-full-logo.png" alt="" id="navbar-logo" class="navbar-img"> SaddleTime</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -61,14 +61,14 @@
             </form>
           </li> -->
         <ul class="navbar-nav navbar-right">
-          {% if not g.user %}
-          <li><a href="/users/signup" class="pl-5 pr-2">Sign up</a></li>
-          <li><a href="/login" class="pl-2">Log in</a></li>
+          {% if g.user.username == "guest" %}
+          <li><a href="/users/signup">&nbsp; &nbsp; Sign up &nbsp;</a></li>
+          <li><a href="/login" class="pl-2">&nbsp; Log in &nbsp; &nbsp;</a></li>
           {% else %}
           <li>
-            <a href="/users/{{ g.user.id }}" class="pr-2">
+            <a href="/users/{{ g.user.id }}">
               {% if g.user.profile_pic_image_url %}
-              <img src="{{ g.user.profile_pic_image_url }}" alt="{{ g.user.username }}">
+              <img src="{{ g.user.profile_pic_image_url }}" class="navbar-img" alt="{{ g.user.username }}">
               {% else %}
               {{ g.user.username}}
               {% endif %}
@@ -114,9 +114,9 @@
   <!-- axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <script type="text/javascript" src="{% block jasmine_script1_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.js"></script>
+  <!-- <script type="text/javascript" src="{% block jasmine_script1_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.js"></script>
   <script type="text/javascript" src="{% block jasmine_script2_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="{% block jasmine_script3_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/boot.js"></script>
+  <script type="text/javascript" src="{% block jasmine_script3_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/boot.js"></script> -->
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
   <script src="{% block scripts_path %}{% endblock %}static/js/app.js"></script>

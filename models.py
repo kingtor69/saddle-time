@@ -30,7 +30,7 @@ class User(db.Model):
     last_name = db.Column(db.String)                         
     profile_pic_image_url = db.Column(db.String)
     fav_bike = db.Column(db.String(40))
-    bike_image_url = db.Column(db.String)
+    bike_image_url = db.Column(db.String, default="/static/images/saddletime-default-bike.png")
     default_bike_type = db.Column(db.String(8),
                                   default="regular")
     default_geocode_lat = db.Column(db.Float)
@@ -42,6 +42,13 @@ class User(db.Model):
 
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
+
+    def make_full_name(self):
+        """return a full name for users' first_name + last_name"""
+        if self.first_name and self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        else:
+            return self.first_name or self.last_name or None
 
     @classmethod
     def hashpass(cls, username, password):

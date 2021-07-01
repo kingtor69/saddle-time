@@ -24,6 +24,14 @@ u3.weather_units="metric"
 u4 = User.hashpass('TaskMaster', 'doitandlikeit!')
 u4.email="task@master.com"
 u4.default_bike_type="road"
+u5 = User.hashpass('futureSelf', 'rodiemutha')
+u5.email='new_bike@dreaming.com'
+u5. default_bike_type="road"
+u5.weather_units="metric"
+u5.default_geocode_lat=35.190564
+u5.default_geocode_lng=-106.580526
+u5.favorite_bike_image_url="/static/images/Ridley_dream.jpg"
+
 
 db.session.add_all([u1, u2, u3, u4])
 db.session.commit()
