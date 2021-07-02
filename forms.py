@@ -1,14 +1,13 @@
 # from models import Route, User, Checkpoint
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, PasswordField
+# might need for checkboxes: 
+# , BooleanField
 from wtforms.validators import InputRequired, Optional, Email, URL, Length
 
-class NewRouteForm(FlaskForm):
-    """Form for creating a new route."""
-    
-    route_name = StringField("Name Your Route")
-    start_location = StringField("Starting Location")
-    end_location = StringField("Destination Location")
+#################################
+########## user forms ###########
+#################################
 
 class NewUserForm(FlaskForm):
     """Form for creating a new user account."""
@@ -30,6 +29,22 @@ class LoginForm(FlaskForm):
 
     username = StringField("username", validators=[InputRequired(message="You must enter a username to log in.")])
     password = PasswordField("password", validators=[InputRequired(message="You must enter a password to log in.")])
+
+
+#################################
+######### route forms ###########
+#################################
+
+class NewRouteForm(FlaskForm):
+    """Form for creating a new route."""
+    
+    route_name = StringField("Name Your Route")
+    bike_type = SelectField("Route Type (type of bike)", choices=[('regular', "It's Just a Bike"), ('road', 'Road Bike', 'mountain', 'Mountain Bike', 'electric', 'Electric Bike')])
+
+class NewCheckpoingForm(FlaskForm):
+    """Form for creating a new checkpoint."""
+    checkpoint_name = StringField("Checkpoint Name")
+    cp_location = StringField("Checkpoint Location")
 
 
 

@@ -11,6 +11,7 @@ WEATHER_ICON_SUFFIX = "@2x.png"
 ORS_API_KEY = os.environ['ORS_API_KEY']
 MQ_API_KEY = os.environ['MQ_API_KEY']
 OW_API_KEY = os.environ['OW_API_KEY']
+MB_API_KEY = os.environ['MB_API_KEY']
 
 def geocode_from_location(loc):
     """Returns lattitude and longitute for given location, generally an address. 

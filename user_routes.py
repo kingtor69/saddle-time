@@ -25,7 +25,7 @@ def signup_new_user():
         new_user.default_geocode = geocode_from_location(form.default_location.data)
         db.session.add(new_user)
         db.session.commit()
-        loginSession(new_user)
+        login_session(new_user)
         return redirect('/')
 
     return render_template('new-user.html', form=form)

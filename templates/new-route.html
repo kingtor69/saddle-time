@@ -1,0 +1,88 @@
+{% extends 'base.html'}
+{% block header %}Make a new SaddleTime Route{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col">
+        <table id="start-point-table">
+          <form action="">
+            {% for field in form 
+              if field.widget.input_type != 'hidden' %}
+              {{ form.hidden_tag() }}
+              <tr>
+                <td>{{ field.label }}</td>
+                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                <td>
+                  {% for err in field.errors %}
+                  {{ err }}
+                  {% endfor %}
+                </td>
+              </tr>     
+            {% endfor %}
+          </form>
+        </table>
+      </div>
+      <div class="col">
+        <table>
+          <form action="" id="route-form">
+            {% for field in route_form 
+              if field.widget.input_type != 'hidden' %}
+              {{ route_form.hidden_tag() }}
+              <tr>
+                <td>{{ field.label }}</td>
+                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                <td>
+                  {% for err in field.errors %}
+                  {{ err }}
+                  {% endfor %}
+                </td>
+              </tr>     
+            {% endfor %}
+          </form>
+        </table>
+      </div>
+      <div class="col">
+        <table>
+          <form action="" id="start-point-form">
+            {% for field in start_form 
+              if field.widget.input_type != 'hidden' %}
+              {{ start_form.hidden_tag() }}
+              <tr>
+                <td>{{ field.label }}</td>
+                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                <td>
+                  {% for err in field.errors %}
+                  {{ err }}
+                  {% endfor %}
+                </td>
+              </tr>     
+            {% endfor %}
+          </form>
+        </table>
+        <row id="new-checkpoint-row">
+          <button class="btn btn-primary btn-sm p-0 mx-2 my-0 d-inline-block" id="add new checkpoint">new </button>
+        </row>
+        <div class="row" id="end-point-row">
+
+          <table id="end-point-table">
+            <form action="" id="end-point-form">
+              {% for field in end_form 
+                if field.widget.input_type != 'hidden' %}
+                {{ end_form.hidden_tag() }}
+                <tr>
+                  <td>{{ field.label }}</td>
+                  <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                  <td>
+                    {% for err in field.errors %}
+                    {{ err }}
+                    {% endfor %}
+                  </td>
+                </tr>     
+              {% endfor %}
+            </form>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
