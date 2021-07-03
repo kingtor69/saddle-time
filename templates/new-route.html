@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {% block header %}Make a new SaddleTime Route{% endblock %}
+{% block page_sytle %}
+  <link rel="stylesheet" href="/static/css/route-form.css">
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col">
-        <div class="row justify-content-right" id="route-form-row">
+      <div class="col col-12 col-md-6">
+        <div class="row justify-content-center" id="route-form-row">
           <div class="col">
             <table>
               <form action="" id="route-form">
@@ -24,56 +27,67 @@
               </form>
             </table>
           </div>
-        </div>
-        <div class="row" id="route-info-row">
+        <div class="row justify-content-center" id="route-info-row">
           <div class="col">
-
+            <br>
           </div>
         </div>
       </div>
-      <div class="col">
-        <div class="row" id="start-point-row">
-        <table>
-          <form action="" id="start-point-form">
-            {% for field in start_form 
-              if field.widget.input_type != 'hidden' %}
-              {{ start_form.hidden_tag() }}
-              <tr>
-                <td>{{ field.label }}</td>
-                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                <td>
-                  {% for err in field.errors %}
-                  {{ err }}
-                  {% endfor %}
-                </td>
-              </tr>     
-            {% endfor %}
-          </form>
-        </table>
-      </div>
-      <row id="new-checkpoint-row">
-        <button class="btn btn-primary btn-sm d-inline-block" id="add new checkpoint">new checkpoint</button>
-        <!-- maybe fontawesome has something for this button -->
-      </row>
-      <div class="row" id="end-point-row">
-        <table id="end-point-table">
-          <form action="" id="end-point-form">
-            {% for field in end_form 
-              if field.widget.input_type != 'hidden' %}
-              {{ end_form.hidden_tag() }}
-              <tr>
-                <td>{{ field.label }}</td>
-                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                <td>
-                  {% for err in field.errors %}
-                  {{ err }}
-                  {% endfor %}
-                </td>
-              </tr>     
-            {% endfor %}
-          </form>
-        </table>
+    </div>
+    <div class="col col-12 col-md-6">
+        <div class="row justify-content-center" id="start-point-row">
+          <div class="col col-1">
+            <p class="sideways">START</p>
+          </div>
+          <div class="col col-11">
+          <table>
+            <form action="" id="start-point-form">
+              {% for field in start_form 
+                if field.widget.input_type != 'hidden' %}
+                {{ start_form.hidden_tag() }}
+                <tr>
+                  <td>{{ field.label }}</td>
+                  <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                  <td>
+                    {% for err in field.errors %}
+                    {{ err }}
+                    {% endfor %}
+                  </td>
+                </tr>     
+              {% endfor %}
+            </form>
+          </table>
+        </div>
+        <div id="new-checkpoint-row justify-content-center">
+          <button class="btn btn-primary btn-sm d-inline-block" id="new-checkpoint">add checkpoint</button>
+          <!-- maybe fontawesome has something for this button -->
+        </div>
+        <div class="row justify-content-center" id="end-point-row">
+          <div class="col col-1">
+            <p class="sideways">END</p>
+          </div>
+          <div class="col col-11">
+            <table id="end-point-table">
+              <form action="" id="end-point-form">
+                {% for field in end_form 
+                  if field.widget.input_type != 'hidden' %}
+                  {{ end_form.hidden_tag() }}
+                  <tr>
+                    <td>{{ field.label }}</td>
+                    <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                    <td>
+                      {% for err in field.errors %}
+                      {{ err }}
+                      {% endfor %}
+                    </td>
+                  </tr>     
+                {% endfor %}
+              </form>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
