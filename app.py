@@ -25,8 +25,7 @@ connect_db(app)
 
 # from routes import weather_routes, user_routes
 # , route_routes, 
-import weather_routes, user_routes
-# , route_routes
+import weather_routes, user_routes, route_routes
 
 @app.before_request
 def add_user_to_g():

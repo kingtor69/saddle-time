@@ -1,4 +1,4 @@
-{% extends 'base.html'}
+{% extends 'base.html' %}
 {% block header %}Make a new SaddleTime Route{% endblock %}
 {% block content %}
   <div class="container">
@@ -9,6 +9,7 @@
             {% for field in form 
               if field.widget.input_type != 'hidden' %}
               {{ form.hidden_tag() }}
+              
               <tr>
                 <td>{{ field.label }}</td>
                 <td>{{ field (class_="rounded bg-dark text-light") }}</td>

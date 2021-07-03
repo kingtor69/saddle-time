@@ -2,7 +2,7 @@ from app import app
 from flask import Flask, flash, render_template, redirect
 # , jsonify, session, g
 from helpers import CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST
-from api import geocode_from_location, current_weather_from_geocode
+# from api import geocode_from_location, current_weather_from_geocode
 from forms import NewRouteForm, NewCheckpointForm
 from models import db, Route
 import requests
