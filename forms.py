@@ -39,7 +39,7 @@ class NewRouteForm(FlaskForm):
     """Form for creating a new route."""
     
     route_name = StringField("Name Your Route")
-    bike_type = SelectField("Route Type (type of bike)", choices=[('regular', "It's Just a Bike"), ('road', 'Road Bike', 'mountain', 'Mountain Bike', 'electric', 'Electric Bike')])
+    bike_type = SelectField("Route Type (type of bike)", choices=[('regular', "It's Just a Bike"), ('road', 'Road Bike'), ('mountain', 'Mountain Bike'), ('electric', 'Electric Bike')])
 
 class NewCheckpointForm(FlaskForm):
     """Form for creating a new checkpoint."""

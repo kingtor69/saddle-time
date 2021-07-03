@@ -4,45 +4,35 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col">
-        <table id="start-point-table">
-          <form action="">
-            {% for field in form 
-              if field.widget.input_type != 'hidden' %}
-              {{ form.hidden_tag() }}
-              
-              <tr>
-                <td>{{ field.label }}</td>
-                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                <td>
-                  {% for err in field.errors %}
-                  {{ err }}
-                  {% endfor %}
-                </td>
-              </tr>     
-            {% endfor %}
-          </form>
-        </table>
+        <div class="row justify-content-right" id="route-form-row">
+          <div class="col">
+            <table>
+              <form action="" id="route-form">
+                {% for field in route_form 
+                  if field.widget.input_type != 'hidden' %}
+                  {{ route_form.hidden_tag() }}
+                  <tr>
+                    <td>{{ field.label }}</td>
+                    <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                    <td>
+                      {% for err in field.errors %}
+                      {{ err }}
+                      {% endfor %}
+                    </td>
+                  </tr>     
+                {% endfor %}
+              </form>
+            </table>
+          </div>
+        </div>
+        <div class="row" id="route-info-row">
+          <div class="col">
+
+          </div>
+        </div>
       </div>
       <div class="col">
-        <table>
-          <form action="" id="route-form">
-            {% for field in route_form 
-              if field.widget.input_type != 'hidden' %}
-              {{ route_form.hidden_tag() }}
-              <tr>
-                <td>{{ field.label }}</td>
-                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                <td>
-                  {% for err in field.errors %}
-                  {{ err }}
-                  {% endfor %}
-                </td>
-              </tr>     
-            {% endfor %}
-          </form>
-        </table>
-      </div>
-      <div class="col">
+        <div class="row" id="start-point-row">
         <table>
           <form action="" id="start-point-form">
             {% for field in start_form 
@@ -60,29 +50,29 @@
             {% endfor %}
           </form>
         </table>
-        <row id="new-checkpoint-row">
-          <button class="btn btn-primary btn-sm p-0 mx-2 my-0 d-inline-block" id="add new checkpoint">new </button>
-        </row>
-        <div class="row" id="end-point-row">
-
-          <table id="end-point-table">
-            <form action="" id="end-point-form">
-              {% for field in end_form 
-                if field.widget.input_type != 'hidden' %}
-                {{ end_form.hidden_tag() }}
-                <tr>
-                  <td>{{ field.label }}</td>
-                  <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                  <td>
-                    {% for err in field.errors %}
-                    {{ err }}
-                    {% endfor %}
-                  </td>
-                </tr>     
-              {% endfor %}
-            </form>
-          </table>
-        </div>
+      </div>
+      <row id="new-checkpoint-row">
+        <button class="btn btn-primary btn-sm d-inline-block" id="add new checkpoint">new checkpoint</button>
+        <!-- maybe fontawesome has something for this button -->
+      </row>
+      <div class="row" id="end-point-row">
+        <table id="end-point-table">
+          <form action="" id="end-point-form">
+            {% for field in end_form 
+              if field.widget.input_type != 'hidden' %}
+              {{ end_form.hidden_tag() }}
+              <tr>
+                <td>{{ field.label }}</td>
+                <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                <td>
+                  {% for err in field.errors %}
+                  {{ err }}
+                  {% endfor %}
+                </td>
+              </tr>     
+            {% endfor %}
+          </form>
+        </table>
       </div>
     </div>
   </div>
