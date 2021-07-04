@@ -1,29 +1,40 @@
 .sideways {
 	display: block;
 	font-size: 0.9em;
-	transform: rotate(-90deg) translate(-80%, 100%);
+	transform: rotate(-90deg) translate(-80%, 0%);
 }
 
+button.arrows {
+	transform: translate(150%, 00%);
+	padding: 0px;
+	margin: 0px;
+	border: none;
+	background-color: #0000;
+	color: white;
+}
+
+button.arrows.transform-up-120 {
+	transform: translate(150%, -120%);
+}
 @media only screen and (max-width: 1200px) {
 	.sideways {
-		transform: rotate(-90deg) translate(-150%, 100%);
+		transform: rotate(-90deg) translate(-160%, 10%);
 	}
 }
 
 @media only screen and (max-width: 767px) {
 	.sideways {
-		transform: rotate(-90deg) translate(-50%, 80%);
+		transform: rotate(-90deg) translate(-60%, 40%);
 	}
 }
 
 @media only screen and (max-width: 580px) {
 	.sideways {
-		transform: rotate(-90deg) translate(-100%, 80%);
+		transform: rotate(-90deg) translate(-50%, 40%);
 	}
 }
 
-.checkpoint-border {
+.checkpoint-rows {
+	margin: 20px;
 	padding: 0px;
-	border: 2px solid green;
-	border-radius: 10px;
 }
