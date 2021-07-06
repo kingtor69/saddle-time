@@ -42,6 +42,12 @@ input.weather-city.city-is-set {
 	color: rgba(33, 159, 201, 0.4);
 }
 
+#weather-table {
+	display: block;
+	position: fixed;
+	z-index: 20;
+}
+
 /* input[type=checkbox]#weather-units {
 	visibility: hidden;
 }

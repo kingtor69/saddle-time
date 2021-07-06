@@ -1,5 +1,8 @@
 // TODO: make unitsSelector work
 // TODO: make browser location work
+// TODO: units selector, too
+// TODO: working out city input with mapbox right now, then I'll need to be able to use that choice to get weather data
+
 // weather location button/input and units-selector on home page
 const weatherCityInput = document.querySelector('#weather-city-input');
 const browserLocationButton = document.querySelector('#browser-location-select');

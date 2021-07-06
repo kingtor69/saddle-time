@@ -17,3 +17,28 @@ td.error-type {
 td.error-message {
 	padding-right: 20px;
 }
+
+/* mapbox style from docs.mapbox.com */
+#mapbox {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+.location-choices.list {
+	display: inline;
+	list-style-type: none;
+	background-color: black;
+	color: white;
+	z-index: 10;
+}
+
+button.dropdown-selection {
+	display: inline-block;
+	border: none;
+	text-decoration: none;
+	background-color: black;
+	color: white;
+	z-index: 5;
+}
