@@ -12,6 +12,10 @@ import requests
 def create_new_checkpoint():
     """Creates a new checkpoint places it within a route"""
 
+@app.route('api/geocode')
+def get_geocode_for_location():
+    """returns geocode for an input location from a list of [lattitude, longitude]"""
+    
 
 ###### might need following code for checkpoint routes
         # end_geoloc=geocode_from_location(form.end_location.data)

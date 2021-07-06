@@ -8,18 +8,15 @@ from models import db, Route
 import requests
 from datetime import datetime
 
-
 @app.route('/api/routes/new', methods=["POST"])
 def create_new_route():
     """Create a new route from AJAX/Axios API call from `routes.js`"""
 
-
-
 @app.route('/routes/new')
 def process_new_route_form():
     route_form = NewRouteForm()
-    start_form = NewCheckpointForm()
-    end_form = NewCheckpointForm()
+    start_form = NewCheckpointForm(prefix="cp-0")
+    end_form = NewCheckpointForm(prefix="cp-999")
 
     # I think processing the form data is going to be better in JS
     # if you change your mind, you'll need this:

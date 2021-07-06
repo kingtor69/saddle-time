@@ -16,7 +16,7 @@
                   {{ route_form.hidden_tag() }}
                   <tr>
                     <td>{{ field.label }}</td>
-                    <td>{{ field (class_="rounded bg-dark text-light") }}</td>
+                    <td>{{ field (class_="rounded bg-dark text-light form-field") }}</td>
                     <td>
                       {% for err in field.errors %}
                       {{ err }}
@@ -44,7 +44,7 @@
           </div>
           <div class="col col-11">
             <table>
-              <form action="" id="start-point-form">
+              <form action="" id="cpf-0-start-point-form">
                 {% for field in start_form 
                   if field.widget.input_type != 'hidden' %}
                   {{ start_form.hidden_tag() }}
@@ -80,7 +80,7 @@
           </div>
           <div class="col col-11">
             <table id="end-point-table">
-              <form action="" id="end-point-form">
+              <form action="" id="cpf-999-end-point-form">
                 {% for field in end_form 
                   if field.widget.input_type != 'hidden' %}
                   {{ end_form.hidden_tag() }}
@@ -102,4 +102,7 @@
     </div>
   </div>
 </div>
+{% endblock %}
+{% block scripts_after %}
+<script src="/static/js/routes.js"></script>
 {% endblock %}
