@@ -29,4 +29,4 @@ APIs to be used can be found in api.py
 
 ### switched geolocating API from mapquest to mapbox
  - working on autocomplete location entries
-
+ - Map styling is good for now. Still need to implements autocomplete logic for geocoding.
