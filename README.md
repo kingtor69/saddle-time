@@ -27,5 +27,6 @@ APIs to be used can be found in api.py
 ### Home page looks good for no logged in user
  - for reasons I've yet to track down, home page becomes users/<int:user_id> when a user logs in
 
-### routes director is giving me some trouble right now
-Can not import app information into `user_routes.py` (presumably because `app.py` is one directory *back* from `user_routes.py`)
+### switched geolocating API from mapquest to mapbox
+ - working on autocomplete location entries
+
