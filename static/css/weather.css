@@ -42,6 +42,13 @@ input.weather-city.city-is-set {
 	color: rgba(33, 159, 201, 0.4);
 }
 
+#map {
+	min-width: 550px;
+	min-height: 550px;
+	width: 100%;
+	margin-top: 20px;
+}
+
 /* input[type=checkbox]#weather-units {
 	visibility: hidden;
 }

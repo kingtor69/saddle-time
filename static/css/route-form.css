@@ -38,3 +38,10 @@ button.arrows.transform-up-120 {
 	margin: 20px;
 	padding: 0px;
 }
+
+#map {
+	min-width: 800px;
+	min-height: 800px;
+	width: 100%;
+	margin-top: 40px;
+}

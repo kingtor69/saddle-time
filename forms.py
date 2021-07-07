@@ -44,7 +44,8 @@ class NewRouteForm(FlaskForm):
 class NewCheckpointForm(FlaskForm):
     """Form for creating a new checkpoint."""
     checkpoint_name = StringField("Checkpoint Name")
-    cp_location = StringField("Checkpoint Location")
+    cp_location = SelectField("Checkpoint Location", choices=[('', 'location')])
+    # that choice is a placeholder, actually choices will be changed in javascript with autocomplete data from mapbox API
 
 
 
