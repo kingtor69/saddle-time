@@ -1,0 +1,23 @@
+{% macro mb_geocoder() %}
+{% endmacro %}
+
+{% macro mapbox(lat, lng, zoom) %}
+<!-- this code from docs.mapbox.com, lightly adapted by Tor Kingdon -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+
+<!-- Promise polyfill script is required -->
+<!-- to use Mapbox GL Geocoder in IE 11. -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+<div id='map' style='width: 400px; height: 300px;'>
+  <ul>
+    <li id="map-lat">{{ lat }}</li>
+    <li id="map-lng">{{ lng }}</li>
+    <li id="map-zoom">{{ zoom }}</li>
+  </ul>
+</div>
+<script src="/static/js/mapbox.js">
+</script>
+{% endmacro %}
