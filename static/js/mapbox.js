@@ -15,50 +15,58 @@ locationInputs.forEach((locInput) => {
     
     const choiceDropdown = document.createElement('ul');
     choiceDropdown.classList.add('location-choices-list');
+    choiceDropdown.id = "choice-dropdown";
     choiceDropdown.hidden = true;
     const inputSpanner = document.querySelector('.input-spanner');
     locInput.after(choiceDropdown);
+    let locData = "";
     locInput.addEventListener('keypress', function(e) {
-        e.preventDefault();
-        
-        const locData = locInput.value;
-
-        let key = e.which || e.keyCode || 0;
-        if (key === 13) {
+        const key = e.key;
+        let latLong;
+        if (key === "Enter") {
             locData = locInput.placeholder;
-            const latLong = getGeocode(locData);
-        }
-        
-        choiceDropdown.hidden=false;
+            latLong = getGeocode(locData);
+        } else {
+            locData += key;
+        };
         
         if (locData.length >= 3) {
-            autoCompleteChoices = locationWithAutocomplete(locData);
-            console.log(autoCompleteChoices)
-            locInput.placeholder = autoCompleteChoices[0];
-            for (let choice in autoCompleteChoices) {
-                const choiceLi = document.createElement('li');
-                const selectButton = document.createElement('button');
-                selectButton.classList.add('dropdown-selection');
-                selectButton.innerHTML = `${choice[0]}<br><small>${choice[1]}</small>`
-                choiceLi.appendChild(selectButton);
-                choiceDropdown.appendChild(choiceLi);
-            }
+            locateWithAutocomplete(locData, locInput);
         }
     });
 });
 
-async function locationWithAutocomplete(location) {
-    resp = await axios.get(`${mapboxGeocodeApiBaseUrl}${location}.json?autocomplete=true&access_token=${mapboxApiPublicToken}`);
-    if (resp.message === "Not Found") {
-        return [["no matches found", "please delete some characters and try again"]]
-        };
-
+async function locateWithAutocomplete(location, input) {
+    // gets autocomplete data from mapbox for location
+    // input is passed through to processing function
+    const geocodeURL = `${mapboxGeocodeApiBaseUrl}${location}.json?autocomplete=true&access_token=${mapboxApiPublicToken}`
     const choices = [];
-    for (choice in resp.features) {
-        choices.append([choice.text, choice.place_name])
+    resp = await axios.get(geocodeURL);
+    if (resp.data.message === "Not Found") {
+        choices.push(["no matches found", "please delete some characters and try again"])
+    } else if (resp.data.features) {
+        for (choice in resp.data.features) {
+            choices.push([choice.text, choice.place_name])
+        };
     };
-    return choices;
+
+    processLocationData(choices, input);
 };
+
+function processLocationData (choices, locInput) {
+    const choiceDropdown = document.querySelector('#choice-dropdown');
+    choiceDropdown.hidden=false;
+    locInput.placeholder = choices[0];
+    for (let choice in choices) {
+        const choiceLi = document.createElement('li');
+        const selectButton = document.createElement('button');
+        selectButton.classList.add('dropdown-selection');
+        selectButton.innerHTML = `${choice[0]}<br><small>${choice[1]}</small>`
+        choiceLi.appendChild(selectButton);
+        choiceDropdown.appendChild(choiceLi);
+    }
+}
+
 
 async function getGeocode(location) {
     console.log("haven't written this yet");
