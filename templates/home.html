@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% from 'macros.html' import mapbox %}
 {% block page_sytle %}
   <link rel="stylesheet" href="static/css/weather.css">
 {% endblock %}
@@ -23,9 +23,9 @@
           <tr id="weather-header-selectors">
             <th class="pt-4 my-3">
               <div class="row justify-content-left">
-                  <span id="weather-header">
+                  <span id="weather-header" class="input-spanner">
                     Current weather in: &nbsp;
-                    <input type="text" class="weather-city city-is-set" id="weather-city-input" value="{{ weather.city }}">
+                    <input type="text" class="weather-city location-is-set mapbox-loction-input" id="weather-city-input" value="{{ weather.city }}">
                   </span>
                   <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
               </div>
@@ -59,6 +59,22 @@
           {% endfor %}
         </tbody>
       </table>
+      <div class="row justify-content-center">
+        <div class="col col-2 d-none d-md-block"></div>
+        <div class="col col-md-8">
+          {{ mapbox(35.10322, -106.678019, 10) }}
+          <!-- <div id='map' style='width: 400px; height: 300px;'></div>
+            <script>
+              mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';
+              var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11'
+              });
+            </script> -->
+    
+        </div>
+        <div class="col col-2 d-none d-md-block"></div>
+      </div>
     </div>
     <div class="col col-md-4">
       {% if g.user == "guest" %}
@@ -82,6 +98,7 @@
 </div>
 {% endblock %}
 {% block scripts_after %}
+  <!-- TODO: re-do weather.js and turn it back on once mapbox.js is working for getting city -->
   <script src="static/js/weather.js"></script>
   <!-- <script src="static/js/tests/weather.test.js"></script>   -->
 {% endblock %}
