@@ -10,7 +10,38 @@ var map = new mapboxgl.Map({
     zoom: mapZoom // starting zoom
 });
 map.addControl(new mapboxgl.NavigationControl());
-map.addImage()
+map.on('load', function() {
+    map.loadImage('static/images/mapbox-icons/mapbox-marker-icon-20px-red.png', function (error, image) {
+        if (error) throw error;
+        map.addImage('redPointer', image);
+        map.addSource('point', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [mapLng, mapLat]
+                        }
+                    }
+                ]
+            }
+        });
+            
+        // Add a layer to use the image to represent the data.
+        map.addLayer({
+            'id': 'points',
+            'type': 'symbol',
+            'source': 'point', // reference the data source
+            'layout': {
+                'icon-image': 'redPointer', // reference the image
+                'icon-size': 1
+            }
+        });
+    })
+})
 // let mapCenter = map.getCenter();
 // returns {lng: x, lat: y}
 
