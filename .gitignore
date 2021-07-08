@@ -1,5 +1,5 @@
 venv/
 __pycache__/
-secret.py
-secrets.py
 ./routes/__pycache__/
+./tests_py/__pycache__/
+./sql-schems-and-seeds/__pycache__/
