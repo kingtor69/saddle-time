@@ -1,6 +1,5 @@
-from api import geocode_from_location
 from app import app
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location
 from flask import Flask, session, g, render_template, redirect, flash
 # , jsonify
 from models import db, User

@@ -6,8 +6,7 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm
-from api import geocode_from_location, current_weather_from_geocode
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location, current_weather_from_geocode
 
 
 app=Flask(__name__)
