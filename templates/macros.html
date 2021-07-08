@@ -1,23 +1,42 @@
 {% macro mb_geocoder() %}
 {% endmacro %}
 
-{% macro mapbox(lat, lng, zoom) %}
-<!-- this code from docs.mapbox.com, lightly adapted by Tor Kingdon -->
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
-
-<!-- Promise polyfill script is required -->
-<!-- to use Mapbox GL Geocoder in IE 11. -->
-<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
-
-<div id='map' style='width: 400px; height: 300px;'>
-  <ul>
+{% macro mapbox(lat, lng, zoom, size) %}
+<div id='map' class='{{ size }}'>
+  <ul hidden>
     <li id="map-lat">{{ lat }}</li>
     <li id="map-lng">{{ lng }}</li>
     <li id="map-zoom">{{ zoom }}</li>
   </ul>
 </div>
-<script src="/static/js/mapbox.js">
-</script>
+<script src="/static/js/mapbox.js"></script>
+{% endmacro %}
+
+{% macro checkpoint_form(form, index) %}
+<div class="row justify-content-center checkpoint-rows" id="cpr-{{ index }}-row">
+  <div class="col col-1">
+    <p class="sideways">{% if index == 0 %}START{% elif index == 999 %}END{% endif %}</p>
+    <button class="arrows transform-up-120"{% if index == 0 %} hidden{% endif %}><i class="far fa-arrow-alt-circle-up"></i></button>
+    <button class="arrows"{% if index == 999 %} hidden{% endif %}><i class="far fa-arrow-alt-circle-down"></i></button>
+  </div>
+  <div class="col col-11">
+    <table id="cpt-{{ index }}-checkpoint-table">
+      <form action="" id="cpf-{{ index }}-checkpoint-form">
+        {% for field in form 
+          if field.widget.input_type != 'hidden' %}
+          {{ form.hidden_tag() }}
+          <tr>
+            <td>{{ field.label }}</td>
+            <td>{{ field (class_="rounded bg-dark text-light location-field") }}</td>
+            <td>
+              {% for err in field.errors %}
+              {{ err }}
+              {% endfor %}
+            </td>
+          </tr>     
+        {% endfor %}
+      </form>
+    </table>
+  </div>
+</div>
 {% endmacro %}

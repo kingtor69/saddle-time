@@ -20,11 +20,11 @@
   <meta property="twitter:url" content="https://saddle-time.herokuapp.com/">
   <meta property="twitter:title" content="SaddleTime">
   <meta property="twitter:description" content="Bicycle-Friendly Bicycle Directions">
-  <meta property="twitter:image" content="static/images/saddletime-full-logo-white-background">
+  <meta property="twitter:image" content="/static/images/saddletime-full-logo-white-background">
   <!-- Favicon -->
-  <link rel="shortcut icon" type="image/png" href="static/images/saddletime-fav-icon-32.png">
+  <link rel="shortcut icon" type="image/png" href="/static/images/saddletime-fav-icon-32.png">
   <!-- static style -->
-  <link rel="stylesheet" href="{% block static_path %}{% endblock %}/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css">
   {% block page_sytle %}{% endblock %}
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Goblin+One&display=swap" rel="stylesheet">
@@ -33,22 +33,20 @@
   <!-- Google Fonts Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"/>
   <!-- Dark MDB theme -->
-  <link rel="stylesheet" href="{% block bootstrap_static_route %}{% endblock %}/static/css/mdb.dark.min.css" />
+  <link rel="stylesheet" href="/static/css/mdb.dark.min.css" />
   <!-- Regular MDB theme -->
   <!-- <link rel="stylesheet" href="static/css/mdb.min.css" /> -->
-  <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <!-- <link rel="stylesheet" type="text/css" href="{% block jasmine_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.css"> -->
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/93ac9f4afc.js" crossorigin="anonymous"></script>
   <!-- mapbox -->
-  <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 <!-- TODO: and a new user direct link, maybe a new post that asks you to select your user...? -->
 <body>
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top px-3">
-      <a class="navbar-brand" href="{% block home_path %}{% endblock %}/"><img src="{% block nav_image_static_route %}{% endblock %}/static/images/saddletime-full-logo.png" alt="" id="navbar-logo" class="navbar-img"> SaddleTime</a>
+      <a class="navbar-brand" href="/"><img src="/static/images/saddletime-full-logo.png" alt="" id="navbar-logo" class="navbar-img"> SaddleTime</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -56,14 +54,6 @@
         <ul class="navbar-nav mr-auto">
           {% block nav_items %}{% endblock %}
         </ul>
-          <!-- <li>
-            <form class="navbar-form navbar-right" action="/users">
-              <input name="q" class="form-control" placeholder="Search SaddleTime" id="search">
-              <button class="btn btn-default">
-                <span class="fa fa-search"></span>
-              </button>
-            </form>
-          </li> -->
         <ul class="navbar-nav navbar-right">
           {% if g.user.username == "guest" %}
           <li><a href="/users/signup">&nbsp; &nbsp; Sign up &nbsp;</a></li>
@@ -117,10 +107,6 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <!-- axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- Jasmine **FOR DEVELOPMENT ONLY** -->
-  <!-- <script type="text/javascript" src="{% block jasmine_script1_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine.js"></script>
-  <script type="text/javascript" src="{% block jasmine_script2_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="{% block jasmine_script3_static_route %}{% endblock %}static/js/tests/lib/jasmine-3.6.0/boot.js"></script> -->
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
   <script src="{% block scripts_path %}{% endblock %}/static/js/app.js"></script>

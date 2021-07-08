@@ -2,7 +2,7 @@ from app import app
 from flask import Flask, request, render_template, redirect, flash, jsonify
 # , session, g
 # import requests
-from api import geocode_from_location, current_weather_from_geocode
+from helpers import geocode_from_location, current_weather_from_geocode
 
 
 @app.route('/api/weather', methods=["GET"])
