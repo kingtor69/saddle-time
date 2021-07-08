@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import mapbox %}
+{% from 'macros.html' import checkpoint_form, new_checkpoint %}
+
 {% block header %}Make a new SaddleTime Route{% endblock %}
 {% block page_sytle %}
   <link rel="stylesheet" href="/static/css/route-form.css">
@@ -36,69 +39,9 @@
       </div>
     </div>
     <div class="col col-12 col-md-6">
-        <div class="row justify-content-center checkpoint-rows" id="start-point-row">
-          <div class="col col-1">
-            <p class="sideways">START</p>
-            <button class="arrows" hidden><i class="far fa-arrow-alt-circle-up"></i></button>
-            <button class="arrows"><i class="far fa-arrow-alt-circle-down"></i></button>
-          </div>
-          <div class="col col-11">
-            <table>
-              <form action="" id="cpf-0-start-point-form">
-                {% for field in start_form 
-                  if field.widget.input_type != 'hidden' %}
-                  {{ start_form.hidden_tag() }}
-                  <tr>
-                    <td>{{ field.label }}</td>
-                    <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                    <td>
-                      {% for err in field.errors %}
-                      {{ err }}
-                      {% endfor %}
-                    </td>
-                  </tr>     
-                {% endfor %}
-              </form>
-            </table>
-          </div>
-        </div>
-        <div class="row justify-content-center checkpoint-rows checkpoint-rows" id="new-checkpoint-row">
-          <div class="col col-1">
-            <button class="arrows"><i class="far fa-arrow-alt-circle-up"></i></button>
-            <button class="arrows"><i class="far fa-arrow-alt-circle-down"></i></button>
-          </div>
-          <div class="col col-11">
-            <button class="btn btn-secondary btn-sm d-inline-block mt-2" id="new-checkpoint">add checkpoint</button>
-            <!-- maybe fontawesome has something for this button -->
-          </div>
-        </div>
-        <div class="row justify-content-center checkpoint-rows" id="end-point-row">
-          <div class="col col-1">
-            <p class="sideways">END</p>
-            <button class="arrows transform-up-100"><i class="far fa-arrow-alt-circle-up"></i></button>
-            <button class="arrows transform-up-120" hidden><i class="far fa-arrow-alt-circle-down"></i></button>
-          </div>
-          <div class="col col-11">
-            <table id="end-point-table">
-              <form action="" id="cpf-999-end-point-form">
-                {% for field in end_form 
-                  if field.widget.input_type != 'hidden' %}
-                  {{ end_form.hidden_tag() }}
-                  <tr>
-                    <td>{{ field.label }}</td>
-                    <td>{{ field (class_="rounded bg-dark text-light") }}</td>
-                    <td>
-                      {% for err in field.errors %}
-                      {{ err }}
-                      {% endfor %}
-                    </td>
-                  </tr>     
-                {% endfor %}
-              </form>
-            </table>
-          </div>
-        </div>
-      </div>
+      {{ checkpoint_form(start_form, 0)}}
+      <span id="added-checkpoints"></span>
+      {{ checkpoint_form(end_form, 999)}}
     </div>
   </div>
 </div>

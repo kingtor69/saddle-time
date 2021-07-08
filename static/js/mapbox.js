@@ -1,6 +1,8 @@
-const mapLat = document.querySelector('#map-lat').innerText
-const mapLng = document.querySelector('#map-lng').innerText
-const mapZoom = document.querySelector('#map-zoom').innerText
+const mapLat = document.querySelector('#map-lat').innerText;
+const mapLng = document.querySelector('#map-lng').innerText;
+const mapZoom = document.querySelector('#map-zoom').innerText;
+const locSelectors = Array.from(document.querySelectorAll('select.location-field'));
+
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';
 var map = new mapboxgl.Map({
