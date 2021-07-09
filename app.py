@@ -1,6 +1,8 @@
 import os
 
-from flask import Flask, request, redirect, render_template, flash, jsonify, session, g
+from routes import weather_routes, user_routes, route_routes
+
+from flask import Flask, request, redirect, render_template, flash, jsonify, session, g, Blueprint
 from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
@@ -8,8 +10,11 @@ from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm
 from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location, current_weather_from_geocode
 
-
 app=Flask(__name__)
+app.register_blueprint(checkpoint_routes, url_prefix="")
+app.register_blueprint(user_routes, url_prefix="")
+app.register_blueprint(route_routes, url_prefix="")
+app.register_blueprint(weather_routes, url_prefix="")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgresql:///saddle_time_db'))
@@ -22,9 +27,6 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
-# from routes import weather_routes, user_routes
-# , route_routes, 
-import weather_routes, user_routes, route_routes
 
 @app.before_request
 def add_user_to_g():

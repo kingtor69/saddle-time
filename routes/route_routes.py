@@ -1,5 +1,5 @@
-from app import app
-from flask import Flask, flash, render_template, redirect
+# from app import app
+from flask import Flask, flash, render_template, redirect, Blueprint
 # , jsonify, session, g
 from helpers import CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST
 # from api import geocode_from_location, current_weather_from_geocode
@@ -8,11 +8,15 @@ from models import db, Route
 import requests
 from datetime import datetime
 
-@app.route('/api/routes/new', methods=["POST"])
+from flask import Blueprint, render_template
+
+route_routes = Blueprint("route_routes", __name__, static_folder="../static", template_folder="../templates")
+
+@route_routes.route('/api/routes/new', methods=["POST"])
 def create_new_route():
     """Create a new route from AJAX/Axios API call from `routes.js`"""
 
-@app.route('/routes/new')
+@route_routes.route('/routes/new')
 def process_new_route_form():
     route_form = NewRouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
@@ -38,23 +42,23 @@ def process_new_route_form():
         
     return render_template ('new-route.html', route_form=route_form, start_form=start_form, end_form=end_form)
 
-@app.route('/api/routes')
+@route_routes.route('/api/routes')
 def display_available_routes():
     """Return a list of available routes sorted from most to least recent update. Guest users see one list of all publicly-available routes. Logged in users see their own routes in one list followed by all other public routes in a second list."""
 
-# @app.route('/api/routes')
+# @route_routes.route('/api/routes')
 # def display_users_routes():
 #     """Show route on map and with step-by-step directions, and weather information for the route. This uses the GET method to store all route information in the query string."""
 
-@app.route('/routes/save')
+@route_routes.route('/routes/save')
 def save_route():
     """Save a route into the database. Page can only be accessed by registered and logged-in users."""
 
-@app.route('/api/routes/<id>')
+@route_routes.route('/api/routes/<id>')
 def display_saved_route():
     """Build the query string from a saved route and redirect to '/route'. This can be accessed by any user, or by a guest who is not logged in."""
 
-@app.route('/api/routes/<id>/edit')
+@route_routes.route('/api/routes/<id>/edit')
 def edit_saved_route():
     """The user who created a route can edit their route here. Any other user (or guest) can create a new route using this one as a strating point."""
 

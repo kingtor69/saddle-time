@@ -1,11 +1,14 @@
-from app import app
-from flask import Flask, request, render_template, redirect, flash, jsonify
+# from app import app
+from flask import Flask, request, Blueprint, render_template, redirect, flash, jsonify
 # , session, g
 # import requests
 from helpers import geocode_from_location, current_weather_from_geocode
 
+from flask import Blueprint, render_template
 
-@app.route('/api/weather', methods=["GET"])
+weather_routes = Blueprint("weather_routes", __name__, static_folder="../static", template_folder="../templates")
+
+@weather_routes.route('/api/weather', methods=["GET"])
 def retrieve_weater_data():
     """collect and return weather information"""
     location = request.args['location'] or 'undefined'

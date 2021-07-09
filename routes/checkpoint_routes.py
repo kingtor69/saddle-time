@@ -1,18 +1,20 @@
-from app import app
-from flask import Flask, flash
+# from app import app
+from flask import Flask, flash, Blueprint, render_template
 # , jsonify, session, g
-from helpers import CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST
-from api import geocode_from_location, current_weather_from_geocode
+from helpers import CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location, current_weather_from_geocode
 from forms import NewRouteForm
 import requests
 
+
+checkpoint_routes = Blueprint("checkpoint_routes", __name__, static_folder="../static", template_folder="../templates")
+
 ############ this might all happen in JS.... not sure yet
 
-@app.route('/checkpoint/new', methods=["GET", "POST"])
+@checkpoint_routes.route('/checkpoint/new', methods=["GET", "POST"])
 def create_new_checkpoint():
     """Creates a new checkpoint places it within a route"""
 
-@app.route('api/geocode')
+@checkpoint_routes.route('/api/geocode')
 def get_geocode_for_location():
     """returns geocode for an input location from a list of [lattitude, longitude]"""
     
