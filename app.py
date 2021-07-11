@@ -49,13 +49,8 @@ def load_home_page():
     If there is a logged in user, page shows weather from user's default location and most recently created route.
     If no one is logged in, page shows weather from default location (Albuquerque, NM because that's my joint) in metric units (because cycling). Offer the user option to change the location (including to their browser's location) and the units. (Location change handled in app.js; units change handled hear)
     """
-    # city = ""
+    location = ""
     if not request.method == "POST":
-        try: 
-            if g.user.id:
-                return redirect(f'/users/{g.user.id}')
-        except:
-            flash ('logged in user does not have an id; this could be because it is a guest user', 'info')
         try:
             if g.user.location:
                 location=g.user.location
@@ -206,10 +201,18 @@ def create_new_route():
 
 @app.route('/routes/new')
 def process_new_route_form():
+    """render the new-route form, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
+
+    cps = int(request.args.get('cps')) if request.args.get('cps') else 0
     route_form = NewRouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
     end_form = NewCheckpointForm(prefix="cp-999")
+    additional_forms = []
+    for i in range(1, cps):
+        additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
+    
 
+    
     # I think processing the form data is going to be better in JS
     # if you change your mind, you'll need this:
     # , methods=["GET", "POST"]
@@ -228,7 +231,7 @@ def process_new_route_form():
     #     db.session.commit()
     #     return render_template('route.html', route=new_route)
         
-    return render_template ('new-route.html', route_form=route_form, start_form=start_form, end_form=end_form)
+    return render_template ('new-route.html', route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms)
 
 @app.route('/api/routes')
 def display_available_routes():

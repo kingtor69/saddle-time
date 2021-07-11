@@ -51,6 +51,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item mx-2"><a href="#">Top</a></li>
+          <li><a href="/routes/new" class="px-2">New Route</a></li>
           {% block nav_items %}{% endblock %}
         </ul>
         <ul class="navbar-nav navbar-right">
@@ -67,7 +68,6 @@
               {% endif %}
             </a>
           </li>
-          <li><a href="/routes/new" class="px-2">New Route</a></li>
           <li><a href="/logout" class="px-2">Log out</a></li>
           {% endif %}
         </ul>
@@ -89,13 +89,13 @@
           <span class="border border-{{category}} rounded bg-dark p-2">
             <tag class="m-2 text-{{ category }} font-weight-bold">{{message}}</tag>
           </span>
-          {% endfor %}
-          {% endif %}
-          {% endwith %}
         </div>
+        {% endfor %}
       </div>
+      {% endif %}
+      {% endwith %}
     </div>
-    <div class="row">
+    <div class="container">
       {% block content %}
       {% endblock %}
     </div>

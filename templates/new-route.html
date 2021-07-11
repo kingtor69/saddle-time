@@ -7,33 +7,37 @@
   <link rel="stylesheet" href="/static/css/route-form.css">
 {% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col col-12 col-md-5">
-        <form action="" id="route-form">
-          {% for field in route_form 
-            if field.widget.input_type != 'hidden' %}
-            {{ route_form.hidden_tag() }}
-            <div class="form-group">
-              {{ field.label }}
-              {{ field (class_="rounded bg-dark text-light form-field form-control") }}</td>
-              {% for err in field.errors %}
-              {{ err }}
-              {% endfor %}
-            </div>
+  <div class="row justify-content-center">
+    <div class="col col-12 col-md-5">
+      <form action="" id="route-form">
+        {% for field in route_form 
+          if field.widget.input_type != 'hidden' %}
+          {{ route_form.hidden_tag() }}
+          <div class="form-group">
+            {{ field.label }}
+            {{ field (class_="rounded bg-dark text-light form-field form-control") }}</td>
+            {% for err in field.errors %}
+            {{ err }}
             {% endfor %}
-          <button type="submit" class="btn btn-primary rounded m-2 px-2">preview route</button>
-        </form>
-      </div>
-      <div class="col col-12 col-md-7">
-        {{ checkpoint_form(start_form, 0)}}
-        <span id="added-checkpoints"></span>
-        {{ checkpoint_form(end_form, 999)}}
-      </div>
+          </div>
+          {% endfor %}
+        <button type="submit" class="btn btn-primary rounded m-2 px-2">preview route</button>
+      </form>
+    </div>
+    <div class="col col-12 col-md-7">
+      {{ checkpoint_form(start_form, 0)}}
+
+      {{ new_checkpoint() }}
+
+      {% for form in additional_forms %}
+      {{ checkpoint_form( form, loop.index ) }}
+      {{ new_checkpoint() }}
+      {% endfor %}
+
+      {{ checkpoint_form(end_form, 999)}}
     </div>
   </div>
-</div>
 {% endblock %}
 {% block scripts_after %}
-<script src="/static/js/routes.js"></script>
+<!-- <script src="/static/js/routes.js"></script> -->
 {% endblock %}

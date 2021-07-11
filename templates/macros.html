@@ -12,13 +12,17 @@
 <script src="/static/js/mapbox.js"></script>
 {% endmacro %}
 
-{% macro checkpoint_form(form, index) %}
+{% macro checkpoint_form( form, index ) %}
 <div class="row justify-content-center checkpoint-rows" id="cpr-{{ index }}-row">
   <div class="col col-1">
-    <p class="sideways">{% if index == 0 %}START{% elif index == 999 %}END{% endif %}</p>
+    {% if index == 0 %}
+      <p class="sideways">START</p>
+    {% elif index == 999 %}
+      <br>
+      <p class="sideways">END</p>
+    {% endif %}
   </div>
   <div class="col col-1">
-    <br>
     {% if index == 0 %}
       <br>
     {% else %}
@@ -36,7 +40,6 @@
       {% for field in form 
         if field.widget.input_type != 'hidden' %}
         {{ form.hidden_tag() }}
-        {{ field.label }}
         {{ field (class_="rounded bg-dark text-light location-field form-field form-control") }}
         {% for err in field.errors %}
         {{ err }}
@@ -45,4 +48,13 @@
     </form>
   </div>
 </div>
+{% endmacro %}
+
+{% macro new_checkpoint() %}
+  <div class="row justify-content-center checkpoint-rows checkpoint-rows" id="cpr-{{index}}-row">
+    <div class="col col-2"></div>
+    <div class="col col-10">
+        <button class="btn btn-outline-secondary btn-sm d-inline-block mt-2 py-0" id="new-checkpoint">insert new checkpoint here</button>
+    </div>
+  </div>
 {% endmacro %}
