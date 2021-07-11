@@ -9,39 +9,27 @@
 {% block content %}
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col col-12 col-md-6">
-        <div class="row justify-content-center" id="route-form-row">
-          <div class="col">
-            <form action="" id="route-form">
-              <table>
-                {% for field in route_form 
-                  if field.widget.input_type != 'hidden' %}
-                  {{ route_form.hidden_tag() }}
-                  <tr>
-                    <td>{{ field.label }}</td>
-                    <td>{{ field (class_="rounded bg-dark text-light form-field") }}</td>
-                    <td>
-                      {% for err in field.errors %}
-                      {{ err }}
-                      {% endfor %}
-                    </td>
-                  </tr>     
-                {% endfor %}
-              </table>
-              <button type="submit" class="btn btn-primary rounded m-2 px-2">preview route</button>
-            </form>
-          </div>
-        <div class="row justify-content-center" id="route-info-row">
-          <div class="col">
-            <br>
-          </div>
-        </div>
+      <div class="col col-12 col-md-5">
+        <form action="" id="route-form">
+          {% for field in route_form 
+            if field.widget.input_type != 'hidden' %}
+            {{ route_form.hidden_tag() }}
+            <div class="form-group">
+              {{ field.label }}
+              {{ field (class_="rounded bg-dark text-light form-field form-control") }}</td>
+              {% for err in field.errors %}
+              {{ err }}
+              {% endfor %}
+            </div>
+            {% endfor %}
+          <button type="submit" class="btn btn-primary rounded m-2 px-2">preview route</button>
+        </form>
       </div>
-    </div>
-    <div class="col col-12 col-md-6">
-      {{ checkpoint_form(start_form, 0)}}
-      <span id="added-checkpoints"></span>
-      {{ checkpoint_form(end_form, 999)}}
+      <div class="col col-12 col-md-7">
+        {{ checkpoint_form(start_form, 0)}}
+        <span id="added-checkpoints"></span>
+        {{ checkpoint_form(end_form, 999)}}
+      </div>
     </div>
   </div>
 </div>

@@ -16,27 +16,33 @@
 <div class="row justify-content-center checkpoint-rows" id="cpr-{{ index }}-row">
   <div class="col col-1">
     <p class="sideways">{% if index == 0 %}START{% elif index == 999 %}END{% endif %}</p>
-    <button class="arrows transform-up-120"{% if index == 0 %} hidden{% endif %}><i class="far fa-arrow-alt-circle-up"></i></button>
-    <button class="arrows"{% if index == 999 %} hidden{% endif %}><i class="far fa-arrow-alt-circle-down"></i></button>
   </div>
-  <div class="col col-11">
-    <table id="cpt-{{ index }}-checkpoint-table">
-      <form action="" id="cpf-{{ index }}-checkpoint-form">
-        {% for field in form 
-          if field.widget.input_type != 'hidden' %}
-          {{ form.hidden_tag() }}
-          <tr>
-            <td>{{ field.label }}</td>
-            <td>{{ field (class_="rounded bg-dark text-light location-field") }}</td>
-            <td>
-              {% for err in field.errors %}
-              {{ err }}
-              {% endfor %}
-            </td>
-          </tr>     
+  <div class="col col-1">
+    <br>
+    {% if index == 0 %}
+      <br>
+    {% else %}
+      <button class="arrows"><i class="far fa-arrow-alt-circle-up"></i></button>
+    {% endif %}
+    <br>
+    {% if index == 999 %}
+      <br>
+    {% else %} 
+      <button class="arrows"><i class="far fa-arrow-alt-circle-down"></i></button>
+    {% endif %}
+  </div>
+  <div class="col col-10">
+    <form action="" id="cpf-{{ index }}-checkpoint-form">
+      {% for field in form 
+        if field.widget.input_type != 'hidden' %}
+        {{ form.hidden_tag() }}
+        {{ field.label }}
+        {{ field (class_="rounded bg-dark text-light location-field form-field form-control") }}
+        {% for err in field.errors %}
+        {{ err }}
         {% endfor %}
-      </form>
-    </table>
+      {% endfor %}
+    </form>
   </div>
 </div>
 {% endmacro %}
