@@ -1,3 +1,8 @@
+.navbar-right {
+	display: flexbox;
+	margin-left: auto;
+}
+
 img.navbar-img {
 	height: 40px;
 }
@@ -33,4 +38,8 @@ button.dropdown-selection {
 	background-color: black;
 	color: white;
 	z-index: 5;
+}
+
+input.weather-city {
+	font-size: 1.6rem;
 }

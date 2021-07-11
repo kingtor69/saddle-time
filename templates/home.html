@@ -7,8 +7,7 @@
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col col-md-1 d-none d-md-block"></div>
-    <div class="col col-md-5">
+    <div class="col">
       <span class="d-none"></span>
       <table class="table table-dark table-striped rounded" id="weather-table">
         <thead>
@@ -17,7 +16,7 @@
               <div class="row justify-content-left">
                   <span id="weather-header" class="input-spanner">
                     Current weather in: &nbsp;
-                    <input type="text" class="weather-city location-is-set mapbox-loction-input" id="weather-city-input" value="{{ weather.city }}">
+                    <input type="text" class="weather-city location-is-set mapbox-loction-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}">
                   </span>
                   <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
               </div>
@@ -51,47 +50,28 @@
           {% endfor %}
         </tbody>
       </table>
-      <div class="row justify-content-center">
-        <div class="col col-2 d-none d-md-block"></div>
-        <div class="col col-md-8">
-          {{ mapbox(35.10322, -106.678019, 10) }}
-          <!-- <div id='map' style='width: 400px; height: 300px;'></div>
-            <script>
-              mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';
-              var map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11'
-              });
-            </script> -->
-    
-        </div>
-        <div class="col col-2 d-none d-md-block"></div>
-      </div>
     </div>
-    <div class="col col-md-5">
-      {% if g.user == "guest" %}
-      <div class="row m-5"><br></div>
-      {% endif %}
-      <div class="row justify-content-center">
-        <a href="/routes/new" class="d-block btn btn-block btn-primary m-2" id="new-route-button">make new route{% if g.user.username == "guest" %} as guest{% endif %}</a>
-      </div>
-      {% if g.user.username == "guest" %}
-      <div class="row justify-content-center">
-        <div class="col col-6">
-          <a href="/login" class="d-block btn btn-block btn-info ml-2 my-2">login</a>
+    <div class="col">
+        <div class="row justify-content-center">
+          <a href="/routes/new" class="d-block btn btn-block btn-primary m-2" id="new-route-button">make new route{% if g.user.username == "guest" %} as guest{% endif %}</a>
         </div>
-        <div class="col col-6">
-          <a href="/users/signup" class="d-block btn btn-block btn-success my-2 mr-2">sign-up</a>
+        {% if g.user.username == "guest" %}
+        <div class="row justify-content-center">
+          <div class="col col-6">
+            <a href="/login" class="d-block btn btn-block btn-info ml-2 my-2">login</a>
+          </div>
+          <div class="col col-6">
+            <a href="/users/signup" class="d-block btn btn-block btn-success my-2 mr-2">sign-up</a>
+          </div>
         </div>
-      </div>
-      {% endif %}
-      <div class="row justify-content-center">
-        <div class="col">
-          {{ mapbox(35.10322, -106.678019, 10, medium) }}
+        {% endif %}
+        <div class="row justify-content-center">
+          <div class="col">
+            {{ mapbox(35.10322, -106.678019, 10, medium) }}
+          </div>
         </div>
       </div>
     </div>
-    <div class="col col-md-1 d-none d-md-block"></div>
   </div>
 </div>
 {% endblock %}

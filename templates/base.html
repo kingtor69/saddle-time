@@ -43,22 +43,23 @@
 <!-- TODO: and a new user direct link, maybe a new post that asks you to select your user...? -->
 <body>
   <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top px-3 justify-content-between">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mx-2 px-3 justify-content-between">
       <a class="navbar-brand" href="/"><img src="/static/images/saddletime-full-logo.png" alt="" id="navbar-logo" class="navbar-img"> SaddleTime</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <li class="nav-item mx-2"><a href="#">Top</a></li>
           {% block nav_items %}{% endblock %}
         </ul>
         <ul class="navbar-nav navbar-right">
           {% if (not 'user' in g or g.user.username == "guest") %}
-          <li><a href="/users/signup">&nbsp; &nbsp; Sign up &nbsp;</a></li>
-          <li><a href="/login" class="pl-2">&nbsp; Log in &nbsp; &nbsp;</a></li>
+          <li class="nav-item"><a href="/users/signup" class="px-2">Sign up</a></li>
+          <li><a href="/login" class="px-2">Log in</a></li>
           {% else %}
-          <li>
-            <a href="/users/{{ g.user.id }}">
+          <li class="nav-item">
+            <a href="/users/{{ g.user.id }}" class="px-2">
               {% if g.user.profile_pic_image_url %}
               <img src="{{ g.user.profile_pic_image_url }}" class="navbar-img" alt="{{ g.user.username }}">
               {% else %}
@@ -67,7 +68,7 @@
             </a>
           </li>
           <li><a href="/routes/new" class="px-2">New Route</a></li>
-          <li><a href="/logout" class="pr-2">Log out</a></li>
+          <li><a href="/logout" class="px-2">Log out</a></li>
           {% endif %}
         </ul>
       </div>
