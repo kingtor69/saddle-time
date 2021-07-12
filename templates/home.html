@@ -17,6 +17,8 @@
                   <div id="weather-header" class="location-widget">
                     Current weather in: &nbsp;
                     <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}">
+                    <p id="geocodeLng" hidden>{{ lng }}</p>
+                    <p id="geocodeLat" hidden>{{ lat }}</p>
                   </div>
                   <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
               </div>
@@ -65,18 +67,18 @@
           </div>
         </div>
         {% endif %}
-        <div class="row justify-content-center">
+        <!-- <div class="row justify-content-center">
           <div class="col">
             {{ mapbox(35.10322, -106.678019, 10, medium) }}
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
 {% block scripts_after %}
-<script src="/static/js/mapbox.js"></script>
-  <!-- TODO: re-do weather.js and turn it back on once mapbox.js is working for getting city -->
-  <!-- <script src="/static/js/weather.js"></script> -->
-  {% endblock %}
+  <!-- <script src="/static/js/mapbox.js"></script> -->
+  <!-- TODO: probably have some refactoring to do when I get mapbox.js working for the autocomplete location field -->
+  <script src="/static/js/weather.js"></script>
+{% endblock %}

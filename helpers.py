@@ -102,7 +102,8 @@ def current_weather_from_geocode(geocode, units="metric"):
         'city': city, 
         'conditions': conditions, 
         'weather_icon_url': weather_icon_url, 
-        'current_weather_details': current_weather_details
+        'current_weather_details': current_weather_details,
+        'units': units
     }
 
 def wind_direction_logical(degrees):

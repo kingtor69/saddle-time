@@ -108,8 +108,8 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
-  <script src="{% block scripts_path %}{% endblock %}/static/js/app.js"></script>
-  <script src="{% block test_scripts_path %}{% endblock %}/static/js/tests/app.test.js"></script>
+  <script src="/static/js/app.js"></script>
+  <!-- <script src="/static/js/tests/app.test.js"></script> -->
   {% block scripts_after %}{% endblock %}
 </body>
 </html>

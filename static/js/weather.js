@@ -6,6 +6,11 @@
 // weather location button/input and units-selector on home page
 const weatherCityInput = document.querySelector('#weather-city-input');
 const browserLocationButton = document.querySelector('#browser-location-select');
+const geocodeLngP = document.querySelector('#geocodeLng');
+const geocodeLatP = document.querySelector('#geocodeLat');
+let geocodeLat = parseFloat(geocodeLatP.innerText);
+let geocodeLng = parseFloat(geocodeLngP.innerText);
+let geocode = [geocodeLat, geocodeLng];
 const unitsSelector = document.querySelector('#units-selector');
 let units = unitsSelector.value;
 const unitsOptionMetric = document.querySelector('option.metric-option')
@@ -32,7 +37,13 @@ weatherCityInput.addEventListener('keypress', function(e) {
     };
 });
 
+unitsSelector.addEventListener('change', function(evt) {
+    units = evt.target.value;
+    weather = updateWeather(null, units, geocode)
+});
+
 async function updateWeather(location, units, geocode) {
+    console.log(`updateWeather(${location}, ${units}, ${geocode})`);
     const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&geocode=${geocode}`;
     resp = await axios.get(weatherUrl);
     if (resp.data.Errors) {
@@ -51,7 +62,7 @@ async function updateWeather(location, units, geocode) {
 
 //TODO: this isn't working, but it's here:
 browserLocationButton.addEventListener('click', function() {
-    const default_location = "Albuquerque, NM 87102 USA"
+    const default_location = "949 Montoya St NW, Albuquerque, NM 87104"
     // let nudge = document.getElementById("nudge");
   
     // let showNudgeBanner = function() {
@@ -65,10 +76,10 @@ browserLocationButton.addEventListener('click', function() {
     // let nudgeTimeoutId = setTimeout(showNudgeBanner, 5000);
   
     let geoSuccess = function(position) {
-        updateWeather(null, units, (
-            position.coords.latitude,
-            position.coords.longitude
-            ))
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+        geocode = [lat, lng];
+        updateWeather(null, units, (lat, lng))
         // hideNudgeBanner();
         // We have the location, don't display banner
         // clearTimeout(nudgeTimeoutId); 
@@ -91,15 +102,19 @@ browserLocationButton.addEventListener('click', function() {
 function updateWeatherDOM(weather) {
     weatherConditionsHeader.innerHTML = ""
     // update city:
+    // >>>>>>>>>> TODO: when this is accessed via the temperature change route, we get a big, fat nothing in weather.city
     weatherCityInput.value = weather.city;
     // update units:
     if (weather.units === "imperial") {
         unitsOptionMetric.selected = '';
         unitsOptionImperial.selected = 'selected';
-    } else {
+    } else if (weather.units === "metric") {
         unitsOptionMetric.selected = 'selected';
         unitsOptionImperial.selected = '';
+    } else {
+        throw new Error();
     }
+
     // update conditions headline
     weatherConditions.innerText = weather.conditions;
     weatherIcon.innerHTML = `<img src="${weather.weather_icon_url}">`

@@ -116,7 +116,7 @@ function processLocationData (choices, locInput) {
 
 
 async function getGeocode(location) {
-    console.log("haven't written this yet");
+    console.log(`mapbox.js getGeocode(${location}) hasn't been written yet`);
 }
 
 // code adapted from:

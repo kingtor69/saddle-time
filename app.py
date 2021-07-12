@@ -55,7 +55,7 @@ def load_home_page():
             location = g.user.location if g.user.location else "949 Montoya St NW, Albuquerque, NM 87104"
         except:
             flash('using default location (Bike in Coffee in old town Albuquerque, NM)', 'info')
-            location="Albuquerque, NM 87102 USA"
+            location="949 Montoya St NW, Albuquerque, NM 87104"
         
         try:
             units=g.user.weather_units if g.user.weather_units else "metric"
@@ -82,7 +82,7 @@ def load_home_page():
 
     weather = current_weather_from_geocode(geocode)
 
-    return render_template('home.html', weather=weather)
+    return render_template('home.html', weather=weather, lng=geocode[1], lat=geocode[0])
 
 
 ##########################
