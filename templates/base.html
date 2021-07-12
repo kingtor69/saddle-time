@@ -80,7 +80,7 @@
         <h1 class="text-center">{% block header %}{% endblock %}</h1>
       </div>
     </div>
-    <div class="container" id="errors">
+    <div class="container" id="flashes">
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       <div class="row justify-content-center pb-5">

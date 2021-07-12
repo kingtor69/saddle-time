@@ -31,7 +31,9 @@ weatherCityInput.addEventListener('click', function() {
 
 weatherCityInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter' || e.key === 'Return') {
-        errorDiv.innerHTML = ""
+        // errorDiv.innerHTML = ""
+        const flashDiv = document.querySelector('#flashes');
+        flashDiv.hidden = true;
         weatherCityInput.classList.add('city-is-set');
         updateWeather(weatherCityInput.value, units);
     };
