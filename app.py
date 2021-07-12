@@ -52,9 +52,9 @@ def load_home_page():
     location = ""
     if not request.method == "POST":
         try:
-            location = g.user.location if g.user.location else "Albuquerque, NM 87102 USA"
+            location = g.user.location if g.user.location else "949 Montoya St NW, Albuquerque, NM 87104"
         except:
-            flash('using default location (Albuquerque, NM)', 'info')
+            flash('using default location (Bike in Coffee in old town Albuquerque, NM)', 'info')
             location="Albuquerque, NM 87102 USA"
         
         try:

@@ -14,10 +14,10 @@
           <tr id="weather-header-selectors">
             <th class="pt-4 my-3">
               <div class="row justify-content-left">
-                  <span id="weather-header" class="input-spanner">
+                  <div id="weather-header" class="location-widget">
                     Current weather in: &nbsp;
-                    <input type="text" class="weather-city location-is-set mapbox-loction-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}">
-                  </span>
+                    <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}">
+                  </div>
                   <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
               </div>
             </th>
@@ -76,6 +76,7 @@
 </div>
 {% endblock %}
 {% block scripts_after %}
+<script src="/static/js/mapbox.js"></script>
   <!-- TODO: re-do weather.js and turn it back on once mapbox.js is working for getting city -->
-  <script src="static/js/weather.js"></script>
-{% endblock %}
+  <!-- <script src="/static/js/weather.js"></script> -->
+  {% endblock %}
