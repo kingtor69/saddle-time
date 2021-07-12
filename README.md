@@ -21,6 +21,8 @@ APIs to be used can be found in api.py
 ### Weather API is working:
  - weather.js is working for a location change, but still needs autocomplete to make a better user experience
  - city disappears when changing weather units (why? dunno yet)
+   - oh, it's worse than that.... temperatures are all 80.0 F and I don't know where the other numbers came from.
+   - drawing board here I come...
  - **and using browser location is not working yet either**
 
 ### switched geolocating API from mapquest to mapbox
