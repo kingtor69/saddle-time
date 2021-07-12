@@ -43,3 +43,11 @@ button.dropdown-selection {
 input.weather-city {
 	font-size: 1.6rem;
 }
+
+.css-txt-right {
+	text-align: right !important;
+}
+
+.css-txt-center {
+	text-align: center !important;
+}

@@ -52,19 +52,15 @@ def load_home_page():
     location = ""
     if not request.method == "POST":
         try:
-            if g.user.location:
-                location=g.user.location
-            else:
-                location="Albuquerque, NM 87102 USA"
+            location = g.user.location if g.user.location else "Albuquerque, NM 87102 USA"
         except:
+            flash('using default location (Albuquerque, NM)', 'info')
             location="Albuquerque, NM 87102 USA"
         
         try:
-            if g.user.weather_units:
-                units=g.user.weather_units
-            else:
-                units="metric"
+            units=g.user.weather_units if g.user.weather_units else "metric"
         except:
+            flash('using default measurement units (metric)', 'info')
             units="metric"
     else:
         # in other words, request.method IS "POST"
