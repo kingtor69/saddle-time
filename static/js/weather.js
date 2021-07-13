@@ -50,8 +50,8 @@ async function updateWeather(location, units, geocode) {
     if (geocode) {
         geocodeLat = geocode[0];
         geocodeLng = geocode[1];
-    } else {
-        throw new Error()
+    } else if (location) {
+        
     }
     const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&lat=${geocodeLat}&lng=${geocodeLng}`;
     console.log(weatherUrl);

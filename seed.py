@@ -62,7 +62,7 @@ cpb = Checkpoint(user_id=u1.id, checkpoint_display_name="Oakwoods", checkpoint_l
 cpc = Checkpoint(user_id=u1.id, checkpoint_display_name="Royce Canyon", checkpoint_lat=34.075166, checkpoint_lng=-118.442371)
 cpd = Checkpoint(user_id=u1.id, checkpoint_display_name="The Greek", checkpoint_lat=34.02421, checkpoint_lng=-118.21444)
 cpe = Checkpoint(user_id=u1.id, checkpoint_display_name="Crest Parking Lot", checkpoint_lat=35.216655, checkpoint_lng=-106.451977)
-cpf = Checkpoint(user_id=u1.id, checkpoint_display_name="Sulphur Canyon", checkpoint_lat=35.172190, checkpoint_lat=-106.375615)
+cpf = Checkpoint(user_id=u1.id, checkpoint_display_name="Sulphur Canyon", checkpoint_lat=35.172190, checkpoint_lng=-106.375615)
 
 db.session.add_all([cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cpa, cpb, cpc, cpd])
 db.session.commit()

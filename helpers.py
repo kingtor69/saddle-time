@@ -121,3 +121,38 @@ def wind_direction_logical(degrees):
     index = int(biased_degrees / 45)
     indices = ["Northerly", "Northeasterly", "Easterly", "Southeasterly", "Southerly", "Southwesterly", "Westerly", "Northwesterly"]
     return indices[index]
+    
+
+def check_errors_location(location, error_count):
+    """check for errors in location entry"""
+    errors_location = []
+    if not location:
+        errors_location.append(f'You must request either location or geocode to proceed.')
+        error_count += 1
+
+    return (errors_location, error_count)
+
+def check_errors_geocode(lat, lng, error_count):
+    """check for errors in lattitude and longitude entries"""
+    errors_geocode = []
+    if not lat and not lng:
+        errors_geocode.append(f'You must request either location or geocode to proceed.')
+        error_count += 1
+    elif not lat:
+        errors_geocode.append(f'Entered lattitude is "{lat}," which is invalid.')
+        error_count += 1
+    elif not lng:
+        errors_geocode.append(f'Entered longitude is "{lng}," which is invalid.')
+        error_count += 1
+    elif lat > 90 or lat < 0:
+        errors_geocode.append(f'Entered lattitude is "{lat}," which is invalid.')
+        lat = False
+        error_count += 2
+    elif lng > 180 or lng < -180:
+        errors_geocode.append(f'Entered longitude is "{lng}," which is invalid.')
+        lng = False
+        error_count += 2
+    if lat and lng:
+        geocode = (lat, lng)
+
+    return (errors_geocode, geocode, error_count)

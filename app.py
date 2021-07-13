@@ -6,7 +6,7 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm, NewUserForm, LoginForm, NewCheckpointForm
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location, current_weather_from_geocode
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location, current_weather_from_geocode, check_errors_location, check_errors_geocode
 
 app=Flask(__name__)
 
@@ -93,7 +93,7 @@ def retrieve_weater_data():
     """collect and return weather information"""
     location = False if request.args['location'] == 'null' else request.args['location']
     units = request.args['units']
-
+    
     if request.args['lat'] == 'undefined':
         lat = False
     else:
@@ -110,29 +110,18 @@ def retrieve_weater_data():
             lng = False 
     
     errors = {"Errors": {}}
-    error_count = 0
-    if not location:
-        errors["Errors"]["Location Error"] = f'Entered location is "{location}". You must request either location or geocode to proceed.'
-        error_count += 1
-    if not lat and not lng:
-        errors["Errors"]["Geocoding Error"] = f'Entered geocode is "{geocode}"". You must request either location or geocode to proceed.'
-        error_count += 1
-    elif not lat:
-        errors["Errors"]["Geocoding Error"] = f'Entered lattitude is "{lat}," which is invalid.'
-        error_count += 1
-    elif not lng:
-        errors["Errors"]["Geocoding Error"] = f'Entered longitude is "{lng}," which is invalid.'
-        error_count += 1
-    elif lat > 90 or lat < 0:
-        errors["Errors"]["Geocoding Error"] = f'Entered lattitude is "{lat}," which is invalid.'
-        lat = False
-        error_count += 2
-    elif lng > 180 or lng < -180:
-        errors["Errors"]["Geocoding Error"] = f'Entered longitude is "{lng}," which is invalid.'
-        lng = False
-        error_count += 2
-    if lat and lng:
-        geocode = (lat, lng)
+    (locationErrors, error_count) = check_errors_location(location, 0)
+    if len(locationErrors) > 0:
+        for error in locationErrors:
+            errors["Errors"]["Location Error"] = error
+
+    (geocodeErrors, error_count) = check_errors_geocode(lat, lng, error_count)
+    if len(geocodeErrors) > 0:
+        for error in geocodeErrors:
+            errors["Errors"]["Geocoding Error"] = error
+
+    
+
     else:
         geocode_list=geocode_from_location(location)
     if len(geocode_list) == 0:
@@ -290,7 +279,11 @@ def create_new_checkpoint():
 
 @app.route('/api/geocode')
 def get_geocode_for_location():
-    """returns geocode for an input location from a list of [lattitude, longitude]"""
+    """returns geocode for an input location as a list of [lattitude, longitude]"""
+    if 
+    location = request.args['location']
+
+    return lat, lng
     
 
 ###### might need following code for checkpoint routes
