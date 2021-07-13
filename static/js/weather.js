@@ -45,8 +45,15 @@ unitsSelector.addEventListener('change', function(evt) {
 });
 
 async function updateWeather(location, units, geocode) {
-    geocodeFormatted = geocode ? `(${geocode})` : undefined;
-    const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&geocode=${geocodeFormatted}`;
+    let geocodeLat;
+    let geocodeLng;
+    if (geocode) {
+        geocodeLat = geocode[0];
+        geocodeLng = geocode[1];
+    } else {
+        throw new Error()
+    }
+    const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&lat=${geocodeLat}&lng=${geocodeLng}`;
     console.log(weatherUrl);
     resp = await axios.get(weatherUrl);
     if (resp.data.Errors) {

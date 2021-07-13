@@ -1,4 +1,4 @@
-const errorDiv = document.querySelector('#errors');
+const errorDiv = document.querySelector('#flashes');
 
 function displayErrors(errorObj) {
     const errorTable = document.createElement('table');

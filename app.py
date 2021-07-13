@@ -54,7 +54,7 @@ def load_home_page():
         try:
             location = g.user.location if g.user.location else "949 Montoya St NW, Albuquerque, NM 87104"
         except:
-            flash('using default location (Bike in Coffee in old town Albuquerque, NM)', 'info')
+            flash('using default location (Bike-in Coffee in Old Town Albuquerque, NM)', 'info')
             location="949 Montoya St NW, Albuquerque, NM 87104"
         
         try:
@@ -91,25 +91,57 @@ def load_home_page():
 @app.route('/api/weather', methods=["GET"])
 def retrieve_weater_data():
     """collect and return weather information"""
-    location = request.args['location'] or 'undefined'
-    units = request.args['units'] or 'metric'
-    geocode = request.args['geocode'] or 'undefined'
+    location = False if request.args['location'] == 'null' else request.args['location']
+    units = request.args['units']
+
+    if request.args['lat'] == 'undefined':
+        lat = False
+    else:
+        try:
+            lat = float(request.args['lat'])
+        except:
+            lat = False
+    if request.args['lng'] == 'undefined':
+        lng = False 
+    else: 
+        try:
+            lng = float(request.args['lng'])
+        except:
+            lng = False 
+    
     errors = {"Errors": {}}
     error_count = 0
-    if location == "undefined":
-        errors["Errors"]["Location Error"] = "No valid location entered."
+    if not location:
+        errors["Errors"]["Location Error"] = f'Entered location is "{location}". You must request either location or geocode to proceed.'
         error_count += 1
-    if geocode == "undefined":
-        errors["Errors"]["Geocoding Error"] = "No valid geocode entered."
+    if not lat and not lng:
+        errors["Errors"]["Geocoding Error"] = f'Entered geocode is "{geocode}"". You must request either location or geocode to proceed.'
         error_count += 1
+    elif not lat:
+        errors["Errors"]["Geocoding Error"] = f'Entered lattitude is "{lat}," which is invalid.'
+        error_count += 1
+    elif not lng:
+        errors["Errors"]["Geocoding Error"] = f'Entered longitude is "{lng}," which is invalid.'
+        error_count += 1
+    elif lat > 90 or lat < 0:
+        errors["Errors"]["Geocoding Error"] = f'Entered lattitude is "{lat}," which is invalid.'
+        lat = False
+        error_count += 2
+    elif lng > 180 or lng < -180:
+        errors["Errors"]["Geocoding Error"] = f'Entered longitude is "{lng}," which is invalid.'
+        lng = False
+        error_count += 2
+    if lat and lng:
+        geocode = (lat, lng)
+    else:
         geocode_list=geocode_from_location(location)
-        if len(geocode_list) == 0:
-            errors["Errors"]["Geocoding Error"] = "No Results Found For Location"
-            error_count += 1
-        if len(geocode_list) > 1:
-            errors["Errors"]["Geocoging Error"] = "More than one result. Please be more specific."
-            error_count += 1
-        geocode = geocode_list[0]
+    if len(geocode_list) == 0:
+        errors["Errors"]["Geocoding Error"] = "No Results Found For {lat}, {lng}"
+        error_count +=2
+    if len(geocode_list) > 1:
+        errors["Errors"]["Geocoging Error"] = f"More than one result for {lat}, {lng}. Please be more specific."
+        error_count += 2
+    geocode = geocode_list[0]
 
     if error_count > 1:
         return jsonify(errors)
