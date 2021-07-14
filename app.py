@@ -6,7 +6,7 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import NewRouteForm, NewUserForm, LoginForm, NewCheckpointForm
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location, current_weather_from_geocode, check_errors_location, check_errors_geocode
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox
 
 app=Flask(__name__)
 
@@ -72,7 +72,7 @@ def load_home_page():
     #     location=form.location.data
     #     units=form.units.data
 
-    geocode_list=geocode_from_location(location)
+    geocode_list=geocode_from_location_mq(location)
     if len(geocode_list) == 0:
         flash('Geocoding error: no results found for location.', 'warning')
         return redirect('/')
@@ -85,9 +85,22 @@ def load_home_page():
     return render_template('home.html', weather=weather, lng=geocode[1], lat=geocode[0])
 
 
-##########################
-##### weather routes #####
-##########################
+#####################################
+##### location & weather routes #####
+#####################################
+@app.route('/api/location', methods=["GET"])
+def location_autocomplete():
+    """retrieves location options from mapbox autocomplete"""
+    location = request.args['location']
+    return jsonify(autocomplete_options_from_mapbox(location))
+
+@app.route('/api/geocode', methods=["GET"])
+def geocode_location():
+    """retrieves lattitude and longitute from mapbox forward geocode"""
+    location = request.args['location']
+    return jsonify(geocode_from_location_mb(location))
+
+
 @app.route('/api/weather', methods=["GET"])
 def retrieve_weater_data():
     """collect and return weather information"""
@@ -123,7 +136,7 @@ def retrieve_weater_data():
     
 
     else:
-        geocode_list=geocode_from_location(location)
+        geocode_list=geocode_from_location_mq(location)
     if len(geocode_list) == 0:
         errors["Errors"]["Geocoding Error"] = "No Results Found For {lat}, {lng}"
         error_count +=2
@@ -141,7 +154,6 @@ def retrieve_weater_data():
 #######################
 ##### user routes #####
 #######################
-
 @app.route('/users/signup', methods=["GET", "POST"])
 def signup_new_user():
     """Sign up new users. Enter into database"""
@@ -157,7 +169,7 @@ def signup_new_user():
         new_user.bike_image_url = form.bike_image_url.data
         new_user.default_bike_type = form.default_bike_type.data
         new_user.weather_units = form.weather_units.data
-        new_user.default_geocode = geocode_from_location(form.default_location.data)
+        new_user.default_geocode = geocode_from_location_mq(form.default_location.data)
         db.session.add(new_user)
         db.session.commit()
         login_session(new_user)
@@ -288,7 +300,7 @@ def get_geocode_for_location():
     
 
 ###### might need following code for checkpoint routes
-        # end_geoloc=geocode_from_location(form.end_location.data)
+        # end_geoloc=geocode_from_location_mq(form.end_location.data)
         # if not start_geoloc or not end_geoloc:
         #     if start_geoloc:
         #         flash('The ending location could not be located. Please try again.', 'warning')

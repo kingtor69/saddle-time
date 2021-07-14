@@ -51,3 +51,9 @@ input.weather-city {
 .css-txt-center {
 	text-align: center !important;
 }
+
+.bordered-block {
+	display: block;
+	border: 2px solid #74b3d8;
+	border-radius: 5%;
+}

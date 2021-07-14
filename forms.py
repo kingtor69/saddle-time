@@ -43,10 +43,8 @@ class NewRouteForm(FlaskForm):
 
 class NewCheckpointForm(FlaskForm):
     """Form for creating a new checkpoint."""
-    cp_name = StringField(render_kw={"placeholder": "name"})
-    cp_location = SelectField(choices=[('', 'location')])
-    # that choice is a placeholder, actually choices will be changed in javascript with autocomplete data from mapbox API
-
+    cp_name = StringField(render_kw={"placeholder": "checkpoint name (optional)"})
+    cp_location = StringField(render_kw={"placeholder": "location"}, validators=[InputRequired(message="you must have a location")])
 
 
 ################ not currently using this form, but not ready to delete it just yet

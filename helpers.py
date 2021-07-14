@@ -63,8 +63,9 @@ def logout_session():
 ############################
 #### external API calls ####
 ############################
-def geocode_from_location(loc):
-    """Returns lattitude and longitute for given location, generally an address. 
+def geocode_from_location_mq(loc):
+    """Uses mapquest API.
+    Returns lattitude and longitute for given location. 
     Return False if none found. 
     Returns a list of choices, could be one item long, could be many depending on the search parameters (e.g. searching for 'Albuquerque' yields 2 results: one in NM, USA and one in Brazil).
     """
@@ -79,6 +80,17 @@ def geocode_from_location(loc):
 
     except:
         return False
+
+# wait a cotton-pickin' minute:
+# since mapbox's key is public anyway, 
+# I should do this in JS, yeah?
+def autocomplete_options_from_mapbox(location):
+    """uses mapbox autocomplete to return JSON with list of choices"""
+    # response = requests.get(f'')
+
+def geocode_from_location_mb(location):
+    """uses mapbox to gather geocode information"""
+
 
 def current_weather_from_geocode(geocode, units="metric"):
     """Returns current weather data from OpenWeather API for a geocode, entered as a tuple (lat, lng). Defaults to metric units because cycling, but imperical can be specified by guest and/or saved with registered user profile. In case of error, returns False."""

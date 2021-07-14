@@ -1,4 +1,4 @@
-const errorDiv = document.querySelector('#flashes');
+const flashDiv = document.querySelector('#flashes');
 
 function displayErrors(errorObj) {
     const errorTable = document.createElement('table');
@@ -15,5 +15,5 @@ function displayErrors(errorObj) {
         };
         errorTable.appendChild(errorTr);
     };
-    errorDiv.appendChild(errorTable);
+    flashDiv.appendChild(errorTable);
 };

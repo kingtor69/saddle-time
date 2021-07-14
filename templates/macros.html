@@ -37,14 +37,16 @@
   </div>
   <div class="col col-10">
     <form action="" id="cpf-{{ index }}-checkpoint-form">
-      {% for field in form 
-        if field.widget.input_type != 'hidden' %}
-        {{ form.hidden_tag() }}
-        {{ field (class_="rounded bg-dark text-light location-field form-field form-control") }}
-        {% for err in field.errors %}
-        {{ err }}
-        {% endfor %}
-      {% endfor %}
+      <div class="bordered-block">
+        {% for field in form 
+          if field.widget.input_type != 'hidden' %}
+          {{ form.hidden_tag() }}
+          {{ field (class_="bg-dark text-light location-field form-field form-control") }}
+          {% for err in field.errors %}
+          {{ err }}
+          {% endfor %}
+          {% endfor %}
+        </div>
     </form>
   </div>
 </div>

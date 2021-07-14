@@ -1,10 +1,9 @@
-// TODO: make unitsSelector work
 // TODO: make browser location work
-// TODO: units selector, too
 // TODO: working out city input with mapbox right now, then I'll need to be able to use that choice to get weather data
 
 // weather location button/input and units-selector on home page
-const weatherCityInput = document.querySelector('#weather-city-input');
+// had made weather city input logic, but I'm refactoring to make it autocomplete in mapbox.js, SO old logic is here but commented out
+// const weatherCityInput = document.querySelector('#weather-city-input');
 const browserLocationButton = document.querySelector('#browser-location-select');
 const geocodeLngP = document.querySelector('#geocodeLng');
 const geocodeLatP = document.querySelector('#geocodeLat');
@@ -23,21 +22,21 @@ const weatherDetails = document.querySelector('#weather-details')
 
 const baseApiUrl = "/api/";
 
-weatherCityInput.addEventListener('click', function() {
-    weatherCityInput.focus();
-    weatherCityInput.select();
-    weatherCityInput.classList.remove('city-is-set');
-});
+// weatherCityInput.addEventListener('click', function() {
+//     weatherCityInput.focus();
+//     weatherCityInput.select();
+//     weatherCityInput.classList.remove('city-is-set');
+// });
 
-weatherCityInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' || e.key === 'Return') {
-        // errorDiv.innerHTML = ""
-        const flashDiv = document.querySelector('#flashes');
-        flashDiv.hidden = true;
-        weatherCityInput.classList.add('city-is-set');
-        updateWeather(weatherCityInput.value, units);
-    };
-});
+// weatherCityInput.addEventListener('keypress', function(e) {
+//     if (e.key === 'Enter' || e.key === 'Return') {
+//         // flashDiv.innerHTML = ""
+//         const flashDiv = document.querySelector('#flashes');
+//         flashDiv.hidden = true;
+//         weatherCityInput.classList.add('city-is-set');
+//         updateWeather(weatherCityInput.value, units);
+//     };
+// });
 
 unitsSelector.addEventListener('change', function(evt) {
     units = evt.target.value;
