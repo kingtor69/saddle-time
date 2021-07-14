@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import mapbox %}
+{% from 'macros.html' import mapbox, weather_info %}
 {% block page_sytle %}
   <link rel="stylesheet" href="static/css/weather.css">
 {% endblock %}
@@ -9,49 +9,7 @@
   <div class="row justify-content-center">
     <div class="col">
       <span class="d-none"></span>
-      <table class="table table-dark table-striped rounded" id="weather-table">
-        <thead>
-          <tr id="weather-header-selectors">
-            <th class="pt-4 my-3">
-              <div class="row justify-content-left">
-                  <div id="weather-header" class="location-widget">
-                    Current weather in: &nbsp;
-                    <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}">
-                    <p id="geocodeLng" hidden>{{ lng }}</p>
-                    <p id="geocodeLat" hidden>{{ lat }}</p>
-                  </div>
-                  <small class="text-muted" id="weather-city-directions"><i>click city to change</i> or <button id="browser-location-select" class="">click here to use broswer location</button></small>
-              </div>
-            </th>
-            <th class="form-floating">
-              <!-- this form in Python/Flask -->
-              <form action="/" method="POST" id="weather-units" class="d-inline">
-                <select id="units-selector" class="form-select py-0 my-0 px-4 bg-info" id="unitSelect" aria-label="Floating label select example">
-                  {% if weather_units == 'imperial' %}
-                    <option class="metric-option" value="metric">℃/kmph</option>
-                    <option class="imperial-option" selected value="imperial">℉/mph</option>
-                  {% else %}
-                    <option class="metric-option" selected value="metric">℃/kmph</option>
-                    <option class="imperial-option" value="imperial">℉/mph</option>
-                  {% endif %}
-                </select>
-              </form>
-            </th>
-          </tr>
-          <tr id="weather-conditions-row">
-            <th class="h3" id="weather-conditions">{{ weather['conditions'] }} </th>
-            <th id="weather-icon"><img src="{{ weather['weather_icon_url'] }}" /></th>
-          </tr>
-        </thead>
-        <tbody id="weather-details">
-          {% for key in weather['current_weather_details'].keys() %}
-          <tr>
-            <td class="weather-detail-key">{{ key }}</td>
-            <td class="weather-detail-value">{{ weather['current_weather_details'][key] }}{% if key=="description" %}<img src="{{ weather['weather_icon_url'] }}">{% endif %}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {{ weather_info(weather) }}
     </div>
     <div class="col">
         <div class="row justify-content-center">

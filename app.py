@@ -171,7 +171,8 @@ def show_user_profile(user_id):
     """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
-    return render_template ('user.html', user=user)
+    weather = current_weather_from_geocode((user.default_geocode_lat, user.default_geocode_lng))
+    return render_template ('user.html', user=user, weather=weather)
 
 
 @app.route('/api/users/<user_id>/edit', methods=["PUT", "PATCH"])
@@ -280,10 +281,10 @@ def create_new_checkpoint():
 @app.route('/api/geocode')
 def get_geocode_for_location():
     """returns geocode for an input location as a list of [lattitude, longitude]"""
-    if 
-    location = request.args['location']
+    # if 
+    # location = request.args['location']
 
-    return lat, lng
+    # return lat, lng
     
 
 ###### might need following code for checkpoint routes
