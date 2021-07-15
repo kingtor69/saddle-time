@@ -13,3 +13,20 @@
 	left: 0;
 	font-size: 0.7em;
 }
+
+li#hero {
+	background-color: #ddd;
+	color: #333;
+}
+
+button.autocomplete-choice {
+	border: none;
+	background-color: black;
+	color: white;
+	text-justify: left;
+}
+
+button.autocomplete-choice:hover {
+	background-color: #ddd;
+	color: #333;
+}
