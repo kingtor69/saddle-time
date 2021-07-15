@@ -52,6 +52,14 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item mx-2"><a href="#">Top</a></li>
           <li><a href="/routes/new" class="px-2">New Route</a></li>
+          <li><a href="/routes" class="px-2">Show Routes</a></li>
+          <li><a href="/users" class="px-2">Users</a></li>
+          <!-- below for possible future development -->
+          <!-- probably better to make those anchors into forms that send GET requests to /routes and /checkpoints with userID in the query string -->
+          <!-- {% if ('user' in g or not g.user.username == "guest") %}
+          <li><a href="/users/{{ g.user.id }}/routes">my routes</a></li>
+          <li><a href="/users/{{ g.user.id }}/checkpoints"></a>my checkpoints</li>
+          {% endif %} -->
           {% block nav_items %}{% endblock %}
         </ul>
         <ul class="navbar-nav navbar-right">
