@@ -3,7 +3,7 @@
 {% block page_sytle %}
   <link rel="stylesheet" href="/static/css/user.css">
   <link rel="stylesheet" href="/static/css/weather.css">
-  <link rel="stylesheet" href="/static/css/route.css">
+  <link rel="stylesheet" href="/static/css/route-form.css">
 {% endblock %}
 {% block header %}SaddleTime: {{ user.username }}{% endblock %}
 {% block content %}
@@ -44,7 +44,7 @@
     <div class="row justify-content-center">
       <div class="col"></div>
       <div class="col">
-        <a class="d-block btn btn-primary btn-block">edit profile</a>
+        <a href="/users/{{ user.id }}/edit" class="d-block btn btn-primary btn-block">edit profile</a>
       </div>
       <div class="col"></div>
     </div>
@@ -65,6 +65,5 @@
   </div>
 {% endblock %}
 {% block scripts_after %}
-  <script src="/static/js/user.js"></script>
   <script src="/static/js/weather.js"></script>
 {% endblock %}

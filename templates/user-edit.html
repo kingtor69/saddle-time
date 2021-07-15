@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% block header %}New User{% endblock %}
+{% block header %}Edit {{ user.username }}&rsquo;s Profile{% endblock %}
 
 {% block content %}
     <div class="row justify-content-center">
       <div class="col col-2 d-none d-md-block col-lg-3"></div>
       <div class="col">
-          <form action="/users/signup" method="POST" novalidate>
+          <form action="#" method="POST" id="user-edit" novalidate>
             <table>
               {% for field in form 
                 if field.widget.input_type != 'hidden' %}
@@ -34,8 +34,16 @@
                   <td colspan="3" class="css-txt-center"><sup class="text-warning">*</sup> indicates required field</td>
                 </tr>
                 <tr>
+                  <td colspan="2" class="css-txt-center">
+                    <button type="submit" form="user-edit" class="btn btn-primary px-5 py-1 my-2">update profile</button>
+                  </td>
+                  <td class="css-txt-center">
+                    <a href="/users/{{ user.id }}" class="btn btn-outline-secondary px-5 py-1 my-2">cancel</a>
+                  </td>
+                </tr>
+                <tr>
                   <td colspan="3" class="css-txt-center">
-                    <button class="btn btn-primary px-5 py-1 my-2">signup</button>
+                    <button id="delete-profile" class="btn btn-danger text-warning px-2 py-1 my-5" name="{{ user.id }}">DELETE PROFILE</button>
                   </td>
                 </tr>
             </table>
@@ -43,4 +51,7 @@
         </div>
       <div class="col col-2 d-none d-md-block col-lg-3"></div>
     </div>
+{% endblock %}
+{% block scripts_after %}
+    <script src="/static/js/user.js"></script>
 {% endblock %}

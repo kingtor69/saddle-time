@@ -158,7 +158,7 @@ def retrieve_weater_data():
 def signup_new_user():
     """Sign up new users. Enter into database"""
 
-    form = NewUserForm()
+    form = UserNewForm()
     if form.validate_on_submit():
         new_user = User.hashpass(form.username.data, form.password.data)
         new_user.email = form.email.data
@@ -175,25 +175,66 @@ def signup_new_user():
         login_session(new_user)
         return redirect('/')
 
-    return render_template('new-user.html', form=form)
+    return render_template('user-new.html', form=form)
 
 
 @app.route('/users/<int:user_id>')
-def show_user_profile(user_id):
+def return_user_profile(user_id):
     """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     weather = current_weather_from_geocode((user.default_geocode_lat, user.default_geocode_lng))
     return render_template ('user.html', user=user, weather=weather)
 
+@app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])
+def edit_user_profile(user_id):
+    """Validate that logged in user is the one editing their own profile, turn away others. Load form to edit user profile."""
+    if not g.user.id == user_id:
+        flash('You can only edit your own profile.', 'danger')
+        return redirect('/users')
+    
+    user = User.query.get_or_404(user_id)
+    form = UserEditForm(obj=user)
 
-@app.route('/api/users/<user_id>/edit', methods=["PUT", "PATCH"])
-def edit_user_profile():
+    if form.validate_on_submit():
+        form.populate_obj(user)
+        db.session.add(user)
+        db.session.commit()
+        return redirect (f'/users/{user.id}')
+    
+    return render_template('user-edit.html', user=user, form=form)
+
+@app.route('/api/users/<int:user_id>', methods=["GET"])
+def api_return_user_profile(user_id):
+    """Returns user information via API call."""
+    user = User.query.get_or_404(user_id)
+    user_obj = {user_id: {}}
+    user_obj[user_id]['username'] = user.username
+    user_obj[user_id]['email'] = user.email
+    user_obj[user_id]['first_name'] = user.first_name
+    user_obj[user_id]['last_name'] = user.last_name
+    user_obj[user_id]['profile_pic_image_url'] = user.profile_pic_image_url
+    user_obj[user_id]['fav_bike'] = user.fav_bike
+    user_obj[user_id]['bike_image_url'] = user.bike_image_url
+    user_obj[user_id]['default_bike_type'] = user.default_bike_type
+    user_obj[user_id]['default_geocode_lat'] = user.default_geocode_lat
+    user_obj[user_id]['default_geocode_lng'] = user.default_geocode_lng
+    user_obj[user_id]['weather_units'] = user.weather_units
+    return jsonify(user_obj)
+
+@app.route('/api/users/<int:user_id>/edit', methods=["PUT", "PATCH"])
+def api_edit_user_profile():
     """Edit user profile, including preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
+    # TBH, I don't really see why this path is needed. I think I was going to do this from JS, but since I'm using Flask WTForms for the form, I'm not sure it's worth figuring out how to get that data to JS.
 
-@app.route('/api/users/<user_id>/delete', methods=["DELETE"])
-def delete_user():
+
+@app.route('/api/users/<int:user_id>/delete', methods=["DELETE"])
+def delete_user(user_id):
     """Permanently deletes a user from the database using HTTP API call."""
+    user = User.query.get_or_404(user_id)
+    # does this need some kind of authorization and data verification logic???
+    db.session.delete(user)
+    db.session.commit()
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -231,10 +272,10 @@ def create_new_route():
 
 @app.route('/routes/new')
 def process_new_route_form():
-    """render the new-route form, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
+    """render the RouteForm, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
-    route_form = NewRouteForm()
+    route_form = RouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
     end_form = NewCheckpointForm(prefix="cp-999")
     additional_forms = []
@@ -261,7 +302,7 @@ def process_new_route_form():
     #     db.session.commit()
     #     return render_template('route.html', route=new_route)
         
-    return render_template ('new-route.html', route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms)
+    return render_template ('route-new.html', route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms)
 
 @app.route('/api/routes')
 def display_available_routes():
@@ -308,7 +349,7 @@ def get_geocode_for_location():
         #         flash('The starting location could not be located. Please try again.', 'warning')
         #     else:
         #         flash('Neither of those locations could be located. Please try again')
-        #     return render('new-route.html', form=form)
+        #     return render('route-new.html', form=form)
 
 
         # if len(start_geoloc) > 1 or len(end_geoloc) > 1:

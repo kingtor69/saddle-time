@@ -1,6 +1,9 @@
 # SaddleTime
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
+## laptop branch
+This branch is doing simpler tasks that are easier on RAM and will be merged into main.
+
 ### Schema & API information:
 Schema can be found in schema.sql
 APIs to be used can be found in api.py
