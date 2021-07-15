@@ -65,12 +65,16 @@ mapboxLocationInput.addEventListener('click', function() {
     mapboxLocationInput.classList.remove('location-is-set');
 });
 
-mapboxLocationInput.addEventListener('keypress', function(e) {
+mapboxLocationInput.addEventListener('keydown', function(e) {
     // e.preventDefault();
     if (e.key === 'Enter' || e.key === 'Return') {
         // flashDiv.innerHTML = ""
         getLocationGeocode(locationSearch)
         // updateWeather(mapboxLocationInput.value, units);
+    } else if (e.keyCode === 40) {
+        // down arrow
+    } else if (e.keyCode === 38) {
+        //  up arrow
     } else {
         if (!firstTime) {
             locationSearch = mapboxLocationInput.value;
@@ -102,17 +106,21 @@ async function locationAutocomplete(locationSearch, activeInput) {
 };
 
 function displayChoices(choices, activeInput) {
-    const choicesDisplay = document.querySelector('div.dropdown-menu') || document.createElement('div');
-    choicesDisplay.innerHTML = '';
-    choicesDisplay.classList = "dropdown-menu";
+    const autocompleteContainer = document.querySelector('div.autocomplete-container');
+    autocompleteContainer.innerHTML = '';
+    autocompleteContainer.classList = "autocomplete-container";
+    const autocompleteMenu = document.createElement('ul');
+    autocompleteMenu.classList.add("autocomplete-menu");
+    autocompleteContainer.appendChild(autocompleteMenu);
     for (let choice of choices) {
-        const choiceDiv = document.createElement('div');
-        choiceDiv.classList.add("dropdown-item", "autocomplete-dropdown");
-        choiceDiv.innerHTML = `<b>${choice[0]}</b><br>${choice[1]}`
-        choicesDisplay.appendChild(choiceDiv);
+        const choiceLi = document.createElement('li');
+        choiceLi.classList.add('autocomplete-choice');
+        choiceLi.innerHTML = `<b>${choice[0]}</b><br><small>${choice[1]}</small><hr>`
+        autocompleteMenu.appendChild(choiceLi);
     };
     const inputParent = activeInput.parentElement;
     const nxtSib = activeInput.nextSibling;
-    inputParent.insertBefore(choicesDisplay, nxtSib);
-    console.log(inputParent);
+    inputParent.insertBefore(autocompleteContainer, nxtSib);
 };
+
+// now pick the winner

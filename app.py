@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
 from models import db, connect_db, User, Route, Checkpoint
-from forms import NewRouteForm, NewUserForm, LoginForm, NewCheckpointForm
+from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm
 from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox
 
 app=Flask(__name__)

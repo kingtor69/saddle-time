@@ -1,0 +1,15 @@
+.autocomplete-container {
+	display: block;
+	position: relative;
+}
+
+.autocomplete-menu {
+	background-color: black;
+	color: white;
+	list-style: none;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 0.7em;
+}
