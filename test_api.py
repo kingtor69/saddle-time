@@ -1,7 +1,6 @@
 import os
 from unittest import TestCase
-from secrets import ORS_API_KEY, MQ_API_KEY, OW_API_KEY
-from api import geocode_from_location, ORS_API_BASE_URL, MQ_API_BASE_URL, OW_API_BASE_URL
+from helpers import *
 import requests
 
 from app import app
@@ -16,10 +15,10 @@ class GeocodeAPITestCase(TestCase):
         mult_choice0_code = (35.084248, -106.649241)
         mult_choice1_code = (-22.383301, -42.916599)
 
-        self.assertEqual(geocode_from_location(good_loc)[0], good_code)
-        self.assertFalse(geocode_from_location(unfound_loc))
-        self.assertEqual(len(geocode_from_location(mult_choice_loc)), 2)
-        self.assertEqual((geocode_from_location(mult_choice_loc)), [mult_choice0_code, mult_choice1_code])
+        self.assertEqual(geocode_from_location_mq(good_loc)[0], good_code)
+        self.assertFalse(geocode_from_location_mq(unfound_loc))
+        self.assertEqual(len(geocode_from_location_mq(mult_choice_loc)), 2)
+        self.assertEqual((geocode_from_location_mq(mult_choice_loc)), [mult_choice0_code, mult_choice1_code])
     def test_geocoding_API_call(self):
         good_loc = "9201 Pan American FWY NE, Albuquerque, NM 87113"
         good_code = (35.190564, -106.580526)
