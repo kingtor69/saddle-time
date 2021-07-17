@@ -69,19 +69,22 @@
           <div class="row justify-content-left">
               <div id="weather-header" class="location-widget">
                 Current weather in: &nbsp;
-                {% for field in form 
-                  if field.widget.input_type != 'hidden' %}
-                  {{ form.hidden_tag() }}
-                  {{ field (class_="bg-dark text-light location-field form-field form-control") }}
-                  {% for err in field.errors %}
-                  {{ err }}
-                  {% endfor %}
-                  {% endfor %}
-                <!-- <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}"> -->
+                <div class="border">
+
+                  {% for field in form 
+                    if field.widget.input_type != 'hidden' %}
+                    {{ form.hidden_tag() }}
+                    {{ field (class_="bg-dark text-light location-field form-field form-control") }}
+                    {% for err in field.errors %}
+                    {{ err }}
+                    {% endfor %}
+                    {% endfor %}
+                  </div>
+                    <!-- <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}"> -->
                 <div class="autocomplete-container"></div>
                 <p id="geocodeLng" hidden>{{ lng }}</p>
                 <p id="geocodeLat" hidden>{{ lat }}</p>
-                <small class="text-muted" id="weather-city-directions">
+                <small class="text-muted h5" id="weather-city-directions">
                   <i>click city to change</i>
                   <!-- or <button id="browser-location-select" class="">click here to use broswer location</button> -->
                 </small>
