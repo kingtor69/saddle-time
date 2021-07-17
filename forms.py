@@ -57,8 +57,10 @@ class RouteForm(FlaskForm):
 class NewCheckpointForm(FlaskForm):
     """Form for creating a new checkpoint."""
     cp_name = StringField(render_kw={"placeholder": "checkpoint name (optional)"})
-    cp_location = StringField(render_kw={"placeholder": "location"}, validators=[InputRequired(message="you must have a location")])
+    cp_location = SelectField(validators=[InputRequired(message="you must have a location")])
 
+class LocationForm(FlaskForm):
+    location = SelectField(validators=[InputRequired(message="you must have a location")])
 
 ################ not currently using this form, but not ready to delete it just yet
 # class WeatherPrefsForm(FlaskForm):

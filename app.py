@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
 from models import db, connect_db, User, Route, Checkpoint
-from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm
+from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
 from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox
 
 app=Flask(__name__)
@@ -77,12 +77,16 @@ def load_home_page():
         flash('Geocoding error: no results found for location.', 'warning')
         return redirect('/')
     if len(geocode_list) > 1:
-        return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
+        flash('Geocoding error: default location is not specific enough. Please use location selector to find the right one.', 'warning')
+        return redirect('/')
+        # return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
     geocode = geocode_list[0]
 
     weather = current_weather_from_geocode(geocode)
+    form = LocationForm()
+    form.location.choices = (geocode, weather['city'])
 
-    return render_template('home.html', weather=weather, lng=geocode[1], lat=geocode[0])
+    return render_template('home.html', weather=weather, lng=geocode[1], lat=geocode[0], form=form)
 
 
 #####################################

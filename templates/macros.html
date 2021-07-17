@@ -61,7 +61,7 @@
   </div>
 {% endmacro %}
 
-{% macro weather_info(weather) %}
+{% macro weather_info(weather, form) %}
   <table class="table table-dark table-striped rounded" id="weather-table">
     <thead>
       <tr id="weather-header-selectors">
@@ -69,7 +69,15 @@
           <div class="row justify-content-left">
               <div id="weather-header" class="location-widget">
                 Current weather in: &nbsp;
-                <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}">
+                {% for field in form 
+                  if field.widget.input_type != 'hidden' %}
+                  {{ form.hidden_tag() }}
+                  {{ field (class_="bg-dark text-light location-field form-field form-control") }}
+                  {% for err in field.errors %}
+                  {{ err }}
+                  {% endfor %}
+                  {% endfor %}
+                <!-- <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}"> -->
                 <div class="autocomplete-container"></div>
                 <p id="geocodeLng" hidden>{{ lng }}</p>
                 <p id="geocodeLat" hidden>{{ lat }}</p>
