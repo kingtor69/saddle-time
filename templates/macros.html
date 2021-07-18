@@ -69,19 +69,14 @@
           <div class="row justify-content-left">
               <div id="weather-header" class="location-widget">
                 Current weather in: &nbsp;
-                <div class="border">
-
-                  {% for field in form 
-                    if field.widget.input_type != 'hidden' %}
-                    {{ form.hidden_tag() }}
-                    {{ field (class_="bg-dark text-light location-field form-field form-control") }}
-                    {% for err in field.errors %}
+                {% for field in form 
+                  if field.widget.input_type != 'hidden' %}
+                  {{ form.hidden_tag() }}
+                  {{ field (class_="bg-primary text-light location-field form-field form-control") }}
+                  {% for err in field.errors %}
                     {{ err }}
-                    {% endfor %}
-                    {% endfor %}
-                  </div>
-                    <!-- <input type="text" class="weather-city location-is-set mapbox-location-input form-control bg-dark text-white" id="weather-city-input" value="{{ weather.city }}"> -->
-                <div class="autocomplete-container"></div>
+                  {% endfor %}
+                {% endfor %}
                 <p id="geocodeLng" hidden>{{ lng }}</p>
                 <p id="geocodeLat" hidden>{{ lat }}</p>
                 <small class="text-muted h5" id="weather-city-directions">
