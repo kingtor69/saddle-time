@@ -86,7 +86,7 @@ def load_home_page():
     form = LocationForm()
     form.location.choices = ([(location, weather['city'])])
 
-    return render_template('home.html', weather=weather, lng=geocode[1], lat=geocode[0], form=form)
+    return render_template('home.html', weather=weather, lng=geocode[0], lat=geocode[1], form=form)
 
 
 #####################################

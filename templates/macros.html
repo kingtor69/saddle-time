@@ -72,7 +72,7 @@
                 {% for field in form 
                   if field.widget.input_type != 'hidden' %}
                   {{ form.hidden_tag() }}
-                  {{ field (class_="bg-primary text-light location-field form-field form-control") }}
+                  {{ field (class_="bg-primary text-light location-field mapbox-location-selector form-field form-control") }}
                   {% for err in field.errors %}
                     {{ err }}
                   {% endfor %}

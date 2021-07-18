@@ -17,6 +17,7 @@ MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
 WEATHER_ICON_SUFFIX = "@2x.png"
+MB_API_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
 
 ORS_API_KEY = os.environ['ORS_API_KEY']
 MQ_API_KEY = os.environ['MQ_API_KEY']
@@ -85,8 +86,10 @@ def geocode_from_location_mq(loc):
 # since mapbox's key is public anyway, 
 # I should do this in JS, yeah?
 def autocomplete_options_from_mapbox(location):
-    """uses mapbox autocomplete to return JSON with list of choices"""
-    # response = requests.get(f'')
+    """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
+    resp = requests.get(f'{MB_API_BASE_URL}{location}')
+    import pdb
+    pdb.set_trace()
 
 def geocode_from_location_mb(location):
     """uses mapbox to gather geocode information"""
