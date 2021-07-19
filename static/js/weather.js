@@ -21,6 +21,7 @@ unitsSelector.addEventListener('change', function(evt) {
 
 // has been refactored to accept only units & geocode (geocode returned from mapbox autocomplete)
 async function updateWeather(units, geocode) {
+    $('#flashes').hide()
     let geocodeLat;
     let geocodeLng;
     if (geocode) {

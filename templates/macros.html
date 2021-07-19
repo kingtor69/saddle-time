@@ -61,22 +61,27 @@
   </div>
 {% endmacro %}
 
-{% macro weather_info(weather, form) %}
+{% macro weather_info(weather, location) %}
   <table class="table table-dark table-striped rounded" id="weather-table">
     <thead>
       <tr id="weather-header-selectors">
         <th class="pt-4 my-3">
           <div class="row justify-content-left">
               <div id="weather-header" class="location-widget">
-                Current weather in: &nbsp;
-                {% for field in form 
+                <p>Current weather in:</p>
+                <label for="{{ location }}" class="mapbox-location-label form-label">{{ weather.city }}</label>
+                <select name="location" id="{{ location }}" class="mapbox-location-selector form-control">
+                  <option value="{{ lat }}, {{ lng }}">{{ location }}</option>
+                </select>
+                <!-- {% for field in form 
                   if field.widget.input_type != 'hidden' %}
                   {{ form.hidden_tag() }}
+                  {{ field.label (class_="bg-primary text-light form-label") }}
                   {{ field (class_="bg-primary text-light location-field mapbox-location-selector form-field form-control") }}
                   {% for err in field.errors %}
                     {{ err }}
                   {% endfor %}
-                {% endfor %}
+                {% endfor %} -->
                 <p id="geocodeLng" hidden>{{ lng }}</p>
                 <p id="geocodeLat" hidden>{{ lat }}</p>
                 <small class="text-muted h5" id="weather-city-directions">

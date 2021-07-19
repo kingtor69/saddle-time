@@ -64,30 +64,9 @@ mapboxLocationSelectors.select2({
         url: '/api/location',
         datatype: JSON
     },
-    allowClear: true,
+    // allowClear: true,
 });
 
-// for (let input of mapboxLocationSelectors) {
-//     input.on('click', () => {
-//         console.log(`click on ${input}`)
-//         input.empty();
-//         input.select2({
-//             placeholder: 'enter new location'
-//         });
-//     });
-// };
-
-async function select2(input) {
-    input.removeClass('location-is-set')
-    input.select2({
-        minimumInputLength: 3,
-        ajax: {
-            url: '/api/location/',
-            datatype: JSON
-        },
-        allowClear: true,
-    });
-};
 
 
 //////// doing it by myself almost worked

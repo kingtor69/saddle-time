@@ -60,7 +60,7 @@ class NewCheckpointForm(FlaskForm):
     cp_location = SelectField(validators=[InputRequired(message="you must have a location")])
 
 class LocationForm(FlaskForm):
-    location = SelectField(validators=[InputRequired(message="you must have a location")])
+    location = SelectField("Location", validators=[InputRequired(message="you must have a location")])
 
 ################ not currently using this form, but not ready to delete it just yet
 # class WeatherPrefsForm(FlaskForm):

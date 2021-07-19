@@ -81,12 +81,15 @@ def load_home_page():
         return redirect('/')
         # return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
     geocode = geocode_list[0]
+    # because mapbox does their geocodes backwards:
+    geocode_mapbox = [geocode[1], geocode[0]]
 
     weather = current_weather_from_geocode(geocode)
-    form = LocationForm()
-    form.location.choices = ([(location, weather['city'])])
+    # form = LocationForm()
+    # form.location.choices = ([(geocode_mapbox, location)])
+    # form.location.label = weather['city']
 
-    return render_template('home.html', weather=weather, lng=geocode[0], lat=geocode[1], form=form)
+    return render_template('home.html', weather=weather, lng=geocode[0], lat=geocode[1], location=location)
 
 
 #####################################
