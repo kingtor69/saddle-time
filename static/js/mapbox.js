@@ -1,9 +1,11 @@
-const mapLat = document.querySelector('#map-lat').innerText;
-const mapLng = document.querySelector('#map-lng').innerText;
+const mapLat = parseFloat(document.querySelector('#map-lat').innerText);
+const mapLng = parseFloat(document.querySelector('#map-lng').innerText);
+const geocode = [mapLng, mapLat];
 const mapZoom = document.querySelector('#map-zoom').innerText;
 const mapboxGeocodeApiBaseUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
 let firstTime = true;
 
+// display mapbox:
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';
 var map = new mapboxgl.Map({
     container: 'map', // container ID
@@ -11,7 +13,9 @@ var map = new mapboxgl.Map({
     center: [mapLng, mapLat], // starting position [lng, lat]
     zoom: mapZoom // starting zoom
 });
+// ...with navigation controls:
 map.addControl(new mapboxgl.NavigationControl());
+// ...and a pointer in the middle for the current geocode
 map.on('load', function() {
     map.loadImage('static/images/mapbox-icons/mapbox-marker-icon-20px-red.png', function (error, image) {
         if (error) throw error;
@@ -25,7 +29,7 @@ map.on('load', function() {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [mapLng, mapLat]
+                            'coordinates': geocode
                         }
                     }
                 ]
@@ -54,12 +58,15 @@ function geocodeFromLocation(location) {
 ///////////////////////////
 // using Select2
 const mapboxLocationSelectors = $('select.mapbox-location-selector');
-if (mapboxLocationSelectors.length === 1) {
-    input = mapboxLocationSelectors;
-    input.on('click', () => {
-        console.log(`clicked ${input}`);
-    });
-}
+mapboxLocationSelectors.select2({
+    minimumInputLength: 3,
+    ajax: {
+        url: '/api/location',
+        datatype: JSON
+    },
+    allowClear: true,
+});
+
 // for (let input of mapboxLocationSelectors) {
 //     input.on('click', () => {
 //         console.log(`click on ${input}`)

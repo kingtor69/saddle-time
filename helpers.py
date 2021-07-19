@@ -87,9 +87,9 @@ def geocode_from_location_mq(loc):
 # I should do this in JS, yeah?
 def autocomplete_options_from_mapbox(location):
     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
-    resp = requests.get(f'{MB_API_BASE_URL}{location}')
-    import pdb
-    pdb.set_trace()
+    query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
+    resp = requests.get(query_url)
+    return resp.json()["features"]
 
 def geocode_from_location_mb(location):
     """uses mapbox to gather geocode information"""

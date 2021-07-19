@@ -1,15 +1,7 @@
 // TODO: make browser location work
-// TODO: working out city input with mapbox right now, then I'll need to be able to use that choice to get weather data
 
-// weather location button/input and units-selector on home page
-// had made weather city input logic, but I'm refactoring to make it autocomplete in mapbox.js, SO old logic is here but commented out
-// const weatherCityInput = document.querySelector('#weather-city-input');
-// const browserLocationButton = document.querySelector('#browser-location-select');
-const geocodeLngP = document.querySelector('#geocodeLng');
-const geocodeLatP = document.querySelector('#geocodeLat');
-let geocodeLat = parseFloat(geocodeLatP.innerText);
-let geocodeLng = parseFloat(geocodeLngP.innerText);
-let geocode = [geocodeLat, geocodeLng];
+// mapLat and mapLng are generated in mapbox.js, which has already run when this does.
+// originally, I was using geocodes as [lattitude, longitude], but since mapbox does [longitute, lattitude], I'm refactoring that as I work through this
 const unitsSelector = document.querySelector('#units-selector');
 let units = unitsSelector.value;
 const unitsOptionMetric = document.querySelector('option.metric-option')
@@ -22,38 +14,22 @@ const weatherDetails = document.querySelector('#weather-details')
 
 const baseApiUrl = "/api/";
 
-// weatherCityInput.addEventListener('click', function() {
-//     weatherCityInput.focus();
-//     weatherCityInput.select();
-//     weatherCityInput.classList.remove('city-is-set');
-// });
-
-// weatherCityInput.addEventListener('keypress', function(e) {
-//     if (e.key === 'Enter' || e.key === 'Return') {
-//         // flashDiv.innerHTML = ""
-//         const flashDiv = document.querySelector('#flashes');
-//         flashDiv.hidden = true;
-//         weatherCityInput.classList.add('city-is-set');
-//         updateWeather(weatherCityInput.value, units);
-//     };
-// });
-
 unitsSelector.addEventListener('change', function(evt) {
     units = evt.target.value;
-    weather = updateWeather(null, units, geocode)
+    weather = updateWeather(units, geocode);
 });
 
-async function updateWeather(location, units, geocode) {
+// has been refactored to accept only units & geocode (geocode returned from mapbox autocomplete)
+async function updateWeather(units, geocode) {
     let geocodeLat;
     let geocodeLng;
     if (geocode) {
-        geocodeLat = geocode[0];
-        geocodeLng = geocode[1];
-    } else if (location) {
-        
+        geocodeLat = geocode[1];
+        geocodeLng = geocode[0];
+    } else {
+        throw new Error('No geocode data makes it hard to find the weather.');
     }
     const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&lat=${geocodeLat}&lng=${geocodeLng}`;
-    console.log(weatherUrl);
     resp = await axios.get(weatherUrl);
     if (resp.data.Errors) {
         rawErrorObj = resp.data.Errors;
@@ -113,7 +89,7 @@ function updateWeatherDOM(weather) {
     weatherConditionsHeader.innerHTML = ""
     // update city:
     // >>>>>>>>>> TODO: when this is accessed via the temperature change route, we get a big, fat nothing in weather.city
-    weatherCityInput.value = weather.city;
+    // weatherCityInput.value = weather.city;
     // update units:
     if (weather.units === "imperial") {
         unitsOptionMetric.selected = '';
@@ -122,7 +98,7 @@ function updateWeatherDOM(weather) {
         unitsOptionMetric.selected = 'selected';
         unitsOptionImperial.selected = '';
     } else {
-        throw new Error();
+        throw new Error('invalid weather units');
     }
 
     // update conditions headline

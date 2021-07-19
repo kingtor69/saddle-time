@@ -94,8 +94,9 @@ def load_home_page():
 #####################################
 @app.route('/api/location', methods=["GET"])
 def location_autocomplete():
-    """retrieves location options from mapbox autocomplete"""
-    location = request.args['location']
+    """retrieves location options from mapbox autocomplete
+    accepting select2 data which comes in as 'term'"""
+    location = request.args['term']
     return jsonify(autocomplete_options_from_mapbox(location))
 
 @app.route('/api/geocode', methods=["GET"])
@@ -106,53 +107,63 @@ def geocode_location():
 
 
 @app.route('/api/weather', methods=["GET"])
-def retrieve_weater_data():
-    """collect and return weather information"""
-    location = False if request.args['location'] == 'null' else request.args['location']
+def retrieve_weather_data_from_geocode():
+    """gather weather data from units & geocode input
+    NOTE: the geocode used by the weather API is lat-lng whereas mapbox uses lng-lat, and that's one reason this accepts lattitude and longitude as separate arguments."""
+    # TODO: needs error managing
+
     units = request.args['units']
-    
-    if request.args['lat'] == 'undefined':
-        lat = False
-    else:
-        try:
-            lat = float(request.args['lat'])
-        except:
-            lat = False
-    if request.args['lng'] == 'undefined':
-        lng = False 
-    else: 
-        try:
-            lng = float(request.args['lng'])
-        except:
-            lng = False 
-    
-    errors = {"Errors": {}}
-    (locationErrors, error_count) = check_errors_location(location, 0)
-    if len(locationErrors) > 0:
-        for error in locationErrors:
-            errors["Errors"]["Location Error"] = error
-
-    (geocodeErrors, error_count) = check_errors_geocode(lat, lng, error_count)
-    if len(geocodeErrors) > 0:
-        for error in geocodeErrors:
-            errors["Errors"]["Geocoding Error"] = error
-
-    
-
-    else:
-        geocode_list=geocode_from_location_mq(location)
-    if len(geocode_list) == 0:
-        errors["Errors"]["Geocoding Error"] = "No Results Found For {lat}, {lng}"
-        error_count +=2
-    if len(geocode_list) > 1:
-        errors["Errors"]["Geocoging Error"] = f"More than one result for {lat}, {lng}. Please be more specific."
-        error_count += 2
-    geocode = geocode_list[0]
-
-    if error_count > 1:
-        return jsonify(errors)
-
+    geocode = (request.args['lat'], request.args['lng'])
     return jsonify(current_weather_from_geocode(geocode, units))
+
+
+# def retrieve_weater_data():
+#     """collect and return weather information"""
+#     location = False if request.args['location'] == 'null' else request.args['location']
+#     units = request.args['units']
+
+#     if request.args['lat'] == 'undefined':
+#         lat = False
+#     else:
+#         try:
+#             lat = float(request.args['lat'])
+#             lng = float(request.args['lng'])
+#         except:
+#             lat = False
+#             lng = False 
+#     if request.args['lng'] == 'undefined':
+#         lng = False 
+#     else: 
+#         try:
+#             lng = float(request.args['lng'])
+#         except:
+#             lng = False 
+    
+#     # retDic = validateWeatherInputs(location, units, lat, lng)
+#     errors = {"Errors": {}}
+#     (locationErrors, error_count) = check_errors_location(location, 0)
+#     if len(locationErrors) > 0:
+#         for error in locationErrors:
+#             errors["Errors"]["Location Error"] = error
+
+#     (geocodeErrors, error_count) = check_errors_geocode(lat, lng, error_count)
+#     if len(geocodeErrors) > 0:
+#         for error in geocodeErrors:
+#             errors["Errors"]["Geocoding Error"] = error
+#     else:
+#         geocode_list=geocode_from_location_mq(location)
+#     if len(geocode_list) == 0:
+#         errors["Errors"]["Geocoding Error"] = "No Results Found For {lat}, {lng}"
+#         error_count +=2
+#     if len(geocode_list) > 1:
+#         errors["Errors"]["Geocoging Error"] = f"More than one result for {lat}, {lng}. Please be more specific."
+#         error_count += 2
+#     geocode = geocode_list[0]
+
+#     if error_count > 1:
+#         return jsonify(errors)
+
+#     return jsonify(current_weather_from_geocode(geocode, units))
 
 
 #######################
