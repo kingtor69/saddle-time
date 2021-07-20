@@ -44,12 +44,15 @@ async function updateWeather(units, geocode) {
     };
 };
 
-if (mapboxLocationSelectors.length === 1) {
-    weatherLocation = mapboxLocationSelectors;
-    weatherLocation.change((evt) => {
-        console.log(weatherLocation.select2('data'));
-    })
-} 
+
+// if (mapboxLocationSelectors.length === 1) {
+//     weatherLocation = mapboxLocationSelectors;
+//     weatherLocation.change((evt) => {
+//         console.log(weatherLocation.select2('data'));
+//     })
+// } else {
+    
+// }
 
 // this isn't working and currently deactivate
 // TODO: fix and activate it

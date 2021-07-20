@@ -57,17 +57,25 @@ function geocodeFromLocation(location) {
 // location autocomplete //
 ///////////////////////////
 // using Select2
-const mapboxLocationSelectors = $('select.mapbox-location-selector');
-mapboxLocationSelectors.each(() => {
-    mapboxLocationSelectors.select2({
-        minimumInputLength: 3,
-        ajax: {
-            url: '/api/location',
-            datatype: JSON
-        },
-        // allowClear: true
-    });
+// weather location only:
+const weatherLocationSelector = $('#weather-selector');
+weatherLocationSelector.select2({
+    // dropdownParent: $('#weather-table'),
+    minimumInputLength: 3,
+    ajax: {
+        url: '/api/location',
+        datatype: JSON
+    },
+    // allowClear: true
+});
+
+const weatherGeocode = [];
+
+weatherLocationSelector.change((e) => {
+    console.log(weatherLocationSelector.select2('data'));
 })
+
+
 
 // need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
 // maybe because it's inside a Bootstrap "modal:"
