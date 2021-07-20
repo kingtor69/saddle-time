@@ -1,7 +1,6 @@
 // TODO: make browser location work
 
 // mapLat and mapLng are generated in mapbox.js, which has already run when this does.
-// originally, I was using geocodes as [lattitude, longitude], but since mapbox does [longitute, lattitude], I'm refactoring that as I work through this
 const unitsSelector = document.querySelector('#units-selector');
 let units = unitsSelector.value;
 const unitsOptionMetric = document.querySelector('option.metric-option')
@@ -19,7 +18,6 @@ unitsSelector.addEventListener('change', function(evt) {
     weather = updateWeather(units, geocode);
 });
 
-// has been refactored to accept only units & geocode (geocode returned from mapbox autocomplete)
 async function updateWeather(units, geocode) {
     $('#flashes').hide()
     let geocodeLat;
@@ -45,6 +43,13 @@ async function updateWeather(units, geocode) {
         updateWeatherDOM(resp.data);
     };
 };
+
+if (mapboxLocationSelectors.length === 1) {
+    weatherLocation = mapboxLocationSelectors;
+    weatherLocation.change((evt) => {
+        console.log(weatherLocation.select2('data'));
+    })
+} 
 
 // this isn't working and currently deactivate
 // TODO: fix and activate it
