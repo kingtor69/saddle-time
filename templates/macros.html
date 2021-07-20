@@ -69,8 +69,8 @@
           <div class="row justify-content-left">
               <div id="weather-header" class="location-widget">
                 <p>Current weather in:</p>
-                <label for="{{ location }}" class="mapbox-location-label form-label">{{ weather.city }}</label>
-                <select name="location" id="{{ location }}" class="mapbox-location-selector form-control">
+                <label for="weather-selector" class="mapbox-location-label form-label">{{ weather.city }}</label>
+                <select name="location" id="weather-selector" class="mapbox-location-selector form-control">
                   <option value="{{ lat }}, {{ lng }}">{{ location }}</option>
                 </select>
                 <!-- {% for field in form 
