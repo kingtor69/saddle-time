@@ -82,9 +82,22 @@ def geocode_from_location_mq(loc):
     except:
         return False
 
-# wait a cotton-pickin' minute:
-# since mapbox's key is public anyway, 
-# I should do this in JS, yeah?
+# def autocomplete_options_from_mapbox(location):
+#     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
+#     query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
+#     resp = requests.get(query_url)
+#     features = resp.json()["features"]
+#     choices = []
+#     for feature in features:
+        # mapbox_id = features['id']
+        # html_id = ""
+#         choice = {
+#             'id': html_id,
+#             'text': feature['place_name']
+#         }
+#         choices.append(choice)
+#     return {"results": choices}
+
 def autocomplete_options_from_mapbox(location):
     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
     query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
@@ -92,7 +105,7 @@ def autocomplete_options_from_mapbox(location):
     features = resp.json()["features"]
     choices = []
     for feature in features:
-        mapbox_id = features['id']
+        mapbox_id = feature['id']
         html_id = ""
         for char in list(mapbox_id):
             if char == ".":
@@ -101,6 +114,7 @@ def autocomplete_options_from_mapbox(location):
                 html_id += char
         choice = {
             'id': html_id,
+            'geocode': feature['geometry']['coordinates'],
             'text': feature['place_name']
         }
         choices.append(choice)
