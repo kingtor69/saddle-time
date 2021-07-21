@@ -92,8 +92,15 @@ def autocomplete_options_from_mapbox(location):
     features = resp.json()["features"]
     choices = []
     for feature in features:
+        mapbox_id = features['id']
+        html_id = ""
+        for char in list(mapbox_id):
+            if char == ".":
+                html_id += "-"
+            else:
+                html_id += char
         choice = {
-            'id': feature['geometry']['coordinates'],
+            'id': html_id,
             'text': feature['place_name']
         }
         choices.append(choice)
@@ -101,6 +108,7 @@ def autocomplete_options_from_mapbox(location):
 
 def geocode_from_location_mb(location):
     """uses mapbox to gather geocode information"""
+    # on second thought, maybe I'll just keep using mapquest for that bit...
 
 
 def current_weather_from_geocode(geocode, units="metric"):

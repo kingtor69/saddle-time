@@ -17,3 +17,29 @@ function displayErrors(errorObj) {
     };
     flashDiv.appendChild(errorTable);
 };
+
+function selectTwo(jQueryElement) {
+    jQueryElement.select2({
+        // dropdownParent: $('#weather-table'),
+        minimumInputLength: 3,
+        ajax: {
+            url: '/api/location',
+            datatype: JSON,
+            processResults: function (data) {
+                // console.log(data);
+                const formattedData = data.results.map(element => {
+                    return {
+                        id: element.id,
+                        text: element.text
+                    };
+                });
+                // Transforms the top-level key of the response object from 'items' to 'results'
+                return {
+                  results:formattedData
+                };
+              }
+        },
+        // allowClear: true
+    });
+    
+}

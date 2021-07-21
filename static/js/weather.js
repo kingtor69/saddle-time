@@ -11,24 +11,28 @@ const weatherConditions = document.querySelector('#weather-conditions')
 const weatherIcon = document.querySelector('#weather-icon')
 const weatherDetails = document.querySelector('#weather-details')
 
-const baseApiUrl = "/api/";
-
-unitsSelector.addEventListener('change', function(evt) {
-    units = evt.target.value;
-    weather = updateWeather(units, geocode);
-});
+// unitsSelector.addEventListener('change', function(evt) {
+//     units = evt.target.value;
+//     weather = updateWeather(units, geocode);
+// });
 
 async function updateWeather(units, geocode) {
     $('#flashes').hide()
-    let geocodeLat;
+let geocodeLat;
     let geocodeLng;
+    if (geocodeLat > 90 || geocodeLat < -90) {
+        throw new Error('Lattitude must be a number between -90 and 90.')
+    }
+    if (geocodeLng > 180 || geocodeLng < -180) {
+        throw new Error('Longitute must be a number between -180 and 180.')
+    }
     if (geocode) {
         geocodeLat = geocode[1];
         geocodeLng = geocode[0];
     } else {
         throw new Error('No geocode data makes it hard to find the weather.');
     }
-    const weatherUrl = `${baseApiUrl}weather?location=${location}&units=${units}&lat=${geocodeLat}&lng=${geocodeLng}`;
+    const weatherUrl = `/api/weather?location=${location}&units=${units}&lat=${geocodeLat}&lng=${geocodeLng}`;
     resp = await axios.get(weatherUrl);
     if (resp.data.Errors) {
         rawErrorObj = resp.data.Errors;
@@ -130,4 +134,34 @@ function updateWeatherDOM(weather) {
         ${weatherDetails.innerHTML}
     `
 };
+
+async function geocodeFromLocation(location) {
+    resp = await axios.get(`/api/location?location=${location}`);
+    console.log(resp)
+}
+
+///////////////////////////
+// location autocomplete //
+///////////////////////////
+// using Select2
+// weather location only:
+
+let weatherSelect2Data = selectTwo(weatherLocationSelector)
+
+weatherLocationSelector.change((e) => {
+    console.log(weatherSelect2Data);
+    // weatherLocation = weatherLocationSelector.select2('data')[0].text;
+    // localStorage.setItem('weatherLocation', weatherLocation);
+    // const geocode = geocodeFromLocation(weatherLocation);
+    // const weather = updateWeather(units, geocode);
+    // localStorage.setItem('weather', weather);
+
+});
+
+
+
+
+// need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
+// maybe because it's inside a Bootstrap "modal:"
+// https://select2.org/troubleshooting/common-problems
 

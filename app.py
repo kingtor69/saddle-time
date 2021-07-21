@@ -106,7 +106,7 @@ def location_autocomplete():
 def geocode_location():
     """retrieves lattitude and longitute from mapbox forward geocode"""
     location = request.args['location']
-    return jsonify(geocode_from_location_mb(location))
+    return jsonify(geocode_from_location_mq(location))
 
 
 @app.route('/api/weather', methods=["GET"])
