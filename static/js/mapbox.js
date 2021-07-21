@@ -64,7 +64,22 @@ weatherLocationSelector.select2({
     minimumInputLength: 3,
     ajax: {
         url: '/api/location',
-        datatype: JSON
+        datatype: JSON,
+        processResults: function (data) {
+            // console.log(data);
+            let id = 0
+            const formattedData = data.results.map(element => {
+                id++
+               return {
+                    id: id,
+                    text: element.text
+                };
+            });
+            // Transforms the top-level key of the response object from 'items' to 'results'
+            return {
+              results:formattedData
+            };
+          }
     },
     // allowClear: true
 });
