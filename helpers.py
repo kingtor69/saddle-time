@@ -98,29 +98,34 @@ def geocode_from_location_mq(loc):
 #         choices.append(choice)
 #     return {"results": choices}
 
-def autocomplete_options_from_mapbox(location):
+def autocomplete_options_from_mapbox(term):
     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
-    query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
+    query_url = f'{MB_API_BASE_URL}{term}.json?access_token={MB_API_KEY}'
     resp = requests.get(query_url)
     features = resp.json()["features"]
     choices = []
+    # TODO: something went wrong in here. API call is giving HTTP error 500
+    # when I copy paste the code into iPython, it works
     for feature in features:
         mapbox_geocode = feature['center']
         html_id = ""
         for char in list(mapbox_geocode):
             if char == "[":
-                html_id += ""
+                html_id = html_id +  ""
             elif char == "]":
-                html_id += ""
+                html_id = html_id +  ""
             elif char == ".":
-                html_id += "p"
+                html_id = html_id +  "p"
             elif char == ",":
-                html_id += "c"
+                html_id = html_id +  "c"
             elif char == " ":
-                html_id +=""
+                html_id = html_id + ""
             else:
-                html_id += char
-        html_id += "c_"
+                # when I run this method from iPython, passing in a string, it gives and error here:
+                # TypeError: can only concatenate str (not "float") to str
+
+                html_id = html_id +  str(char)
+        html_id = html_id +  "c_"
         choice = {
             'id': html_id,
             'text': feature['place_name']

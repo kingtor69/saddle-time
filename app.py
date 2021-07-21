@@ -99,8 +99,8 @@ def load_home_page():
 def location_autocomplete():
     """retrieves location options from mapbox autocomplete
     accepting select2 data which comes in as 'term'"""
-    location = request.args['term']
-    return jsonify(autocomplete_options_from_mapbox(location))
+    term = request.args['term']
+    return jsonify(autocomplete_options_from_mapbox(term))
 
 @app.route('/api/geocode', methods=["GET"])
 def geocode_location():

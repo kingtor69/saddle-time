@@ -111,6 +111,7 @@ function updateWeatherDOM(weather) {
         unitsOptionMetric.selected = 'selected';
         unitsOptionImperial.selected = '';
     } else {
+        // this is where it brakes (see TODO on line 196)
         throw new Error('invalid weather units');
     }
 
@@ -192,6 +193,7 @@ weatherLocationSelector.change((e) => {
         }
     }
     localStorage.setItem('weatherGeocode', [mapLat, mapLng]);
+    // TODO: well... I fixed other shit, but it breaks here after it gets the weather and goes to update the DOM (line 115)
     const weather = updateWeather(units, [mapLat, mapLng]);
     localStorage.setItem('weather', weather);
 });
