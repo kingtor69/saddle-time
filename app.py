@@ -6,7 +6,7 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox, geocode_from_mapbox_id
 
 app=Flask(__name__)
 
@@ -104,9 +104,25 @@ def location_autocomplete():
 
 @app.route('/api/geocode', methods=["GET"])
 def geocode_location():
-    """retrieves lattitude and longitute from mapbox forward geocode"""
-    location = request.args['location']
-    return jsonify(geocode_from_location_mq(location))
+    try: 
+        location = request.args['location']
+        return jsonify(geocode_from_location_mq(request.args['location']))
+    except:
+        return {"results": {"Errors": {"Geocoding error": "Invalid location entered."}}}
+
+    # couldn't find out how to do what I was trying to do, so I'm just going with location (above)
+    # """retrieves lattitude and longitute from either location name using mapquest or by using the mapbox id that has been retrieved from a location search"""
+    # if request.args['location']:
+    #     return jsonify(geocode_from_location_mq(request.args['location']))
+    # if request.args['id']:
+    #     return jsonify(geocode_from_mapbox_id(request.args['id']))
+    # return {"results": {"Errors": {"Geocoding error": "Our geocode API must receive either location or the mapbox id for a location."}}}
+
+# @app.route('/api/mapbox', methods=["GET"])
+# def geocode_mapbox_id ():
+#     """retries lattitude and longitude from mapquest location ID"""
+#     id = 
+#     return jsonify(geocode_from_mapbox_id(id))
 
 
 @app.route('/api/weather', methods=["GET"])

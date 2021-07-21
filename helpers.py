@@ -105,16 +105,24 @@ def autocomplete_options_from_mapbox(location):
     features = resp.json()["features"]
     choices = []
     for feature in features:
-        mapbox_id = feature['id']
+        mapbox_geocode = feature['center']
         html_id = ""
-        for char in list(mapbox_id):
-            if char == ".":
-                html_id += "-"
+        for char in list(mapbox_geocode):
+            if char == "[":
+                html_id += ""
+            elif char == "]":
+                html_id += ""
+            elif char == ".":
+                html_id += "p"
+            elif char == ",":
+                html_id += "c"
+            elif char == " ":
+                html_id +=""
             else:
                 html_id += char
+        html_id += "c_"
         choice = {
             'id': html_id,
-            'geocode': feature['geometry']['coordinates'],
             'text': feature['place_name']
         }
         choices.append(choice)
@@ -204,3 +212,6 @@ def check_errors_geocode(lat, lng, error_count):
         geocode = (lat, lng)
 
     return (errors_geocode, geocode, error_count)
+
+def geocode_from_mapbox_id(id):
+    """retrieves geocode from mapbox from the place id which is taken from a location search with mapbox"""
