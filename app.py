@@ -295,15 +295,17 @@ def create_new_route():
 def process_new_route_form():
     """render the RouteForm, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
-    cps = int(request.args.get('cps')) if request.args.get('cps') else 0
+    # something is breaking Ashir's 'puter when the template loads.... 
+    # might be this cps thing...?
+    # but I doubt it...
+
+    cps = int(request.args.get('cps')) if request.args.get('cps') else 1
     route_form = RouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
     end_form = NewCheckpointForm(prefix="cp-999")
     additional_forms = []
     for i in range(1, cps):
         additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
-    
-
     
     # I think processing the form data is going to be better in JS
     # if you change your mind, you'll need this:

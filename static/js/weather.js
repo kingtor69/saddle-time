@@ -1,5 +1,5 @@
 // TODO: make browser location work
-
+// TODO: fix st
 // mapLat and mapLng are generated in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
 const unitsOptionMetric = document.querySelector('option.metric-option')
