@@ -1,7 +1,7 @@
 {% macro mb_geocoder() %}
 {% endmacro %}
 
-{% macro mapbox(lat, lng, zoom, size) %}
+{% macro mapbox(lng, lat, zoom, size) %}
 <div id='map' class='{{ size }}'>
   <ul hidden>
     <li id="map-lat">{{ lat }}</li>
@@ -61,7 +61,7 @@
   </div>
 {% endmacro %}
 
-{% macro weather_info(weather, location) %}
+{% macro weather_info(weather, location, weather_units) %}
   <table class="table table-dark table-striped rounded" id="weather-table">
     <thead>
       <tr id="weather-header-selectors">
@@ -85,7 +85,7 @@
                 <p id="geocodeLng" hidden>{{ lng }}</p>
                 <p id="geocodeLat" hidden>{{ lat }}</p>
                 <small class="text-muted h5" id="weather-city-directions">
-                  <i>click city to change</i>
+                  <!-- <i>click city to change</i> -->
                   <!-- or <button id="browser-location-select" class="">click here to use broswer location</button> -->
                 </small>
               </div>

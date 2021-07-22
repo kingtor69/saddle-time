@@ -7,7 +7,7 @@ let firstTime = true;
 
 // display mapbox:
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';
-var map = new mapboxgl.Map({
+let map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/streets-v11', // style URL
     center: [mapLng, mapLat], // starting position [lng, lat]

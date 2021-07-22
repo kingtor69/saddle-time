@@ -82,30 +82,14 @@ def geocode_from_location_mq(loc):
     except:
         return False
 
-# def autocomplete_options_from_mapbox(location):
-#     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
-#     query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
-#     resp = requests.get(query_url)
-#     features = resp.json()["features"]
-#     choices = []
-#     for feature in features:
-        # mapbox_id = features['id']
-        # html_id = ""
-#         choice = {
-#             'id': html_id,
-#             'text': feature['place_name']
-#         }
-#         choices.append(choice)
-#     return {"results": choices}
-
 def autocomplete_options_from_mapbox(term):
     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
     query_url = f'{MB_API_BASE_URL}{term}.json?access_token={MB_API_KEY}'
     resp = requests.get(query_url)
     features = resp.json()["features"]
     choices = []
-    # TODO: something went wrong in here. API call is giving HTTP error 500
-    # when I copy paste the code into iPython, it works
+    # TODO: something went wrong in here. e.g. html_id for "Detroit, Michigan, United States" is -83.056742.3487 and *should be* -83.0567c_42.3487
+    # I have a redundant workaround to "fix" this, so I'm ignoring it for the moment
     for feature in features:
         mapbox_geocode = feature['center']
         html_id = ""
@@ -117,14 +101,14 @@ def autocomplete_options_from_mapbox(term):
             elif char == ".":
                 html_id = html_id +  "p"
             elif char == ",":
-                html_id = html_id +  "c"
+                html_id = html_id +  "c_"
             elif char == " ":
                 html_id = html_id + ""
             else:
                 # when I run this method from iPython, passing in a string, it gives and error here:
                 # TypeError: can only concatenate str (not "float") to str
 
-                html_id = html_id +  str(char)
+                html_id = html_id + str(char)
         html_id = html_id +  "c_"
         choice = {
             'id': html_id,
@@ -134,8 +118,10 @@ def autocomplete_options_from_mapbox(term):
     return {"results": choices}
 
 def geocode_from_location_mb(location):
-    """uses mapbox to gather geocode information"""
-    # on second thought, maybe I'll just keep using mapquest for that bit...
+    """uses mapbox to gather geocode information, returning geocode for the first result in mapbox' format (longitude, latitude) even though that's weird"""
+    query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
+    resp = requests.get(query_url)
+    return resp.json()["features"][0]['center']
 
 
 def current_weather_from_geocode(geocode, units="metric"):

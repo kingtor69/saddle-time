@@ -43,54 +43,41 @@ def add_route_to_g():
 
 
 
-@app.route('/', methods=["GET", "POST"])
+@app.route('/', methods=["GET"])
 def load_home_page():
     """Loads home page.
     If there is a logged in user, page shows weather from user's default location and most recently created route.
     If no one is logged in, page shows weather from default location (Albuquerque, NM because that's my joint) in metric units (because cycling). Offer the user option to change the location (including to their browser's location) and the units. (Location change handled in app.js; units change handled hear)
     """
-    location = ""
-    if not request.method == "POST":
-        try:
-            location = g.user.location if g.user.location else "949 Montoya St NW, Albuquerque, NM 87104"
-        except:
-            flash('using default location (Bike-in Coffee in Old Town Albuquerque, NM)', 'info')
-            location="949 Montoya St NW, Albuquerque, NM 87104"
-        
-        try:
-            units=g.user.weather_units if g.user.weather_units else "metric"
-        except:
-            flash('using default measurement units (metric)', 'info')
-            units="metric"
+    # default values: 
+    location = "3139 Mission St, San Francisco, CA 94110"
+    loc_lat = 37.746998
+    loc_lng = -122.418653
+    units = "imperial"
+    if 'location' in request.args:
+        location = request.args['location']
     else:
-        # in other words, request.method IS "POST"
-        location = request.location.data
-        units = request.unitSelect.data
-        
-    # weather_prefs_form = WeatherPrefsForm()
-    # if weather_prefs_form.validate_on_submit():
-    #     location=form.location.data
-    #     units=form.units.data
+        try:
+            location = g.user.location
+        except:
+            flash('using default location (CoffeeShop on Mission St)', 'info')
+    if 'latitude' in request.args and 'longitute' in request.args:
+        loc_lat = request.args['latitude']
+        loc_lng = request.args['longitute']
+    else:
+        [loc_lng, loc_lat] = geocode_from_location_mb(location)
+    
+    if 'units' in request.args:
+        units = request.args['units']
+    else:
+        try:
+            units = g.user.units
+        except:
+            flash('using default temperature and distance units (imperial)', 'info')
 
-    geocode_list=geocode_from_location_mq(location)
-    if len(geocode_list) == 0:
-        flash('Geocoding error: no results found for location.', 'warning')
-        return redirect('/')
-    if len(geocode_list) > 1:
-        flash('Geocoding error: default location is not specific enough. Please use location selector to find the right one.', 'warning')
-        return redirect('/')
-        # return render_template('geocode-choices.html', geocode_list=geocode_list, return_to='/')
-    geocode = geocode_list[0]
-    # because mapbox does their geocodes backwards:
-    geocode_mapbox = [geocode[1], geocode[0]]
+    weather = current_weather_from_geocode([loc_lat, loc_lng], units)
 
-    weather = current_weather_from_geocode(geocode)
-    # form = LocationForm()
-    # form.location.choices = ([(geocode_mapbox, location)])
-    # form.location.label = weather['city']
-
-    return render_template('home.html', weather=weather, lng=geocode[0], lat=geocode[1], location=location)
-
+    return render_template('home.html', weather=weather, lng=loc_lng, lat=loc_lat, location=location, weather_units=units)
 
 #####################################
 ##### location & weather routes #####
@@ -111,7 +98,7 @@ def geocode_location():
         return {"results": {"Errors": {"Geocoding error": "Invalid location entered."}}}
 
     # couldn't find out how to do what I was trying to do, so I'm just going with location (above)
-    # """retrieves lattitude and longitute from either location name using mapquest or by using the mapbox id that has been retrieved from a location search"""
+    # """retrieves latitude and longitute from either location name using mapquest or by using the mapbox id that has been retrieved from a location search"""
     # if request.args['location']:
     #     return jsonify(geocode_from_location_mq(request.args['location']))
     # if request.args['id']:
@@ -120,7 +107,7 @@ def geocode_location():
 
 # @app.route('/api/mapbox', methods=["GET"])
 # def geocode_mapbox_id ():
-#     """retries lattitude and longitude from mapquest location ID"""
+#     """retries latitude and longitude from mapquest location ID"""
 #     id = 
 #     return jsonify(geocode_from_mapbox_id(id))
 
@@ -128,7 +115,7 @@ def geocode_location():
 @app.route('/api/weather', methods=["GET"])
 def retrieve_weather_data_from_geocode():
     """gather weather data from units & geocode input
-    NOTE: the geocode used by the weather API is lat-lng whereas mapbox uses lng-lat, and that's one reason this accepts lattitude and longitude as separate arguments."""
+    NOTE: the geocode used by the weather API is lat-lng whereas mapbox uses lng-lat, and that's one reason this accepts latitude and longitude as separate arguments."""
     # TODO: needs error managing
 
     units = request.args['units']
@@ -367,7 +354,7 @@ def create_new_checkpoint():
 
 @app.route('/api/geocode')
 def get_geocode_for_location():
-    """returns geocode for an input location as a list of [lattitude, longitude]"""
+    """returns geocode for an input location as a list of [latitude, longitude]"""
     # if 
     # location = request.args['location']
 

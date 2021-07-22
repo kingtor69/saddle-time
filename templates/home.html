@@ -10,7 +10,7 @@
   <div class="row justify-content-center">
     <div class="col">
       <span class="d-none"></span>
-      {{ weather_info(weather, location) }}
+      {{ weather_info(weather, location, weather_units) }}
     </div>
     <div class="col">
         <div class="row justify-content-center">
@@ -28,7 +28,7 @@
         {% endif %}
         <div class="row justify-content-center">
           <div class="col">
-            {{ mapbox(lng, lat, 10, medium) }}
+            {{ mapbox(lng, lat, 12, medium) }}
           </div>
         </div>
       </div>

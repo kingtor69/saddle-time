@@ -2,7 +2,6 @@
 
 // mapLat and mapLng are generated in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
-let units = unitsSelector.value;
 const unitsOptionMetric = document.querySelector('option.metric-option')
 const unitsOptionImperial = document.querySelector('option.imperial-option')
 const weatherHeader = document.querySelector('#weather-header')
@@ -11,10 +10,21 @@ const weatherConditions = document.querySelector('#weather-conditions')
 const weatherIcon = document.querySelector('#weather-icon')
 const weatherDetails = document.querySelector('#weather-details')
 
-// unitsSelector.addEventListener('change', function(evt) {
-//     units = evt.target.value;
-//     weather = updateWeather(units, geocode);
-// });
+selectTwo(weatherLocationSelector)
+
+let weatherLocation = weatherLocationSelector.select2('data')[0].text
+let units = unitsSelector.value;
+// let weatherLocation = (localStorage['weatherLocation']) ? localStorage['weatherLocation'] : '3139 Mission St, San Francisco 94110, United States';
+
+
+
+unitsSelector.addEventListener('change', function(evt) {
+    units = evt.target.value;
+    localStorage.setItem('units', units)
+    window.location.replace(`/?location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
+    // weather = updateWeather(units, geocode);
+
+});
 
 async function updateWeather(units, geocode) {
     $('#flashes').hide()
@@ -152,10 +162,6 @@ async function geocodeFromMapboxLocation(locationId) {
 // location autocomplete //
 ///////////////////////////
 // using Select2
-// weather location only:
-
-selectTwo(weatherLocationSelector)
-
 weatherLocationSelector.change((e) => {
     let weatherLocation = weatherLocationSelector.select2('data')[0].text;
     localStorage.setItem('weatherLocation', weatherLocation);
@@ -192,14 +198,18 @@ weatherLocationSelector.change((e) => {
             };
         }
     }
+    localStorage.setItem('weatherLng', mapLng);
+    localStorage.setItem('weatherLat', mapLat);
     localStorage.setItem('weatherGeocode', [mapLat, mapLng]);
+    console.log(units)
+    if (localStorage['units']) {
+        units = localStorage['units']
+    };
     // TODO: well... I fixed other shit, but it breaks here after it gets the weather and goes to update the DOM (line 115)
     const weather = updateWeather(units, [mapLat, mapLng]);
     localStorage.setItem('weather', weather);
+    window.location.replace(`/?location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
 });
-
-
-
 
 // need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
 // maybe because it's inside a Bootstrap "modal:"
