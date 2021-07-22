@@ -93,23 +93,22 @@ def autocomplete_options_from_mapbox(term):
     for feature in features:
         mapbox_geocode = feature['center']
         html_id = ""
-        for char in list(mapbox_geocode):
-            if char == "[":
-                html_id = html_id +  ""
-            elif char == "]":
-                html_id = html_id +  ""
-            elif char == ".":
-                html_id = html_id +  "p"
-            elif char == ",":
-                html_id = html_id +  "c_"
-            elif char == " ":
-                html_id = html_id + ""
-            else:
-                # when I run this method from iPython, passing in a string, it gives and error here:
-                # TypeError: can only concatenate str (not "float") to str
-
-                html_id = html_id + str(char)
-        html_id = html_id +  "c_"
+        for geocode_element in mapbox_geocode:
+            geocode_element_str = str(geocode_element)
+            for char in list(geocode_element_str):
+                if char == "[":
+                    html_id = html_id
+                elif char == "]":
+                    html_id = html_id
+                elif char == ".":
+                    html_id = html_id + "p"
+                elif char == ",":
+                    html_id = html_id + "c_"
+                elif char == " ":
+                    html_id = html_id
+                else:
+                    html_id = html_id + str(char)
+            html_id = html_id +  "c_"
         choice = {
             'id': html_id,
             'text': feature['place_name']

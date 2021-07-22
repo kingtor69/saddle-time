@@ -1,6 +1,7 @@
 const flashDiv = document.querySelector('#flashes');
 
 function displayErrors(errorObj) {
+    console.log(errorObj)
     const errorTable = document.createElement('table');
     errorTable.classList.add("table","error-table","table-striped")
     for (let error in errorObj) {
@@ -42,4 +43,9 @@ function selectTwo(jQueryElement) {
         // allowClear: true
     });
     
+}
+
+function updateUrl(queryString) {
+    let newurl = window.location.origin + window.location.pathname + `?${queryString}`;
+    window.history.pushState({path:newurl},'',newurl);
 }

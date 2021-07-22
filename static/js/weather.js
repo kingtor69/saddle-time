@@ -16,33 +16,22 @@ let weatherLocation = weatherLocationSelector.select2('data')[0].text
 let units = unitsSelector.value;
 // let weatherLocation = (localStorage['weatherLocation']) ? localStorage['weatherLocation'] : '3139 Mission St, San Francisco 94110, United States';
 
-
-
 unitsSelector.addEventListener('change', function(evt) {
     units = evt.target.value;
     localStorage.setItem('units', units)
-    window.location.replace(`/?location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
-    // weather = updateWeather(units, geocode);
-
+    weather = updateWeather(units, mapLat, mapLng);
+    updateUrl(`location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
 });
 
-async function updateWeather(units, geocode) {
+async function updateWeather(units, lat, lng) {
     $('#flashes').hide()
-let geocodeLat;
-    let geocodeLng;
-    if (geocodeLat > 90 || geocodeLat < -90) {
+    if (lat > 90 || lat < -90) {
         throw new Error('Lattitude must be a number between -90 and 90.')
     }
-    if (geocodeLng > 180 || geocodeLng < -180) {
+    if (lng > 180 || lng < -180) {
         throw new Error('Longitute must be a number between -180 and 180.')
     }
-    if (geocode) {
-        geocodeLat = geocode[1];
-        geocodeLng = geocode[0];
-    } else {
-        throw new Error('No geocode data makes it hard to find the weather.');
-    }
-    const weatherUrl = `/api/weather?location=${location}&units=${units}&lat=${geocodeLat}&lng=${geocodeLng}`;
+    const weatherUrl = `/api/weather?units=${units}&lat=${lat}&lng=${lng}`;
     resp = await axios.get(weatherUrl);
     if (resp.data.Errors) {
         rawErrorObj = resp.data.Errors;
@@ -53,22 +42,121 @@ let geocodeLat;
             };
         };
         displayErrors(errorObj);
+    } else if (!resp.data) {
+        displayErrors({'error': `no data returned from ${weatherUrl}`});
     } else {
         updateWeatherDOM(resp.data);
     };
 };
 
+function updateWeatherDOM(weather) {
+    console.log(weather)
+    weatherConditionsHeader.innerHTML = ""
+    if (weather.units === "imperial") {
+        unitsOptionMetric.selected = '';
+        unitsOptionImperial.selected = 'selected';
+    } else if (weather.units === "metric") {
+        unitsOptionMetric.selected = 'selected';
+        unitsOptionImperial.selected = '';
+    } else {
+        // this is where it brakes (see TODO on line 196)
+        throw new Error('invalid weather units');
+    }
 
-// if (mapboxLocationSelectors.length === 1) {
-//     weatherLocation = mapboxLocationSelectors;
-//     weatherLocation.change((evt) => {
-//         console.log(weatherLocation.select2('data'));
-//     })
-// } else {
+    // update conditions headline
+    // TODO: this is not working when using select2 to change locations, that block disappears
+    // which might be because of the error being thrown above.... 
+    weatherConditions.innerText = weather.conditions;
+    weatherIcon.innerHTML = `<img src="${weather.weather_icon_url}">`
+    weatherConditionsHeader.appendChild(weatherConditions)
+    weatherConditionsHeader.appendChild(weatherIcon)
     
-// }
+    // TODO: city name is also not updating
+    $('#weather-city').text(weather.city)
 
-// this isn't working and currently deactivate
+    // gather DOM and data for details
+    weatherDetailKeysTds = document.querySelectorAll('td.weather-detail-key')
+    weatherDetailValueTds = document.querySelectorAll('td.weather-detail-value')
+    const weatherDetailObj = weather.current_weather_details
+    
+    // now put the right values in the existing keys
+    for (let i=0; i<weatherDetailKeysTds.length; i++) {
+        weatherDetailValueTds[i].innerText = weatherDetailObj[weatherDetailKeysTds[i].innerText]
+    }
+    return `
+        ${weatherConditionsHeader.innerHTML}
+        ${weatherDetails.innerHTML}
+    `
+};
+
+async function geocodeFromLocation(location) {
+    // gets geocode data from a location using MapQuest's API
+    resp = await axios.get(`/api/geocode?location=${location}`);
+    lat = resp.data[0][0];
+    lng = resp.data[0][1];
+    return [lat, lng]
+}
+
+async function geocodeFromMapboxLocation(locationId) {
+    resp = await axios.get(`/api/geocode?id=${locationId}`)
+}
+
+///////////////////////////
+// location autocomplete //
+////// using Select2 //////
+///////////////////////////
+weatherLocationSelector.change((e) => {
+    let weatherLocation = weatherLocationSelector.select2('data')[0].text;
+    localStorage.setItem('weatherLocation', weatherLocation);
+    let htmlId = weatherLocationSelector.select2('data')[0].id;
+    let lattitude = false;
+    let longitude = true;
+    let floatString = "";
+    let floatStringDone = false;
+    let mapLng = NaN;
+    let mapLat = NaN;
+    debugger;
+    for (let char of htmlId) {
+        if (floatStringDone) {
+            if (longitude) {
+                mapLng = parseFloat(floatString);
+                floatString="";
+                longitude = false;
+                lattitude = true;
+                floatStringDone = false;
+            } else if (lattitude) {
+                mapLat = parseFloat(floatString);
+            }
+        } else {
+            if (char === "_") {
+                // skip underscores
+            } else if (char === "p") {
+                // turn "p" into decimal place
+                floatString += ".";
+            } else if (char === "c") {
+                // comma means the number is done
+                floatStringDone = true;
+            } else {
+                // any other character is assumed to be a number
+                floatString += char;
+            };
+        }
+    }
+    localStorage.setItem('weatherLng', mapLng);
+    localStorage.setItem('weatherLat', mapLat);
+    localStorage.setItem('weatherGeocode', [mapLat, mapLng]);
+    if (localStorage['units']) {
+        units = localStorage['units']
+    };
+    updateWeather(units, [mapLat, mapLng]);
+    updateUrl(`location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
+});
+
+// need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
+// maybe because it's inside a Bootstrap "modal:"
+// https://select2.org/troubleshooting/common-problems
+
+// using browser location isn't working and currently deactivated
 // TODO: fix and activate it
 // browserLocationButton.addEventListener('click', function() {
 //     const default_location = "949 Montoya St NW, Albuquerque, NM 87104"
@@ -105,113 +193,4 @@ let geocodeLat;
   
 //     navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 // });
-
-// TODO: add unitsSelector eventListener
-
-function updateWeatherDOM(weather) {
-    weatherConditionsHeader.innerHTML = ""
-    // update city:
-    // >>>>>>>>>> TODO: when this is accessed via the temperature change route, we get a big, fat nothing in weather.city
-    // weatherCityInput.value = weather.city;
-    // update units:
-    if (weather.units === "imperial") {
-        unitsOptionMetric.selected = '';
-        unitsOptionImperial.selected = 'selected';
-    } else if (weather.units === "metric") {
-        unitsOptionMetric.selected = 'selected';
-        unitsOptionImperial.selected = '';
-    } else {
-        // this is where it brakes (see TODO on line 196)
-        throw new Error('invalid weather units');
-    }
-
-    // update conditions headline
-    weatherConditions.innerText = weather.conditions;
-    weatherIcon.innerHTML = `<img src="${weather.weather_icon_url}">`
-    weatherConditionsHeader.appendChild(weatherConditions)
-    weatherConditionsHeader.appendChild(weatherIcon)
-    
-    // gather DOM and data for details
-    weatherDetailKeysTds = document.querySelectorAll('td.weather-detail-key')
-    weatherDetailValueTds = document.querySelectorAll('td.weather-detail-value')
-    const weatherDetailObj = weather.current_weather_details
-    
-    // now put the right values in the existing keys
-    for (let i=0; i<weatherDetailKeysTds.length; i++) {
-        weatherDetailValueTds[i].innerText = weatherDetailObj[weatherDetailKeysTds[i].innerText]
-    }
-    return `
-        ${weatherConditionsHeader.innerHTML}
-        ${weatherDetails.innerHTML}
-    `
-};
-
-async function geocodeFromLocation(location) {
-    // gets geocode data from a location using MapQuest's API
-    resp = await axios.get(`/api/geocode?location=${location}`);
-    lat = resp.data[0][0];
-    lng = resp.data[0][1];
-    return [lat, lng]
-}
-
-async function geocodeFromMapboxLocation(locationId) {
-    resp = await axios.get(`/api/geocode?id=${locationId}`)
-}
-
-///////////////////////////
-// location autocomplete //
-///////////////////////////
-// using Select2
-weatherLocationSelector.change((e) => {
-    let weatherLocation = weatherLocationSelector.select2('data')[0].text;
-    localStorage.setItem('weatherLocation', weatherLocation);
-    let htmlId = weatherLocationSelector.select2('data')[0].id;
-    let lattitude = false;
-    let longitude = true;
-    let floatString = "";
-    let floatStringDone = false;
-    let mapLng = NaN;
-    let mapLat = NaN;
-    for (let char of htmlId) {
-        if (floatStringDone) {
-            if (longitude) {
-                mapLng = parseFloat(floatString);
-                floatString="";
-                longitude = false;
-                lattitude = true;
-                floatStringDone = false;
-            } else if (lattitude) {
-                mapLat = parseFloat(floatString);
-            }
-        } else {
-            if (char === "_") {
-                // skip underscores
-            } else if (char === "p") {
-                // turn "p" into decimal place
-                floatString += ".";
-            } else if (char === "c") {
-                // comma means the number is done
-                floatStringDone = true;
-            } else {
-                // any other character is assumed to be a number
-                floatString += char;
-            };
-        }
-    }
-    localStorage.setItem('weatherLng', mapLng);
-    localStorage.setItem('weatherLat', mapLat);
-    localStorage.setItem('weatherGeocode', [mapLat, mapLng]);
-    console.log(units)
-    if (localStorage['units']) {
-        units = localStorage['units']
-    };
-    // TODO: well... I fixed other shit, but it breaks here after it gets the weather and goes to update the DOM (line 115)
-    const weather = updateWeather(units, [mapLat, mapLng]);
-    localStorage.setItem('weather', weather);
-    window.location.replace(`/?location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
-});
-
-// need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
-// maybe because it's inside a Bootstrap "modal:"
-// https://select2.org/troubleshooting/common-problems
 
