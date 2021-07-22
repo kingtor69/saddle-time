@@ -58,17 +58,20 @@ function geocodeFromLocation(location) {
 ///////////////////////////
 // using Select2
 const mapboxLocationSelectors = $('select.mapbox-location-selector');
-mapboxLocationSelectors.each(() => {
-    mapboxLocationSelectors.select2({
-        minimumInputLength: 3,
-        ajax: {
-            url: '/api/location',
-            datatype: JSON
-        },
-        // allowClear: true,
+mapboxLocationSelectors.select2({
+    minimumInputLength: 3,
+    ajax: {
+        url: '/api/location',
+        datatype: JSON
+    },
+    // allowClear: true,
+});
+mapboxLocationSelectors.each((index, mapboxLocationSelector) => {
+    $(mapboxLocationSelector).change(() => {
+        console.log(mapboxLocationSelector)
+        // console.log(mapboxLocationSelector.val())
     });
-    
-})
+});
 
 // need to add class "mapbox-location-selector" form-control because apparently it goes away when select2 is turned on
 
