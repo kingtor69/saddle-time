@@ -1,14 +1,12 @@
 {% macro mb_geocoder() %}
 {% endmacro %}
 
-{% macro mapbox(lng, lat, zoom, size, with_center_marker) %}
+{% macro mapbox(lng, lat, zoom, size) %}
 <div id='map' class='{{ size }}'>
-  <!-- <ul hidden> -->
-  <ul>
+  <ul hidden>
     <li id="map-lat">{{ lat }}</li>
     <li id="map-lng">{{ lng }}</li>
     <li id="map-zoom">{{ zoom }}</li>
-    <li id="center-marker">{{ with_center_marker }}</li>
   </ul>
 </div>
 <script src="/static/js/mapbox.js"></script>

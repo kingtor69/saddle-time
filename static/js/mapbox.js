@@ -51,8 +51,6 @@ map.on('load', function() {
 
 const weatherLocationSelector = $('#weather-selector');
 
-console.log($('#center-marker'))
-
 // $('.location-field')
 
 // console.log (`here we are with some locators`);

@@ -6,7 +6,7 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox, geocode_from_mapbox_id
+from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, check_errors_location, check_errors_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox, geocode_from_mapbox_id, location_from_geocode_mb
 
 app=Flask(__name__)
 
@@ -86,8 +86,14 @@ def load_home_page():
 def location_autocomplete():
     """retrieves location options from mapbox autocomplete
     accepting select2 data which comes in as 'term'"""
-    term = request.args['term']
-    return jsonify(autocomplete_options_from_mapbox(term))
+    if request.args['term']:
+        term = request.args['term']
+        return jsonify(autocomplete_options_from_mapbox(term))
+    if request.args['lat'] and request.args['lng']:
+        try:
+            location_from_geocode_mb(request.args['lng'], request.args['lat']);
+        except:
+            return {"results": {"Errors": {"Geocoding error": "Invalid geocode entered."}}}
 
 @app.route('/api/geocode', methods=["GET"])
 def geocode_location():
@@ -96,21 +102,6 @@ def geocode_location():
         return jsonify(geocode_from_location_mq(request.args['location']))
     except:
         return {"results": {"Errors": {"Geocoding error": "Invalid location entered."}}}
-
-    # couldn't find out how to do what I was trying to do, so I'm just going with location (above)
-    # """retrieves latitude and longitute from either location name using mapquest or by using the mapbox id that has been retrieved from a location search"""
-    # if request.args['location']:
-    #     return jsonify(geocode_from_location_mq(request.args['location']))
-    # if request.args['id']:
-    #     return jsonify(geocode_from_mapbox_id(request.args['id']))
-    # return {"results": {"Errors": {"Geocoding error": "Our geocode API must receive either location or the mapbox id for a location."}}}
-
-# @app.route('/api/mapbox', methods=["GET"])
-# def geocode_mapbox_id ():
-#     """retries latitude and longitude from mapquest location ID"""
-#     id = 
-#     return jsonify(geocode_from_mapbox_id(id))
-
 
 @app.route('/api/weather', methods=["GET"])
 def retrieve_weather_data_from_geocode():
@@ -121,55 +112,6 @@ def retrieve_weather_data_from_geocode():
     units = request.args['units']
     geocode = (request.args['lat'], request.args['lng'])
     return jsonify(current_weather_from_geocode(geocode, units))
-
-
-# def retrieve_weater_data():
-#     """collect and return weather information"""
-#     location = False if request.args['location'] == 'null' else request.args['location']
-#     units = request.args['units']
-
-#     if request.args['lat'] == 'undefined':
-#         lat = False
-#     else:
-#         try:
-#             lat = float(request.args['lat'])
-#             lng = float(request.args['lng'])
-#         except:
-#             lat = False
-#             lng = False 
-#     if request.args['lng'] == 'undefined':
-#         lng = False 
-#     else: 
-#         try:
-#             lng = float(request.args['lng'])
-#         except:
-#             lng = False 
-    
-#     # retDic = validateWeatherInputs(location, units, lat, lng)
-#     errors = {"Errors": {}}
-#     (locationErrors, error_count) = check_errors_location(location, 0)
-#     if len(locationErrors) > 0:
-#         for error in locationErrors:
-#             errors["Errors"]["Location Error"] = error
-
-#     (geocodeErrors, error_count) = check_errors_geocode(lat, lng, error_count)
-#     if len(geocodeErrors) > 0:
-#         for error in geocodeErrors:
-#             errors["Errors"]["Geocoding Error"] = error
-#     else:
-#         geocode_list=geocode_from_location_mq(location)
-#     if len(geocode_list) == 0:
-#         errors["Errors"]["Geocoding Error"] = "No Results Found For {lat}, {lng}"
-#         error_count +=2
-#     if len(geocode_list) > 1:
-#         errors["Errors"]["Geocoging Error"] = f"More than one result for {lat}, {lng}. Please be more specific."
-#         error_count += 2
-#     geocode = geocode_list[0]
-
-#     if error_count > 1:
-#         return jsonify(errors)
-
-#     return jsonify(current_weather_from_geocode(geocode, units))
 
 
 #######################
@@ -289,7 +231,7 @@ def logout():
 ########################
 @app.route('/api/routes/new', methods=["POST"])
 def create_new_route():
-    """Create a new route from AJAX/Axios API call from `routes.js`"""
+    """Save new route to database. Will save to a guest user if there's no logged-in user. For actual production, this would only be availble to logged-in users, but for portfolio it will work for anyone."""
 
 @app.route('/routes/new')
 def process_new_route_form():
@@ -299,10 +241,9 @@ def process_new_route_form():
     # might be this cps thing...?
     # but I doubt it...
 
-
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
-    lat = float(request.args.get('cp-0-lat')) if request.args.get('cp-0-lat') else False
-    lng = float(request.args.get('cp-0-lng')) if request.args.get('cp-0-lat') else False
+    lat = float(request.args.get('lat')) if request.args.get('lat') else False
+    lng = float(request.args.get('lng')) if request.args.get('lat') else False
     route_form = RouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
     end_form = NewCheckpointForm(prefix="cp-999")
@@ -319,10 +260,6 @@ def display_available_routes():
 # @app.route('/api/routes')
 # def display_users_routes():
 #     """Show route on map and with step-by-step directions, and weather information for the route. This uses the GET method to store all route information in the query string."""
-
-@app.route('/routes/save')
-def save_route():
-    """Save a route into the database. Page can only be accessed by registered and logged-in users."""
 
 @app.route('/api/routes/<id>')
 def display_saved_route():

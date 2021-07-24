@@ -205,3 +205,7 @@ def check_errors_geocode(lat, lng, error_count):
 
 def geocode_from_mapbox_id(id):
     """retrieves geocode from mapbox from the place id which is taken from a location search with mapbox"""
+
+def location_from_geocode_mb(lng, lat):
+    """retrieves location from mapbox given geocode (in their backwards format"""
+    

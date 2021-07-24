@@ -42,7 +42,6 @@ function selectTwo(jQueryElement) {
         },
         // allowClear: true
     });
-    
 }
 
 function updateUrl(queryString) {
