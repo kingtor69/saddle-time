@@ -37,7 +37,13 @@
       {{ checkpoint_form(end_form, 999)}}
     </div>
   </div>
+  <div class="row">
+    <div class="col">
+      {{ mapbox (lat, lng, 10, large, False)}}
+    </div>
+  </div>
 {% endblock %}
 {% block scripts_after %}
-<!-- <script src="/static/js/routes.js"></script> -->
+<!-- <script src="/static/js/weather.js"></script> -->
+<script src="/static/js/routes.js"></script>
 {% endblock %}

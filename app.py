@@ -299,33 +299,18 @@ def process_new_route_form():
     # might be this cps thing...?
     # but I doubt it...
 
-    cps = int(request.args.get('cps')) if request.args.get('cps') else 1
+
+    cps = int(request.args.get('cps')) if request.args.get('cps') else 0
+    lat = float(request.args.get('cp-0-lat')) if request.args.get('cp-0-lat') else False
+    lng = float(request.args.get('cp-0-lng')) if request.args.get('cp-0-lat') else False
     route_form = RouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
     end_form = NewCheckpointForm(prefix="cp-999")
     additional_forms = []
-    for i in range(1, cps):
+    for i in range(cps):
         additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
-    # I think processing the form data is going to be better in JS
-    # if you change your mind, you'll need this:
-    # , methods=["GET", "POST"]
-    # and this (and then some):
-    # if route_form.validate_on_submit():
-    #     route_name = form.route_name.data or "untitled"
-    #     bike_type=form.bike_type.data
-    #     timestamp = datetime.utcnow()
-
-    #     user_id = 0;
-    #     if not g.user.username == "guest":
-    #         user_id = g.user.id
-    #     new_route = Route(route_name=route_name, bike_type=bike_type, timestamp=timestamp, user_id=user_id)
-
-    #     db.session.add(new_route)
-    #     db.session.commit()
-    #     return render_template('route.html', route=new_route)
-        
-    return render_template ('route-new.html', route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms)
+    return render_template ('route-new.html', route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms, lat=lat, lng=lng)
 
 @app.route('/api/routes')
 def display_available_routes():

@@ -14,7 +14,10 @@
     </div>
     <div class="col">
         <div class="row justify-content-center">
-          <a href="/routes/new" class="d-block btn btn-block btn-primary m-2" id="new-route-button">make new route{% if g.user.username == "guest" %} as guest{% endif %}</a>
+          <form action="/route/new" method="GET" id="new-route-button">
+            <input type="text" readonly class="d-none" id="map-route">
+            <button type="submit" class="d-block btn btn-block btn-primary m-2" id="new-route-button">make new route{% if g.user.username == "guest" %} as guest{% endif %}</button>
+          </form>
         </div>
         {% if g.user.username == "guest" %}
         <div class="row justify-content-center">
@@ -28,7 +31,7 @@
         {% endif %}
         <div class="row justify-content-center">
           <div class="col">
-            {{ mapbox(lng, lat, 12, medium) }}
+            {{ mapbox(lng, lat, 12, medium, True) }}
           </div>
         </div>
       </div>
