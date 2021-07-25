@@ -4,6 +4,8 @@ const geocode = [mapLng, mapLat];
 const mapZoom = document.querySelector('#map-zoom').innerText;
 const mapboxGeocodeApiBaseUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
 let firstTime = true;
+const checkpointColors = ['yellow', 'pink', 'orange', 'purple'];
+const checkpointFilename = "mapbox-marker-icon-20px-";
 
 // display mapbox:
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';
@@ -17,7 +19,23 @@ let map = new mapboxgl.Map({
 map.addControl(new mapboxgl.NavigationControl());
 // ...and a pointer in the middle for the current geocode
 map.on('load', function() {
-    map.loadImage('static/images/mapbox-icons/mapbox-marker-icon-20px-red.png', function (error, image) {
+    markerImg = "";
+    // possible future development: 
+    // use integers for marker
+    // 1000 = blue (urhere)
+    // 0 = green
+    // 999 = red
+    // odd = yellow
+    // even = orange
+    if ($('#marker').text === "urhere") {
+        markerImg = `${checkpointFilename}blue.png`;
+    } else if ($('#marker').text === "cp0") {
+        markerImg = `${checkpointFilename}green.png`;
+    } else {
+        markerImg = `${checkpointFilename}gray.png`;
+    }
+
+    map.loadImage(`/static/images/mapbox-icons/${markerImg}`, function (error, image) {
         if (error) throw error;
         map.addImage('redPointer', image);
         map.addSource('point', {
@@ -50,7 +68,7 @@ map.on('load', function() {
 })
 
 const weatherLocationSelector = $('#weather-selector');
-
+const checkpointLocations = $('select.checkpoint-location')
 // $('.location-field')
 
 // console.log (`here we are with some locators`);

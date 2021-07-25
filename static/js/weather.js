@@ -18,7 +18,7 @@ let units = unitsSelector.value;
 
 unitsSelector.addEventListener('change', function(evt) {
     units = evt.target.value;
-    localStorage.setItem('units', units)
+    localStorage.setItem('units', units);
     weather = updateWeather(units, mapLat, mapLng);
     updateUrl(`location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
 });

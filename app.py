@@ -84,16 +84,25 @@ def load_home_page():
 #####################################
 @app.route('/api/location', methods=["GET"])
 def location_autocomplete():
-    """retrieves location options from mapbox autocomplete
-    accepting select2 data which comes in as 'term'"""
-    if request.args['term']:
-        term = request.args['term']
-        return jsonify(autocomplete_options_from_mapbox(term))
+    """retrieves locations from mapbox
+    when passed 'term', returns list of options from mapbox autocomplete for select2
+    when passed 'lat' and 'lng' gets reverse geocode location from mapbox"""
+    results = {'results': {}}
     if request.args['lat'] and request.args['lng']:
         try:
-            location_from_geocode_mb(request.args['lng'], request.args['lat']);
+            results = location_from_geocode_mb(request.args['lng'], request.args['lat']);
         except:
-            return {"results": {"Errors": {"Geocoding error": "Invalid geocode entered."}}}
+            results['results']['Errors'] =  {"Geocoding error": "Invalid geocode entered."}
+
+    if request.args['term']:
+        try:
+            term = request.args['term']
+            results = autocomplete_options_from_mapbox(term)
+        except:
+            results['results']['Errors'] = {"Geocoding error": "No results found for that search term."}
+
+    return jsonify(results)
+
 
 @app.route('/api/geocode', methods=["GET"])
 def geocode_location():
@@ -244,6 +253,10 @@ def process_new_route_form():
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
     lat = float(request.args.get('lat')) if request.args.get('lat') else False
     lng = float(request.args.get('lng')) if request.args.get('lat') else False
+    try:
+        location = location_from_geocode_mb(lat, lng);
+    except:
+        location = False
     route_form = RouteForm()
     start_form = NewCheckpointForm(prefix="cp-0")
     end_form = NewCheckpointForm(prefix="cp-999")
@@ -251,7 +264,7 @@ def process_new_route_form():
     for i in range(cps):
         additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
-    return render_template ('route-new.html', route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms, lat=lat, lng=lng)
+    return render_template ('route-new.html', cps=cps, route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms, lat=lat, lng=lng, location=location)
 
 @app.route('/api/routes')
 def display_available_routes():

@@ -25,21 +25,21 @@
       </form>
     </div>
     <div class="col col-12 col-md-7">
-      {{ checkpoint_form(start_form, 0)}}
+      {{ checkpoint_form(0)}}
 
       {{ new_checkpoint() }}
-
-      {% for form in additional_forms %}
-      {{ checkpoint_form( form, loop.index ) }}
+ 
+      {% for i in range(1, cps+1) %}
+      {{ checkpoint_form(i ) }}
       {{ new_checkpoint() }}
       {% endfor %}
-
-      {{ checkpoint_form(end_form, 999)}}
+      </ul>
+      {{ checkpoint_form(999)}}
     </div>
   </div>
   <div class="row">
     <div class="col">
-      {{ mapbox (lng, lat, 12, large)}}
+      {{ mapbox (lng, lat, 12, large, "cp0")}}
     </div>
   </div>
 {% endblock %}
