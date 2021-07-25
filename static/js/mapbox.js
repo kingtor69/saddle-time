@@ -1,11 +1,20 @@
-const mapLat = parseFloat(document.querySelector('#map-lat').innerText);
-const mapLng = parseFloat(document.querySelector('#map-lng').innerText);
+let mapLat = defaultLoc_lat;
+let mapLng = defaultLoc_lng;
 const geocode = [mapLng, mapLat];
 const mapZoom = document.querySelector('#map-zoom').innerText;
 const mapboxGeocodeApiBaseUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
 let firstTime = true;
 const checkpointColors = ['yellow', 'pink', 'orange', 'purple'];
 const checkpointFilename = "mapbox-marker-icon-20px-";
+
+if (localStorage['mapLat'] && localStorage['mapLng']) {
+    mapLat = localStorage['mapLat'];
+    mapLng = localStorage['mapLng'];
+};
+if (parseFloat($('#map-lat').text()) && parseFloat($('#map-lng').text())) {
+    mapLat = parseFloat(document.querySelector('#map-lat').innerText);
+    mapLng = parseFloat(document.querySelector('#map-lng').innerText);
+};
 
 // display mapbox:
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ';

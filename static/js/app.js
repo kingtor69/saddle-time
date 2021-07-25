@@ -1,3 +1,4 @@
+
 const flashDiv = document.querySelector('#flashes');
 
 function displayErrors(errorObj) {
@@ -85,9 +86,9 @@ function processAutocomplete(e, selector, prefix) {
             };
         }
     }
-    localStorage.setItem('${prefix}Lng', mapLng);
-    localStorage.setItem('${prefix}Lat', mapLat);
-    localStorage.setItem('${prefix}Geocode', [mapLat, mapLng]);
+    localStorage.setItem('mapLng', mapLng);
+    localStorage.setItem('mapLat', mapLat);
+    localStorage.setItem('mapGeocode', [mapLat, mapLng]);
     if (localStorage['units']) {
         units = localStorage['units']
     };
