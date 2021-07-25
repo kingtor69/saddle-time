@@ -27,9 +27,9 @@ map.on('load', function() {
     // 999 = red
     // odd = yellow
     // even = orange
-    if ($('#marker').text === "urhere") {
+    if ($('#marker').text() === "urhere") {
         markerImg = `${checkpointFilename}blue.png`;
-    } else if ($('#marker').text === "cp0") {
+    } else if ($('#marker').text() === "cp0") {
         markerImg = `${checkpointFilename}green.png`;
     } else {
         markerImg = `${checkpointFilename}gray.png`;

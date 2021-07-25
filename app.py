@@ -84,6 +84,12 @@ def load_home_page():
 #####################################
 @app.route('/api/location', methods=["GET"])
 def location_autocomplete():
+    """retrieves location options from mapbox autocomplete
+    accepting select2 data which comes in as 'term'"""
+    if request.args['term']:
+        term = request.args['term']
+        return jsonify(autocomplete_options_from_mapbox(term))
+
     """retrieves locations from mapbox
     when passed 'term', returns list of options from mapbox autocomplete for select2
     when passed 'lat' and 'lng' gets reverse geocode location from mapbox"""

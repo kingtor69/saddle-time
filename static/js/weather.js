@@ -106,50 +106,9 @@ async function geocodeFromMapboxLocation(locationId) {
 ////// using Select2 //////
 ///////////////////////////
 weatherLocationSelector.change((e) => {
-    let weatherLocation = weatherLocationSelector.select2('data')[0].text;
-    localStorage.setItem('weatherLocation', weatherLocation);
-    let htmlId = weatherLocationSelector.select2('data')[0].id;
-    let lattitude = false;
-    let longitude = true;
-    let floatString = "";
-    let floatStringDone = false;
-    let mapLng = NaN;
-    let mapLat = NaN;
-    debugger;
-    for (let char of htmlId) {
-        if (floatStringDone) {
-            if (longitude) {
-                mapLng = parseFloat(floatString);
-                floatString="";
-                longitude = false;
-                lattitude = true;
-                floatStringDone = false;
-            } else if (lattitude) {
-                mapLat = parseFloat(floatString);
-            }
-        } else {
-            if (char === "_") {
-                // skip underscores
-            } else if (char === "p") {
-                // turn "p" into decimal place
-                floatString += ".";
-            } else if (char === "c") {
-                // comma means the number is done
-                floatStringDone = true;
-            } else {
-                // any other character is assumed to be a number
-                floatString += char;
-            };
-        }
-    }
-    localStorage.setItem('weatherLng', mapLng);
-    localStorage.setItem('weatherLat', mapLat);
-    localStorage.setItem('weatherGeocode', [mapLat, mapLng]);
-    if (localStorage['units']) {
-        units = localStorage['units']
-    };
+    const [units, [mapLat, mapLng]] = processAutocomplete(e, weatherLocationSelector, 'weather');
     updateWeather(units, [mapLat, mapLng]);
-    updateUrl(`location=${weatherLocation}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
+
 });
 
 // need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
