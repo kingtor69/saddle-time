@@ -13,7 +13,7 @@
 <script src="/static/js/mapbox.js"></script>
 {% endmacro %}
 
-{% macro checkpoint_form( index ) %}
+{% macro checkpoint_form( index, location, location_value ) %}
 <div class="row justify-content-center checkpoint-rows" id="cpr-{{ index }}-row">
   <div class="col col-1">
     {% if index == 0 %}
@@ -50,7 +50,7 @@
         {% endfor %} -->
         <select id="cp-{{ index }}-selector" class="mapbox-location-selector form-control">
           {% if location %}
-          <option value="{{ lat }}, {{ lng }}">{{ location }}</option>
+            <option value="location_value">{{ location }}</option>
           {% endif %}
         </select>
       </div>

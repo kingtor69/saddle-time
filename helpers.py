@@ -94,21 +94,9 @@ def autocomplete_options_from_mapbox(term):
         mapbox_geocode = feature['center']
         html_id = ""
         for geocode_element in mapbox_geocode:
-            geocode_element_str = str(geocode_element)
-            for char in list(geocode_element_str):
-                if char == "[":
-                    html_id = html_id
-                elif char == "]":
-                    html_id = html_id
-                elif char == ".":
-                    html_id = html_id + "p"
-                elif char == ",":
-                    html_id = html_id + "c_"
-                elif char == " ":
-                    html_id = html_id
-                else:
-                    html_id = html_id + str(char)
-            html_id = html_id +  "c_"
+            import pdb
+            pdb.set_trace()
+            html_id = string_from_geocode(list(geocode_element))
         choice = {
             'id': html_id,
             'text': feature['place_name']
@@ -169,43 +157,67 @@ def wind_direction_logical(degrees):
     return indices[index]
     
 
-def check_errors_location(location, error_count):
-    """check for errors in location entry"""
-    errors_location = []
-    if not location:
-        errors_location.append(f'You must request either location or geocode to proceed.')
-        error_count += 1
+###### the commended out methods are not being called in app.py
+# def check_errors_location(location, error_count):
+#     """check for errors in location entry"""
+#     errors_location = []
+#     if not location:
+#         errors_location.append(f'You must request either location or geocode to proceed.')
+#         error_count += 1
 
-    return (errors_location, error_count)
+#     return (errors_location, error_count)
 
-def check_errors_geocode(lat, lng, error_count):
-    """check for errors in lattitude and longitude entries"""
-    errors_geocode = []
-    if not lat and not lng:
-        errors_geocode.append(f'You must request either location or geocode to proceed.')
-        error_count += 1
-    elif not lat:
-        errors_geocode.append(f'Entered lattitude is "{lat}," which is invalid.')
-        error_count += 1
-    elif not lng:
-        errors_geocode.append(f'Entered longitude is "{lng}," which is invalid.')
-        error_count += 1
-    elif lat > 90 or lat < 0:
-        errors_geocode.append(f'Entered lattitude is "{lat}," which is invalid.')
-        lat = False
-        error_count += 2
-    elif lng > 180 or lng < -180:
-        errors_geocode.append(f'Entered longitude is "{lng}," which is invalid.')
-        lng = False
-        error_count += 2
-    if lat and lng:
-        geocode = (lat, lng)
+# def check_errors_geocode(lat, lng, error_count):
+#     """check for errors in lattitude and longitude entries"""
+#     errors_geocode = []
+#     if not lat and not lng:
+#         errors_geocode.append(f'You must request either location or geocode to proceed.')
+#         error_count += 1
+#     elif not lat:
+#         errors_geocode.append(f'Entered lattitude is "{lat}," which is invalid.')
+#         error_count += 1
+#     elif not lng:
+#         errors_geocode.append(f'Entered longitude is "{lng}," which is invalid.')
+#         error_count += 1
+#     elif lat > 90 or lat < 0:
+#         errors_geocode.append(f'Entered lattitude is "{lat}," which is invalid.')
+#         lat = False
+#         error_count += 2
+#     elif lng > 180 or lng < -180:
+#         errors_geocode.append(f'Entered longitude is "{lng}," which is invalid.')
+#         lng = False
+#         error_count += 2
+#     if lat and lng:
+#         geocode = (lat, lng)
 
-    return (errors_geocode, geocode, error_count)
+#     return (errors_geocode, geocode, error_count)
 
-def geocode_from_mapbox_id(id):
-    """retrieves geocode from mapbox from the place id which is taken from a location search with mapbox"""
+# def geocode_from_mapbox_id(id):
+#     """retrieves geocode from mapbox from the place id which is taken from a location search with mapbox"""
 
-def location_from_geocode_mb(lng, lat):
+def location_from_geocode_mb(lat, lng):
     """retrieves location from mapbox given geocode (in their backwards format"""
+    response = requests.get(f'{MB_API_BASE_URL}{lng},{lat}.json?access_token={MB_API_KEY}')
+    resp = response.json()
+    return resp['features'][0]['place_name']
     
+    
+def string_from_geocode(geocode):
+    """creates an html-friendly string from geocode"""
+    geocode_str = str(geocode)
+    html_id = ""
+    for char in list(geocode_str):
+        if char == "[":
+            html_id = html_id
+        elif char == "]":
+            html_id = html_id
+        elif char == ".":
+            html_id = html_id + "p"
+        elif char == ",":
+            html_id = html_id + "c_"
+        elif char == " ":
+            html_id = html_id
+        else:
+            html_id = html_id + str(char)
+    html_id = html_id +  "c_"
+    return html_id

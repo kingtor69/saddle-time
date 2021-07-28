@@ -25,7 +25,7 @@
       </form>
     </div>
     <div class="col col-12 col-md-7">
-      {{ checkpoint_form(0)}}
+      {{ checkpoint_form(0, location)}}
 
       {{ new_checkpoint() }}
  
@@ -34,7 +34,7 @@
       {{ new_checkpoint() }}
       {% endfor %}
       </ul>
-      {{ checkpoint_form(999)}}
+      {{ checkpoint_form(999, False)}}
     </div>
   </div>
   <div class="row">
