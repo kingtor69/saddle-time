@@ -29,7 +29,6 @@
     {% else %}
       <button class="arrows"><i class="far fa-arrow-alt-circle-up"></i></button>
     {% endif %}
-    <br>
     {% if index == 999 %}
       <br>
     {% else %} 
@@ -38,22 +37,20 @@
   </div>
   <div class="col col-10">
     <form action="" id="cpf-{{ index }}-checkpoint-form">
-      <div class="bordered-block">
-        <!-- Ashir's computer is breaking here with a NoneType on form being non-iterable -->
-        <!-- {% for field in form 
-          if field.widget.input_type != 'hidden' %}
-          {{ form.hidden_tag() }}
-          {{ field (class_="bg-dark text-light checkpoint-location location-field form-field form-control") }}
-          {% for err in field.errors %}
-          {{ err }}
-          {% endfor %}
-        {% endfor %} -->
-        <select id="cp-{{ index }}-selector" class="mapbox-location-selector form-control">
-          {% if location %}
-            <option value="location_value">{{ location }}</option>
-          {% endif %}
-        </select>
-      </div>
+      <!-- Ashir's computer is breaking here with a NoneType on form being non-iterable -->
+      <!-- {% for field in form 
+        if field.widget.input_type != 'hidden' %}
+        {{ form.hidden_tag() }}
+        {{ field (class_="bg-dark text-light checkpoint-location location-field form-field form-control") }}
+        {% for err in field.errors %}
+        {{ err }}
+        {% endfor %}
+      {% endfor %} -->
+      <select id="cp-{{ index }}-selector" class="mapbox-location-selector form-control">
+        {% if location %}
+          <option value="location_value">{{ location }}</option>
+        {% endif %}
+      </select>
     </form>
   </div>
 </div>

@@ -45,8 +45,17 @@ function selectTwo(jQueryElement) {
     });
 }
 
-function updateUrl(queryString) {
-    let newurl = window.location.origin + window.location.pathname + `?${queryString}`;
+
+function updateUrl(queryAdditions) {
+    debugger;
+    queryString = "?"
+    for (let i = 0; i < queryAdditions.length; i++) {
+        if (i > 0) {
+            queryString += "&"
+        }
+        queryString += `${queryAdditions[i][0]}=${queryAdditions[i][1]}`
+    }
+    let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
 }
 
@@ -92,6 +101,17 @@ function processAutocomplete(e, selector, prefix) {
     if (localStorage['units']) {
         units = localStorage['units']
     };
-    updateUrl(`location=${location}&latitude=${mapLat}&longitude=${mapLng}&units=${units}`);
-    return [units [mapLat, mapLng]];
+    const queryAdditions = []
+    if (prefix === "weather") {
+        queryAdditions.push(['location', location]);
+        queryAdditions.push(['latitude', mapLat]);
+        queryAdditions.push(['longitude', mapLng]);
+        queryAdditions.push(['units', units]);
+        updateUrl(queryAdditions);
+        return [units [mapLat, mapLng]];
+    };
+    if (prefix === "checkpoint") {
+        addToUrl(queryAdditions);
+    };
+    return false;
 }

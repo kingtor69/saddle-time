@@ -2,15 +2,15 @@
 // TODO: fix st
 // mapLat and mapLng are generated in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
-const unitsOptionMetric = document.querySelector('option.metric-option')
-const unitsOptionImperial = document.querySelector('option.imperial-option')
-const weatherHeader = document.querySelector('#weather-header')
-const weatherConditionsHeader = document.querySelector('#weather-conditions-row')
-const weatherConditions = document.querySelector('#weather-conditions')
-const weatherIcon = document.querySelector('#weather-icon')
-const weatherDetails = document.querySelector('#weather-details')
+const unitsOptionMetric = document.querySelector('option.metric-option');
+const unitsOptionImperial = document.querySelector('option.imperial-option');
+const weatherHeader = document.querySelector('#weather-header');
+const weatherConditionsHeader = document.querySelector('#weather-conditions-row');
+const weatherConditions = document.querySelector('#weather-conditions');
+const weatherIcon = document.querySelector('#weather-icon');
+const weatherDetails = document.querySelector('#weather-details');
 
-selectTwo(weatherLocationSelector)
+selectTwo(weatherLocationSelector);
 
 let weatherLocation = weatherLocationSelector.select2('data')[0].text
 let units = unitsSelector.value;

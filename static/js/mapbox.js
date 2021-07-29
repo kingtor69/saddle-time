@@ -77,7 +77,7 @@ map.on('load', function() {
 })
 
 const weatherLocationSelector = $('#weather-selector');
-const checkpointLocations = $('select.checkpoint-location')
+const checkpointLocations = $('select.mapbox-location-selector')
 // $('.location-field')
 
 // console.log (`here we are with some locators`);

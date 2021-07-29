@@ -266,13 +266,14 @@ def process_new_route_form():
     #     location = False
     #     location_value = False
     route_form = RouteForm()
-    start_form = NewCheckpointForm(prefix="cp-0")
-    end_form = NewCheckpointForm(prefix="cp-999")
-    additional_forms = []
-    for i in range(cps):
-        additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
+    # start_form = NewCheckpointForm(prefix="cp-0")
+    # end_form = NewCheckpointForm(prefix="cp-999")
+    # additional_forms = []
+    # for i in range(cps):
+    #     additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
-    return render_template ('route-new.html', cps=cps, route_form=route_form, start_form=start_form, end_form=end_form, additional_forms=additional_forms, lat=lat, lng=lng, location=location, location_value=location_value)
+    # start_form=start_form, end_form=end_form, additional_forms=additional_forms, 
+    return render_template ('route-new.html', cps=cps, route_form=route_form, lat=lat, lng=lng, location=location, location_value=location_value)
 
 @app.route('/api/routes')
 def display_available_routes():
