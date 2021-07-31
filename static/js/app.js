@@ -47,7 +47,6 @@ function selectTwo(jQueryElement) {
 
 
 function updateUrl(queryAdditions) {
-    debugger;
     queryString = "?"
     for (let i = 0; i < queryAdditions.length; i++) {
         if (i > 0) {

@@ -50,7 +50,6 @@ async function updateWeather(units, lat, lng) {
 };
 
 function updateWeatherDOM(weather) {
-    console.log(weather)
     weatherConditionsHeader.innerHTML = ""
     if (weather.units === "imperial") {
         unitsOptionMetric.selected = '';
