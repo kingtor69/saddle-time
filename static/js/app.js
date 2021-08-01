@@ -107,10 +107,10 @@ function processAutocomplete(e, selector, prefix) {
         queryAdditions.push(['longitude', mapLng]);
         queryAdditions.push(['units', units]);
         updateUrl(queryAdditions);
-        return [units [mapLat, mapLng]];
+        return [units, mapLat, mapLng];
     };
     if (prefix === "checkpoint") {
         addToUrl(queryAdditions);
     };
-    return false;
+    return [false, false, false];
 }

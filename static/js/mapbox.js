@@ -29,6 +29,7 @@ map.addControl(new mapboxgl.NavigationControl());
 // ...and a pointer in the middle for the current geocode
 map.on('load', function() {
     markerImg = "";
+    color = "";
     // possible future development: 
     // use integers for marker
     // 1000 = blue (urhere)
@@ -37,16 +38,20 @@ map.on('load', function() {
     // odd = yellow
     // even = orange
     if ($('#marker').text() === "urhere") {
-        markerImg = `${checkpointFilename}blue.png`;
+        color = 'blue';
+        markerImg = `${checkpointFilename}${color}.png`;
     } else if ($('#marker').text() === "cp0") {
-        markerImg = `${checkpointFilename}green.png`;
+        color = 'green';
+        markerImg = `${checkpointFilename}${color}.png`;
     } else {
-        markerImg = `${checkpointFilename}gray.png`;
+        color = 'gray';
+        markerImg = `${checkpointFilename}${color}.png`;
     }
 
     map.loadImage(`/static/images/mapbox-icons/${markerImg}`, function (error, image) {
         if (error) throw error;
-        map.addImage('redPointer', image);
+        console.log(`${color}Pointer? 49`);
+        map.addImage(`${color}Pointer`, image);
         map.addSource('point', {
             'type': 'geojson',
             'data': {
@@ -69,10 +74,11 @@ map.on('load', function() {
             'type': 'symbol',
             'source': 'point', // reference the data source
             'layout': {
-                'icon-image': 'redPointer', // reference the image
+                'icon-image': `${color}Pointer`, // reference the image
                 'icon-size': 1
             }
         });
+        console.log(`${color}Pointer? 77`);
     })
 })
 
@@ -85,3 +91,44 @@ const checkpointLocations = $('select.mapbox-location-selector')
 // for (let locator of $('.location-field')) {
 //     console.log(locator);
 // };
+
+function centerMap(lat, lng) {
+    map.flyTo({
+        center: [lng, lat]
+    });
+};
+
+function placeMarker(color, lat, lng) {
+    map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
+        if (error) throw error;
+        console.log(`${color}Pointer? 100`);
+        map.addImage(`${color}Pointer`, image);
+        map.addSource('point', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': geocode
+                        }
+                    }
+                ]
+            }
+        });
+            
+        // Add a layer to use the image to represent the data.
+        map.addLayer({
+            'id': 'points',
+            'type': 'symbol',
+            'source': 'point', // reference the data source
+            'layout': {
+                'icon-image': `${color}Pointer`, // reference the image
+                'icon-size': 1
+            }
+        });
+        console.log(`${color}Pointer? 128`);
+    })
+}

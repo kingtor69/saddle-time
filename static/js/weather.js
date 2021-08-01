@@ -105,9 +105,10 @@ async function geocodeFromMapboxLocation(locationId) {
 ////// using Select2 //////
 ///////////////////////////
 weatherLocationSelector.change((e) => {
-    const [units, [mapLat, mapLng]] = processAutocomplete(e, weatherLocationSelector, 'weather');
-    updateWeather(units, [mapLat, mapLng]);
-
+    const [units, mapLat, mapLng] = processAutocomplete(e, weatherLocationSelector, 'weather');
+    updateWeather(units, mapLat, mapLng);
+    centerMap(mapLat, mapLng);
+    placeMarker('blue', mapLat, mapLng);
 });
 
 // need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
