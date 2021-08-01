@@ -90,12 +90,11 @@ def autocomplete_options_from_mapbox(term):
     choices = []
     # TODO: something went wrong in here. e.g. html_id for "Detroit, Michigan, United States" is -83.056742.3487 and *should be* -83.0567c_42.3487
     # I have a redundant workaround to "fix" this, so I'm ignoring it for the moment
+    mapbox_geocode = []
     for feature in features:
-        mapbox_geocode = feature['center']
+        mapbox_geocode.append(feature['center'])
         html_id = ""
         for geocode_element in mapbox_geocode:
-            import pdb
-            pdb.set_trace()
             html_id = string_from_geocode(list(geocode_element))
         choice = {
             'id': html_id,
