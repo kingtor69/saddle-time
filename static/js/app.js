@@ -2,7 +2,6 @@
 const flashDiv = document.querySelector('#flashes');
 
 function displayErrors(errorObj) {
-    console.log(errorObj)
     const errorTable = document.createElement('table');
     errorTable.classList.add("table","error-table","table-striped")
     for (let error in errorObj) {
@@ -46,9 +45,11 @@ function selectTwo(jQueryElement) {
 }
 
 
-function updateUrl(queryAdditions) {
-    queryString = "?"
-    for (let i = 0; i < queryAdditions.length; i++) {
+function updateUrl(queryAdditions, keepCurrent) {
+    let queryString = "?";
+    keepCurrent ? queryCurrent = parseCurrentQueryString() : queryCurrent = []
+    queries = [...queryCurrent, ...queryAdditions];
+    for (let i = 0; i < queries.length; i++) {
         if (i > 0) {
             queryString += "&"
         }
@@ -56,6 +57,11 @@ function updateUrl(queryAdditions) {
     }
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
+}
+
+function parseCurrentQueryString() {
+    const queryCurrent = [];
+    return queryCurrent;
 }
 
 function processAutocomplete(e, selector, prefix) {
@@ -106,11 +112,11 @@ function processAutocomplete(e, selector, prefix) {
         queryAdditions.push(['latitude', mapLat]);
         queryAdditions.push(['longitude', mapLng]);
         queryAdditions.push(['units', units]);
-        updateUrl(queryAdditions);
+        updateUrl(queryAdditions, false);
         return [units, mapLat, mapLng];
     };
     if (prefix === "checkpoint") {
-        addToUrl(queryAdditions);
+        updateUrl(queryAdditions, true);
     };
     return [false, false, false];
 }

@@ -1,10 +1,17 @@
-selectTwo(checkpointLocations);
+// selectTwo(checkpointLocations);
+// console.log(checkpointLocations);
+// let location;
 
 for (let checkpointLocation of checkpointLocations) {
-    let location = checkpointLocation.select2('data')[0].text
-    checkpointIndex = parseIdForCpIndex(location.id)
+    selectTwo(checkpointLocation);
+    // if (checkpointLocation.select2('data')[0].text) {
+    //     location = checkpointLocation.select2('data')[0].text
+    // }
+    // checkpointIndex = parseIdForCpIndex(location.id)
     checkpointLocation.change((evt) => {
-        processAutocomplete
+        processAutocomplete(evt, checkpointLocation, `cpl${checkpointLocation.id}`);
+        // add checkpoint to queryString
+        // preview route from current data
     })
 }
 

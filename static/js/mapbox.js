@@ -50,7 +50,6 @@ map.on('load', function() {
 
     map.loadImage(`/static/images/mapbox-icons/${markerImg}`, function (error, image) {
         if (error) throw error;
-        console.log(`${color}Pointer? 49`);
         map.addImage(`${color}Pointer`, image);
         map.addSource('point', {
             'type': 'geojson',
@@ -78,19 +77,19 @@ map.on('load', function() {
                 'icon-size': 1
             }
         });
-        console.log(`${color}Pointer? 77`);
     })
 })
 
 const weatherLocationSelector = $('#weather-selector');
-const checkpointLocations = $('select.mapbox-location-selector')
-// $('.location-field')
+// const checkpointLocations = $('select.mapbox-location-selector');
 
-// console.log (`here we are with some locators`);
-// console.log($('.location-field'));
-// for (let locator of $('.location-field')) {
-//     console.log(locator);
-// };
+const cpls = $('select.mapbox-location-selector');
+const checkpointLocations = [];
+for (let cpl of cpls) {
+    const checkpointLocation = $(`#${cpl.id}`);
+    checkpointLocations.push(checkpointLocation);
+}
+
 
 function centerMap(lat, lng) {
     map.flyTo({
@@ -101,7 +100,6 @@ function centerMap(lat, lng) {
 function placeMarker(color, lat, lng) {
     map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
         if (error) throw error;
-        console.log(`${color}Pointer? 100`);
         map.addImage(`${color}Pointer`, image);
         map.addSource('point', {
             'type': 'geojson',
@@ -129,6 +127,5 @@ function placeMarker(color, lat, lng) {
                 'icon-size': 1
             }
         });
-        console.log(`${color}Pointer? 128`);
     })
 }
