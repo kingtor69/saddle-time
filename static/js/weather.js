@@ -12,8 +12,20 @@ const weatherDetails = document.querySelector('#weather-details');
 
 selectTwo(weatherLocationSelector);
 
-let weatherLocation = weatherLocationSelector.select2('data')[0].text
-let units = unitsSelector.value;
+const queryString = parseCurrentQueryString();
+let weatherLocation = weatherLocationSelector.select2('data')[0].text; defaultLocation; 
+let units = queryString.units; unitsSelector.value;
+
+if (queryString.location) {
+    weatherLocation = querySTring.location;
+} else if (queryString.lat && queryString.lng) {
+    weatherLocation = axios.get(`/api/location?lat=${queryString.lat}&lng=${queryString.lng}`);
+    weatherLocation.then(resp => {
+        return resp.data.location;
+    });
+};
+
+
 // let weatherLocation = (localStorage['weatherLocation']) ? localStorage['weatherLocation'] : '3139 Mission St, San Francisco 94110, United States';
 
 unitsSelector.addEventListener('change', function(evt) {

@@ -24,6 +24,11 @@ MQ_API_KEY = os.environ['MQ_API_KEY']
 OW_API_KEY = os.environ['OW_API_KEY']
 MB_API_KEY = os.environ['MB_API_KEY']
 
+DEFAULT_LOCATION_LOGICAL_NAME = '"Coffee Shop" on Mission St, San Francisco'
+DEFAULT_LOCATION = "3139 Mission St, San Francisco, CA 94110"
+DEFAULT_LOC_LAT = 37.746998
+DEFAULT_LOC_LNG = -122.418653
+DEFAULT_UNITS = "imperial"
 
 def unit_markers(units):
     """show unit markers for different unit bases (degrees Celsius vs Farrenheit, etc)"""

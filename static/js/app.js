@@ -47,7 +47,9 @@ function selectTwo(jQueryElement) {
 
 function updateUrl(queryAdditions, keepCurrent) {
     let queryString = "?";
+    let queryCurrent;
     keepCurrent ? queryCurrent = parseCurrentQueryString() : queryCurrent = []
+    console.log(queryCurrent)
     queries = [...queryCurrent, ...queryAdditions];
     for (let i = 0; i < queries.length; i++) {
         if (i > 0) {
@@ -65,25 +67,29 @@ function parseCurrentQueryString() {
 }
 
 function processAutocomplete(e, selector, prefix) {
+    console.log(prefix)
+
     let location = selector.select2('data')[0].text;
-    localStorage.setItem(`${prefix}Location`, location);
+    if (!prefix.startsWith('loc-cp')) {
+        localStorage.setItem(`${prefix}Location`, location);
+    }
     let htmlId = selector.select2('data')[0].id;
     let lattitude = false;
     let longitude = true;
     let floatString = "";
     let floatStringDone = false;
-    let mapLng = NaN;
-    let mapLat = NaN;
+    let lng = NaN;
+    let lat = NaN;
     for (let char of htmlId) {
         if (floatStringDone) {
             if (longitude) {
-                mapLng = parseFloat(floatString);
+                lng = parseFloat(floatString);
                 floatString="";
                 longitude = false;
                 lattitude = true;
                 floatStringDone = false;
             } else if (lattitude) {
-                mapLat = parseFloat(floatString);
+                lat = parseFloat(floatString);
             }
         } else {
             if (char === "_") {
@@ -100,23 +106,52 @@ function processAutocomplete(e, selector, prefix) {
             };
         }
     }
-    localStorage.setItem('mapLng', mapLng);
-    localStorage.setItem('mapLat', mapLat);
-    localStorage.setItem('mapGeocode', [mapLat, mapLng]);
+    localStorage.setItem('mapLng', lng);
+    localStorage.setItem('mapLat', lat);
+    localStorage.setItem('mapGeocode', [lat, lng]);
     if (localStorage['units']) {
         units = localStorage['units']
     };
-    const queryAdditions = []
+    const queryAdditions = [];
     if (prefix === "weather") {
         queryAdditions.push(['location', location]);
-        queryAdditions.push(['latitude', mapLat]);
-        queryAdditions.push(['longitude', mapLng]);
+        queryAdditions.push(['latitude', lat]);
+        queryAdditions.push(['longitude', lng]);
         queryAdditions.push(['units', units]);
         updateUrl(queryAdditions, false);
-        return [units, mapLat, mapLng];
+        return [units, lat, lng];
     };
-    if (prefix === "checkpoint") {
+    if (prefix.startsWith("loc-cp")) {
+        const cpId = parseCpId(prefix);
+        console.log(`parsed to ${cpId}`);
+        queryAdditions.push[`${cpId}Lat`, lat];
+        queryAdditions.push[`${cpId}Lng`, lng];
         updateUrl(queryAdditions, true);
+        return [false, lat, lng];
     };
     return [false, false, false];
+}
+
+function parseCpId(elementId) {
+    let parsedId = "";
+    let goTime = "wait"
+    for (let char of elementId) {
+        if (char === "-") {
+            if (goTime === "wait"){
+                goTime = "go";
+            } else if (goTime === "go") {
+                goTime = "going";
+            } else if (goTime === "going") {
+                parsedId += char;
+                goTime = "gone";
+            };
+        } else if (goTime === "go" || goTime === "going") {
+            parsedId += char;
+        };
+        if (goTime === "gone") {
+            parsedId = parsedId.slice(0, (parsedId.length-1))
+            return parsedId;
+        };
+    };
+    return false;
 }

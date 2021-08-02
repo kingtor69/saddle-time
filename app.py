@@ -6,7 +6,7 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
-from helpers import login_session, logout_session, CURR_USER, CURR_ROUTE, CURR_CHECKPOINT_LIST, GUEST, geocode_from_location_mq, current_weather_from_geocode, geocode_from_location_mb, autocomplete_options_from_mapbox, location_from_geocode_mb, string_from_geocode
+from helpers import *
 
 app=Flask(__name__)
 
@@ -50,17 +50,17 @@ def load_home_page():
     If no one is logged in, page shows weather from default location (Albuquerque, NM because that's my joint) in metric units (because cycling). Offer the user option to change the location (including to their browser's location) and the units. (Location change handled in app.js; units change handled hear)
     """
     # default values: 
-    location = "3139 Mission St, San Francisco, CA 94110"
-    loc_lat = 37.746998
-    loc_lng = -122.418653
-    units = "imperial"
+    location = DEFAULT_LOCATION
+    loc_lat = DEFAULT_LOC_LAT
+    loc_lng = DEFAULT_LOC_LNG
+    units = DEFAULT_UNITS
     if 'location' in request.args:
         location = request.args['location']
     else:
         try:
             location = g.user.location
         except:
-            flash('using default location (CoffeeShop on Mission St)', 'info')
+            flash(f'using default location ({DEFAULT_LOCATION_LOGICAL_NAME})', 'info')
     if 'latitude' in request.args and 'longitute' in request.args:
         loc_lat = request.args['latitude']
         loc_lng = request.args['longitute']
@@ -85,14 +85,13 @@ def load_home_page():
 @app.route('/api/location', methods=["GET"])
 def location_autocomplete():
     """retrieves location options from mapbox autocomplete
-    accepting select2 data which comes in as 'term'"""
+    accepting select2 data which comes in as 'term'
+    returns list of options from mapbox autocomplete for select2"""
     if request.args['term']:
         term = request.args['term']
         return jsonify(autocomplete_options_from_mapbox(term))
 
-    """retrieves locations from mapbox
-    when passed 'term', returns list of options from mapbox autocomplete for select2
-    when passed 'lat' and 'lng' gets reverse geocode location from mapbox"""
+    """or returns reverse geocode location mapbox when passed 'lat' and 'lng'"""
     results = {'results': {}}
     if request.args['lat'] and request.args['lng']:
         try:

@@ -9,8 +9,11 @@ for (let checkpointLocation of checkpointLocations) {
     // }
     // checkpointIndex = parseIdForCpIndex(location.id)
     checkpointLocation.change((evt) => {
-        processAutocomplete(evt, checkpointLocation, `cpl${checkpointLocation.id}`);
-        // add checkpoint to queryString
+        evt.preventDefault();
+        console.log(checkpointLocation[0].id);
+        cpLatLng = processAutocomplete(evt, checkpointLocation, `loc-${checkpointLocation[0].id}`);
+        cpLatLng.shift();
+
         // preview route from current data
     })
 }
