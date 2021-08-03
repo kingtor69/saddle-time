@@ -1,5 +1,4 @@
 // TODO: make browser location work
-// TODO: fix st
 // mapLat and mapLng are generated in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
 const unitsOptionMetric = document.querySelector('option.metric-option');
@@ -26,7 +25,7 @@ if (queryString.location) {
 };
 
 
-// let weatherLocation = (localStorage['weatherLocation']) ? localStorage['weatherLocation'] : '3139 Mission St, San Francisco 94110, United States';
+// let weatherLocation = (localStorage['weatherLocation']) ; defaultLocation;
 
 unitsSelector.addEventListener('change', function(evt) {
     units = evt.target.value;
@@ -123,6 +122,7 @@ weatherLocationSelector.change((e) => {
     placeMarker('blue', mapLat, mapLng);
 });
 
+// TODO: this is some semblance of logic for the browswer location
 // need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
 // maybe because it's inside a Bootstrap "modal:"
 // https://select2.org/troubleshooting/common-problems
