@@ -123,7 +123,7 @@ weatherLocationSelector.change((e) => {
 });
 
 // TODO: this is some semblance of logic for the browswer location
-// need to add class="mapbox-location-selector form-control" because apparently it goes away when select2 is turned on
+// need to add class="mapbox-location-selector form-control" because flaskapparently it goes away when select2 is turned on
 // maybe because it's inside a Bootstrap "modal:"
 // https://select2.org/troubleshooting/common-problems
 

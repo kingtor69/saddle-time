@@ -17,7 +17,9 @@ MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
 WEATHER_ICON_SUFFIX = "@2x.png"
-MB_API_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
+MB_API_BASE_URL = "https://api.mapbox.com/"
+MB_GEOCODE_BASE_URL = f"{MB_API_BASE_URL}geocoding/v5/mapbox.places/"
+MB_DIRECTIONS_BASE_URL = f"{MB_API_BASE_URL}directions/v5/mapbox/cycling/"
 
 ORS_API_KEY = os.environ['ORS_API_KEY']
 MQ_API_KEY = os.environ['MQ_API_KEY']
@@ -89,7 +91,7 @@ def geocode_from_location_mq(loc):
 
 def autocomplete_options_from_mapbox(term):
     """uses mapbox autocomplete to return JSON with list of choices formatted for select2"""
-    query_url = f'{MB_API_BASE_URL}{term}.json?access_token={MB_API_KEY}'
+    query_url = f'{MB_GEOCODE_BASE_URL}{term}.json?access_token={MB_API_KEY}'
     resp = requests.get(query_url)
     features = resp.json()["features"]
     choices = []
@@ -110,7 +112,7 @@ def autocomplete_options_from_mapbox(term):
 
 def geocode_from_location_mb(location):
     """uses mapbox to gather geocode information, returning geocode for the first result in mapbox' format (longitude, latitude) even though that's weird"""
-    query_url = f'{MB_API_BASE_URL}{location}.json?access_token={MB_API_KEY}'
+    query_url = f'{MB_GEOCODE_BASE_URL}{location}.json?access_token={MB_API_KEY}'
     resp = requests.get(query_url)
     return resp.json()["features"][0]['center']
 
@@ -201,7 +203,7 @@ def wind_direction_logical(degrees):
 
 def location_from_geocode_mb(lat, lng):
     """retrieves location from mapbox given geocode (in their backwards format"""
-    response = requests.get(f'{MB_API_BASE_URL}{lng},{lat}.json?access_token={MB_API_KEY}')
+    response = requests.get(f'{MB_GEOCODE_BASE_URL}{lng},{lat}.json?access_token={MB_API_KEY}')
     resp = response.json()
     return resp['features'][0]['place_name']
     
@@ -225,3 +227,19 @@ def string_from_geocode(geocode):
             html_id = html_id + str(char)
     html_id = html_id +  "c_"
     return html_id
+
+def mapbox_directions(coordinates):
+    """receives coordinates in mapbox format ({lng},{lat};{lng},{lat},&c.) and returns route data"""
+    # example API (that works): 
+    # https://api.mapbox.com/directions/v5/mapbox/driving/-106.582998,35.191097;-106.54053791535142,35.12438254228742?alternatives=true&geometries=geojson&steps=true&access_token=pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ
+
+    # rebuilding URL as below(not working):
+    # https://api.mapbox.com/directions/v5/mapbox/cycling/
+
+    url = f'{MB_DIRECTIONS_BASE_URL}{coordinates}?alternatives=true&steps=true&access_token={MB_API_KEY}'
+
+    resp = requests.get(url) # specifically, error happens here:
+    # > /home/kingtor/Documents/github-public-repos/saddle-time/venv/lib/python3.7/site-packages/requests/api.py(64)get()
+    # -> def get(url, params=None, **kwargs):
+
+    return resp.json

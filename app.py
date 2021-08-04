@@ -243,9 +243,48 @@ def logout():
 ########################
 ##### route routes #####
 ########################
-@app.route('/api/routes/new', methods=["POST"])
+@app.route('/api/routes/new', methods=["GET","POST"])
 def create_new_route():
-    """Save new route to database. Will save to a guest user if there's no logged-in user. For actual production, this would only be availble to logged-in users, but for portfolio it will work for anyone."""
+    """Gather route information. 
+    With GET the raw data comes from the query string and is sent to the Mapbox API. 
+    POST saves new route to database. 
+    Will save to a guest user if there's no logged-in user. 
+    For actual production, this would only be availble to logged-in users, but for portfolio it will work for anyone.
+    """
+    if request.method == 'GET':
+        cps = request.args['cps'] or False
+        coordinates = ""
+        success = False
+        errors = False
+        troubleshooting = False
+        try: 
+            for i in range(int(cps)):
+                lng = request.args[f'lng{int(i)}'] or i
+                lat = request.args[f'lat{int(i)}'] or i
+                if i > 0:
+                    coordinates = coordinates + ';'
+                coordinates = coordinates + f'{lng},{lat}'
+            import pdb
+            pdb.set_trace()
+            # error is happening in mapbox_directions, 'sfar as I can tell
+            success = mapbox_directions(coordinates)
+        except: 
+            errors = {"api error": "route API failed"}
+            troubleshooting = {"troubleshooting": {"cps": cps, "coordinates": coordinates}}
+        if success:
+            ret_dic = success
+        else: 
+            ret_dic = {}
+            if errors:
+                ret_dic["errors"] = errors
+            if troubleshooting:
+                ret_dic["troubleshooting"] = troubleshooting
+        
+        return ret_dic
+        
+    else:
+        return "POST"
+
 
 @app.route('/routes/new')
 def process_new_route_form():
