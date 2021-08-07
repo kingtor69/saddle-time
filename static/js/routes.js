@@ -2,6 +2,21 @@
 // console.log(checkpointLocations);
 // let location;
 
+// get current queryString data
+const queryString = new URLSearchParams(window.location.search);
+let routeData = Object.fromEntries(queryString.entries());
+
+if (routeData.length < 1) {
+    // if queryString is empty, check for current data from localStorage 
+    if ('routeData' in localStorage) {
+        routeData = localStorage.routeData;
+    };
+} else {
+    // if not, replace localStorage with queryString data
+    localStorage.removeItem('routeBuild');
+    localStorage.setItem('routeData', JSON.stringify(routeData));
+};
+
 for (let checkpointLocation of checkpointLocations) {
     selectTwo(checkpointLocation);
     // if (checkpointLocation.select2('data')[0].text) {
@@ -13,19 +28,11 @@ for (let checkpointLocation of checkpointLocations) {
         console.log(checkpointLocation[0].id);
         cpLatLng = processAutocomplete(evt, checkpointLocation, `loc-${checkpointLocation[0].id}`);
         cpLatLng.shift();
+        // store to localStorage
+        // update URL
 
         // preview route from current data
-        try {
-            ors_resp = await axios.get(
-                "/api/routes/new"
-            )
-        }
-        catch {
-            throw new Error;
-        }
-        finally {
 
-        }
     })
 }
 

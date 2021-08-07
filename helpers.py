@@ -234,7 +234,7 @@ def mapbox_directions(coordinates):
     # example API (that works): 
     # https://api.mapbox.com/directions/v5/mapbox/driving/-106.582998,35.191097;-106.54053791535142,35.12438254228742?alternatives=true&geometries=geojson&steps=true&access_token=pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ
 
-    # rebuilding URL as below(not working):
+    # rebuilding URL as below(working):
     # https://api.mapbox.com/directions/v5/mapbox/cycling/-106.582998,35.191097;-106.54053791535142,35.12438254228742?alternatives=true&geometries=geojson&steps=true&access_token=pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ
 
     url = f'{MB_DIRECTIONS_BASE_URL}{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
@@ -243,4 +243,5 @@ def mapbox_directions(coordinates):
     # > /home/kingtor/Documents/github-public-repos/saddle-time/venv/lib/python3.7/site-packages/requests/api.py(64)get()
     # -> def get(url, params=None, **kwargs):
 
-    return resp.json
+    print(f'response {resp}')
+    return resp

@@ -15,8 +15,8 @@
     <div class="col">
         <div class="row justify-content-center">
           <form action="/routes/new" method="GET" id="new-route-form">
-            <input type="text" readonly class="d-none" id="map-center-lat" name="lat" value="{{ lat }}">
-            <input type="text" readonly class="d-none" id="map-center-lng" name="lng" value="{{ lng }}">
+            <input type="text" readonly class="d-none" id="map-center-lat" name="0-lat" value="{{ lat }}">
+            <input type="text" readonly class="d-none" id="map-center-lng" name="0-lng" value="{{ lng }}">
             <button type="submit" class="d-block btn btn-block btn-primary m-2 width-100" id="new-route-button">make new route{% if g.user.username == "guest" %} as guest{% endif %}</button>
           </form>
         </div>
