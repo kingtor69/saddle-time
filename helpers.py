@@ -13,6 +13,7 @@ CURR_CHECKPOINT_LIST = "checkpoints_in_use"
 GUEST = User(username="guest", password="fakepassword")
 
 ORS_API_BASE_URL = "https://api.openrouteservice.org/v2/directions/"
+# currently building to use mapbox directions in place of ORS, but future development may still use ORS, so I'm leaving this in
 MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
@@ -234,9 +235,9 @@ def mapbox_directions(coordinates):
     # https://api.mapbox.com/directions/v5/mapbox/driving/-106.582998,35.191097;-106.54053791535142,35.12438254228742?alternatives=true&geometries=geojson&steps=true&access_token=pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ
 
     # rebuilding URL as below(not working):
-    # https://api.mapbox.com/directions/v5/mapbox/cycling/
+    # https://api.mapbox.com/directions/v5/mapbox/cycling/-106.582998,35.191097;-106.54053791535142,35.12438254228742?alternatives=true&geometries=geojson&steps=true&access_token=pk.eyJ1Ijoia2luZ3RvciIsImEiOiJja3A2ZmdtNmwyaHBlMnZtd2xxMmJ3Z3ljIn0.YpzXxkn-7AwHzZpWapeFjQ
 
-    url = f'{MB_DIRECTIONS_BASE_URL}{coordinates}?alternatives=true&steps=true&access_token={MB_API_KEY}'
+    url = f'{MB_DIRECTIONS_BASE_URL}{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
 
     resp = requests.get(url) # specifically, error happens here:
     # > /home/kingtor/Documents/github-public-repos/saddle-time/venv/lib/python3.7/site-packages/requests/api.py(64)get()

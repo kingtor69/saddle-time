@@ -15,6 +15,17 @@ for (let checkpointLocation of checkpointLocations) {
         cpLatLng.shift();
 
         // preview route from current data
+        try {
+            ors_resp = await axios.get(
+                "/api/routes/new"
+            )
+        }
+        catch {
+            throw new Error;
+        }
+        finally {
+
+        }
     })
 }
 
