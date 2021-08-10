@@ -266,6 +266,7 @@ def create_new_route():
             import pdb
             pdb.set_trace()
             # error is happening in mapbox_directions, 'sfar as I can tell
+            
             success = mapbox_directions(coordinates)
         except: 
             errors = {"api error": "route API failed"}
