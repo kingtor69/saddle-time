@@ -234,8 +234,7 @@ def login():
 def logout():
     """logs a user out"""
     if CURR_USER in session:
-        logging_out_user = g.user.username
-        flash (f'{logging_out_user} successfully logged out', 'success')
+        flash (f'you have logged out', 'success')
         logout_session()
         
     return redirect('/')
