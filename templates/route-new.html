@@ -7,6 +7,30 @@
   <link rel="stylesheet" href="/static/css/route-form.css">
 {% endblock %}
 {% block content %}
+<div class="row" hidden>
+  <table class="table table-dark table-striped bordered-block">
+    <thead>
+      <tr>
+        <th>{{ cps }}</th>
+        <th>lat</th>
+        <th>lng</th>
+        <th>locs</th>
+        <th>locs_vals</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(cps+2) %}
+      <tr>
+        <td>{{ i }}</td>
+        <td>{{ lats[i] }}</td>
+        <td>{{ lngs[i] }}</td>
+        <td>{{ locations[i] }}</td>
+        <td>{{ locations_values[i] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
   <div class="row justify-content-center">
     <div class="col col-12 col-md-5">
       <form action="" id="route-form">
@@ -25,21 +49,21 @@
       </form>
     </div>
     <div class="col col-12 col-md-7">
-      {{ checkpoint_form(0, location)}}
+      {{ checkpoint_form(0, locations[0])}}
 
       {{ new_checkpoint() }}
  
       {% for i in range(1, cps+1) %}
-      {{ checkpoint_form(i ) }}
+      {{ checkpoint_form(i, locations[i] ) }}
       {{ new_checkpoint() }}
       {% endfor %}
       </ul>
-      {{ checkpoint_form(999, False)}}
+      {{ checkpoint_form(999, locations[cps+1])}}
     </div>
   </div>
   <div class="row">
     <div class="col">
-      {{ mapbox (lng, lat, 12, large, "cp0")}}
+      {{ mapbox (lngs[0], lats[0], 12, large, "cp0")}}
     </div>
   </div>
 {% endblock %}

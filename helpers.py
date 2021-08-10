@@ -204,6 +204,8 @@ def wind_direction_logical(degrees):
 
 def location_from_geocode_mb(lat, lng):
     """retrieves location from mapbox given geocode (in their backwards format"""
+    if not lat or not lng:
+        return False
     response = requests.get(f'{MB_GEOCODE_BASE_URL}{lng},{lat}.json?access_token={MB_API_KEY}')
     resp = response.json()
     return resp['features'][0]['place_name']
@@ -211,6 +213,8 @@ def location_from_geocode_mb(lat, lng):
     
 def string_from_geocode(geocode):
     """creates an html-friendly string from geocode"""
+    if not geocode[0] or not geocode[1]:
+        return False
     geocode_str = str(geocode)
     html_id = ""
     for char in list(geocode_str):

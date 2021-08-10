@@ -263,8 +263,6 @@ def create_new_route():
                 if i > 0:
                     coordinates = coordinates + ';'
                 coordinates = coordinates + f'{lng},{lat}'
-            import pdb
-            pdb.set_trace()
             # error is happening in mapbox_directions, 'sfar as I can tell
             
             success = mapbox_directions(coordinates)
@@ -300,10 +298,27 @@ def process_new_route_form():
     locations = []
     locations_values = []
     for i in range(int(cps)+1):
-        lats.append(float(request.args.get(f'{i}-lat'))) if request.args.get(f'{i}-lat') else False
-        lngs.append(float(request.args.get(f'{i}-lng'))) if request.args.get(f'{i}-lat') else False
+        if request.args.get(f'{i}-lat'):
+            lats.append(float(request.args.get(f'{i}-lat')))
+        else:
+            lats.append(False)
+        if request.args.get(f'{i}-lat'):
+            lngs.append(float(request.args.get(f'{i}-lng')))
+        else:
+            lngs.append(False)
         locations.append(location_from_geocode_mb(lats[i], lngs[i]))
-        locations_values.append(string_from_geocode(lats[i], lngs[i]))
+        locations_values.append(string_from_geocode([lats[i], lngs[i]]))
+    
+    if request.args.get('999-lat'):
+        lats.append(float(request.args.get('999-lat')))
+    else:
+        lats.append(False)
+    if request.args.get('999-lat'):
+        lngs.append(float(request.args.get('999-lng')))
+    else:
+        lngs.append(False)
+    locations.append(location_from_geocode_mb(lats[cps+1], lngs[cps+1]))
+    locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
 
     route_form = RouteForm()
     # start_form = NewCheckpointForm(prefix="cp-0")
@@ -313,7 +328,7 @@ def process_new_route_form():
     #     additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
     # start_form=start_form, end_form=end_form, additional_forms=additional_forms, 
-    return render_template ('route-new.html', cps=cps, route_form=route_form, lat=lat, lng=lng, location=location, location_value=location_value)
+    return render_template ('route-new.html', cps=cps, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 
 @app.route('/api/routes')
 def display_available_routes():
