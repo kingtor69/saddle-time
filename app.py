@@ -257,9 +257,9 @@ def create_new_route():
         errors = False
         troubleshooting = False
         try: 
-            for i in range(int(cps)):
-                lng = request.args[f'lng{int(i)}'] or i
-                lat = request.args[f'lat{int(i)}'] or i
+            for i in range((int(cps)+1)):
+                lng = request.args[f'{int(i)}-lng'] or i
+                lat = request.args[f'{int(i)}-lat'] or i
                 if i > 0:
                     coordinates = coordinates + ';'
                 coordinates = coordinates + f'{lng},{lat}'
@@ -295,14 +295,16 @@ def process_new_route_form():
     # but I doubt it...
 
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
-    lat = float(request.args.get('lat')) if request.args.get('lat') else False
-    lng = float(request.args.get('lng')) if request.args.get('lat') else False
-    # try:
-    location = location_from_geocode_mb(lat, lng)
-    location_value = string_from_geocode([lat, lng])
-    # except:
-    #     location = False
-    #     location_value = False
+    lats = []
+    lngs = []
+    locations = []
+    locations_values = []
+    for i in range(int(cps)+1):
+        lats.append(float(request.args.get(f'{i}-lat'))) if request.args.get(f'{i}-lat') else False
+        lngs.append(float(request.args.get(f'{i}-lng'))) if request.args.get(f'{i}-lat') else False
+        locations.append(location_from_geocode_mb(lats[i], lngs[i]))
+        locations_values.append(string_from_geocode(lats[i], lngs[i]))
+
     route_form = RouteForm()
     # start_form = NewCheckpointForm(prefix="cp-0")
     # end_form = NewCheckpointForm(prefix="cp-999")
