@@ -37,9 +37,17 @@ for (let checkpointLocation of checkpointLocations) {
         routeDataLatLng[`cp${cpId}LatLng`] = cpLatLng;
         addObjToLocalStorage('routeData', routeDataLatLng)
         // U R THERE (in that function)
-        if (!'routeData' in localStorage) {
-            localStorage.setItem('routeData', '')
-        }
+        let storedData;
+        if ('routeData' in session) {
+            let json = session.getItem('routeData');
+            storedData = JSON.parse(json);
+            session.removeItem('routeData');
+        };
+        for (let key in storedData) {
+            routeDataLatLng[key] = storedData[key];
+        };
+        session.setItem('routeData', JSON.stringify(routeDataLatLng))
+        
         // store to localStorage
         // update URL
 
