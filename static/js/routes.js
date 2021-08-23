@@ -9,7 +9,7 @@ for (const [key, value] of queryString) {
     routeData[key] = value;
 };
 
-if (keys(routeData).length < 1) {
+if (Object.keys(routeData).length < 1) {
     // if queryString is empty, check for current data from localStorage 
     if ('routeData' in localStorage) {
         routeData = localStorage.routeData;
