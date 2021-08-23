@@ -101,6 +101,7 @@ function placeMarker(color, lat, lng) {
     map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
         if (error) throw error;
         map.addImage(`${color}Pointer`, image);
+        // Error: An image with this name already exists.
         map.addSource('point', {
             'type': 'geojson',
             'data': {
