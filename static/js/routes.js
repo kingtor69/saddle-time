@@ -2,17 +2,14 @@
 // console.log(checkpointLocations);
 // let location;
 
-// get current queryString data
-const queryString = new URLSearchParams(window.location.search);
-const routeData = {};
-for (const [key, value] of queryString) {
-    routeData[key] = value;
-};
+// get current queryString data (app.js)
+const routeData = parseCurrentQueryString();
 
 if (Object.keys(routeData).length < 1) {
     // if queryString is empty, check for current data from localStorage 
     if ('routeData' in localStorage) {
         routeData = localStorage.routeData;
+        
     };
 } else {
     // if not, replace localStorage with queryString data
@@ -49,7 +46,7 @@ for (let checkpointLocation of checkpointLocations) {
         for (let key in storedData) {
             routeDataLatLng[key] = storedData[key];
         };
-        localStorage.setItem('routeData', JSON.stringify(routeDataLatLng))
+        localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
         
         // store to localStorage
         // update URL

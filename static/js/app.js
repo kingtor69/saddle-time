@@ -47,23 +47,31 @@ function selectTwo(jQueryElement) {
 
 function updateUrl(queryAdditions, keepCurrent) {
     let queryString = "?";
-    let queryCurrent;
-    keepCurrent ? queryCurrent = parseCurrentQueryString() : queryCurrent = []
+    let query;
+    keepCurrent ? query = parseCurrentQueryString() : query = {};
     console.log(queryCurrent)
-    queries = [...queryCurrent, ...queryAdditions];
-    for (let i = 0; i < queries.length; i++) {
+    for (const [key, value] of queryAdditions) {
+        queryCurrent[key] = value;
+    };
+    let i = 0;
+    for (const [key, value] of query) {
         if (i > 0) {
             queryString += "&"
         }
-        queryString += `${queryAdditions[i][0]}=${queryAdditions[i][1]}`
-    }
+        queryString += `${key}=${value}`;
+        i++;
+    };
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
 }
 
 function parseCurrentQueryString() {
-    const queryCurrent = [];
-    return queryCurrent;
+    const queryCurrent = new URLSearchParams(window.location.search);
+    const queryObject = {};
+    for (const [key, value] of queryCurrent) {
+        queryObject[key] = value;
+    };
+    return queryObject;
 }
 
 function processAutocomplete(e, selector, prefix) {
@@ -104,8 +112,8 @@ function processAutocomplete(e, selector, prefix) {
                 // any other character is assumed to be a number
                 floatString += char;
             };
-        }
-    }
+        };
+    };
     localStorage.setItem('mapLng', lng);
     localStorage.setItem('mapLat', lat);
     localStorage.setItem('mapGeocode', [lat, lng]);
