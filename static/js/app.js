@@ -49,18 +49,17 @@ function updateUrl(queryAdditions, keepCurrent) {
     let queryString = "?";
     let query;
     keepCurrent ? query = parseCurrentQueryString() : query = {};
-    console.log(queryCurrent)
-    for (const [key, value] of queryAdditions) {
-        queryCurrent[key] = value;
+    for (let key in Object.keys(queryAdditions)) {
+        query[key] = queryAdditions[key];
     };
     let i = 0;
-    for (const [key, value] of query) {
+    for (let key in Object.keys(query)) {
         if (i > 0) {
             queryString += "&"
         }
-        queryString += `${key}=${value}`;
+        queryString += `${key}=${query[key]}`
         i++;
-    };
+    }
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
 }
@@ -120,20 +119,20 @@ function processAutocomplete(e, selector, prefix) {
     if (localStorage['units']) {
         units = localStorage['units']
     };
-    const queryAdditions = [];
+    const queryAdditions = {};
     if (prefix === "weather") {
-        queryAdditions.push(['location', location]);
-        queryAdditions.push(['latitude', lat]);
-        queryAdditions.push(['longitude', lng]);
-        queryAdditions.push(['units', units]);
+        queryAdditions.location = location;
+        queryAdditions.latitude = lat;
+        queryAdditions.longitude = lng;
+        queryAdditions.units = units;
         updateUrl(queryAdditions, false);
         return [units, lat, lng];
     };
     if (prefix.startsWith("loc-cp")) {
         const cpId = parseCpId(prefix);
         console.log(`parsed to ${cpId}`);
-        queryAdditions.push[`${cpId}Lat`, lat];
-        queryAdditions.push[`${cpId}Lng`, lng];
+        queryAdditions[`${cpId}Lat`] = lat;
+        queryAdditions[`${cpId}Lng`] = lng;
         updateUrl(queryAdditions, true);
         return [false, lat, lng];
     };
