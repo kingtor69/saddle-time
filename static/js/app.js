@@ -49,17 +49,17 @@ function updateUrl(queryAdditions, keepCurrent) {
     let queryString = "?";
     let query;
     keepCurrent ? query = parseCurrentQueryString() : query = {};
-    for (let key in Object.keys(queryAdditions)) {
+    for (let key of Object.keys(queryAdditions)) {
         query[key] = queryAdditions[key];
     };
     let i = 0;
-    for (let key in Object.keys(query)) {
+    for (let key of Object.keys(query)) {
         if (i > 0) {
             queryString += "&"
         }
         queryString += `${key}=${query[key]}`
         i++;
-    }
+    };
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
 }

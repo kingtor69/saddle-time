@@ -16,7 +16,7 @@ let weatherLocation = weatherLocationSelector.select2('data')[0].text; defaultLo
 let units = queryString.units; unitsSelector.value;
 
 if (queryString.location) {
-    weatherLocation = querySTring.location;
+    weatherLocation = queryString.location;
 } else if (queryString.lat && queryString.lng) {
     weatherLocation = axios.get(`/api/location?lat=${queryString.lat}&lng=${queryString.lng}`);
     weatherLocation.then(resp => {
@@ -56,11 +56,11 @@ async function updateWeather(units, lat, lng) {
     } else if (!resp.data) {
         displayErrors({'error': `no data returned from ${weatherUrl}`});
     } else {
-        updateWeatherDOM(resp.data);
+        updateWeatherDOM(resp.data, lat, lng);
     };
 };
 
-function updateWeatherDOM(weather) {
+function updateWeatherDOM(weather, lat, lng) {
     weatherConditionsHeader.innerHTML = ""
     if (weather.units === "imperial") {
         unitsOptionMetric.selected = '';
@@ -69,7 +69,7 @@ function updateWeatherDOM(weather) {
         unitsOptionMetric.selected = 'selected';
         unitsOptionImperial.selected = '';
     } else {
-        // this is where it brakes (see TODO on line 196)
+        // this is where it breaks (see TODO on line 196)
         throw new Error('invalid weather units');
     }
 
@@ -92,7 +92,14 @@ function updateWeatherDOM(weather) {
     // now put the right values in the existing keys
     for (let i=0; i<weatherDetailKeysTds.length; i++) {
         weatherDetailValueTds[i].innerText = weatherDetailObj[weatherDetailKeysTds[i].innerText]
-    }
+    };
+
+    // and update the readonly inputs that are used for new route button:
+    const inputMapLat = document.querySelector('#map-center-lat');
+    const inputMapLng = document.querySelector('#map-center-lng');
+    inputMapLat.value = lat;
+    inputMapLng.value = lng;
+
     return `
         ${weatherConditionsHeader.innerHTML}
         ${weatherDetails.innerHTML}
@@ -119,6 +126,8 @@ weatherLocationSelector.change((e) => {
     const [units, mapLat, mapLng] = processAutocomplete(e, weatherLocationSelector, 'weather');
     updateWeather(units, mapLat, mapLng);
     centerMap(mapLat, mapLng);
+    // console.log('remove bluePointer?');
+    // if (map.hasImage(`bluePointer`)) { map.removeImage(`bluePointer`) };
     placeMarker('blue', mapLat, mapLng);
 });
 

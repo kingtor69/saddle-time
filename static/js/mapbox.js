@@ -100,8 +100,12 @@ function centerMap(lat, lng) {
 function placeMarker(color, lat, lng) {
     map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
         if (error) throw error;
+        if (map.hasImage(`${color}Pointer`)) { map.removeImage(`${color}Pointer`) };
         map.addImage(`${color}Pointer`, image);
         // Error: An image with this name already exists.
+        // got that error before adding if map.hasImage
+        // getting this one now:
+        // Uncaught (in promise) Error: Could not load image because of There is already a source with this ID. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.
         map.addSource('point', {
             'type': 'geojson',
             'data': {
