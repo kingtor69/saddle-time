@@ -4,9 +4,12 @@
 
 // get current queryString data
 const queryString = new URLSearchParams(window.location.search);
-let routeData = Object.fromEntries(queryString.entries());
+const routeData = {};
+for (const [key, value] of queryString) {
+    routeData[key] = value;
+};
 
-if (routeData.length < 1) {
+if (keys(routeData).length < 1) {
     // if queryString is empty, check for current data from localStorage 
     if ('routeData' in localStorage) {
         routeData = localStorage.routeData;
@@ -38,15 +41,15 @@ for (let checkpointLocation of checkpointLocations) {
         addObjToLocalStorage('routeData', routeDataLatLng)
         // U R THERE (in that function)
         let storedData;
-        if ('routeData' in session) {
-            let json = session.getItem('routeData');
+        if ('routeData' in localStorage) {
+            let json = localStorage.getItem('routeData');
             storedData = JSON.parse(json);
-            session.removeItem('routeData');
+            localStorage.removeItem('routeData');
         };
         for (let key in storedData) {
             routeDataLatLng[key] = storedData[key];
         };
-        session.setItem('routeData', JSON.stringify(routeDataLatLng))
+        localStorage.setItem('routeData', JSON.stringify(routeDataLatLng))
         
         // store to localStorage
         // update URL
@@ -92,7 +95,7 @@ function addObjToLocalStorage(key, valueObj) {
         } 
         throw new Error;
     } else {
-        localStorage.setItem(key, value)
+        localStorage.setItem(key, JSON.stringify(valueObj))
         return;
     }
 }

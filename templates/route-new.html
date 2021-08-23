@@ -36,7 +36,6 @@
       <form action="" id="route-form">
         {% for field in route_form 
           if field.widget.input_type != 'hidden' %}
-          {{ route_form.hidden_tag() }}
           <div class="form-group">
             {{ field.label }}
             {{ field (class_="rounded bg-dark text-light form-field form-control") }}</td>
@@ -45,6 +44,7 @@
             {% endfor %}
           </div>
           {% endfor %}
+          {{ route_form.hidden_tag() }}
         <button type="submit" class="btn btn-primary rounded m-2 px-2">preview route</button>
       </form>
     </div>

@@ -67,7 +67,7 @@ function parseCurrentQueryString() {
 }
 
 function processAutocomplete(e, selector, prefix) {
-    console.log(prefix)
+    console.log(`app.js processAutocomplete prefix=${prefix}`)
 
     let location = selector.select2('data')[0].text;
     if (!prefix.startsWith('loc-cp')) {
