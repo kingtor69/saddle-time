@@ -58,8 +58,30 @@ for (let checkpointLocation of checkpointLocations) {
 
 routeForm.addEventListener('submit', previewRoute());
 
-function previewRoute() {
-    
+async function previewRoute() {
+    try {
+        const routeData = JSON.parse(localStorage.routeData);
+        // let url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/'
+        // let token = `access_token=${}`
+        let url = '/api/routes/preview?'
+        for (const [key, value] of routeData) {
+            url += `${key}=${value}&`
+        };
+        url = url.slice(0, -1);
+        resp = await axios.get(url);
+        routeFromApi = JSON.parse(resp);
+    }
+    catch (err) {
+        newError = document.createElement('p');
+        newError.classList.add('text-warning');
+        newError.innerHTML = `
+            ${err}
+            <br>
+            please try again with more information
+        `;
+        flashDiv.appendChild(newError);
+        return;
+    }
 }
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints

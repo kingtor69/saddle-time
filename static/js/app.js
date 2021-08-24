@@ -1,5 +1,6 @@
 
 const flashDiv = document.querySelector('#flashes');
+flashDiv.innerHTML = '';
 
 function displayErrors(errorObj) {
     const errorTable = document.createElement('table');
