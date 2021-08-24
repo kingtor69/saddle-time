@@ -4,6 +4,7 @@
 
 // get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
+const routeForm = document.querySelector('#route-form');
 
 if (Object.keys(routeData).length < 1) {
     // if queryString is empty, check for current data from localStorage 
@@ -30,7 +31,8 @@ for (let checkpointLocation of checkpointLocations) {
             alert ('something went wrong with that location, please try again');
         };
         console.log('cpid: ', cpId);
-        cpLatLng = processAutocomplete(evt, checkpointLocation, `loc-${checkpointLocation[0].id}`);
+        cpLatLng = processAutocomplete(evt, checkpointLocation, cpId);
+        // not using the boolean part of the return, so ditch it:
         cpLatLng.shift();
         const routeDataLatLng = {};
         routeDataLatLng[`cp${cpId}LatLng`] = cpLatLng;
@@ -46,13 +48,18 @@ for (let checkpointLocation of checkpointLocations) {
             routeDataLatLng[key] = storedData[key];
         };
         localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
-        
+        previewRoute();
         // store to localStorage
         // update URL
 
         // preview route from current data
-
     })
+}
+
+routeForm.addEventListener('submit', previewRoute());
+
+function previewRoute() {
+    
 }
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints

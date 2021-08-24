@@ -73,13 +73,10 @@ function parseCurrentQueryString() {
     return queryObject;
 }
 
-function processAutocomplete(e, selector, prefix) {
-    console.log(`app.js processAutocomplete prefix=${prefix}`)
-
+function processAutocomplete(e, selector, id) {
+    // variable definitions with autocomplete anddefault values
+    let prefix = id;
     let location = selector.select2('data')[0].text;
-    if (!prefix.startsWith('loc-cp')) {
-        localStorage.setItem(`${prefix}Location`, location);
-    }
     let htmlId = selector.select2('data')[0].id;
     let lattitude = false;
     let longitude = true;
@@ -87,6 +84,11 @@ function processAutocomplete(e, selector, prefix) {
     let floatStringDone = false;
     let lng = NaN;
     let lat = NaN;
+
+    // if (!prefix.startsWith('loc-cp')) {
+    //     localStorage.setItem(`${prefix}Location`, location);
+    // }
+
     for (let char of htmlId) {
         if (floatStringDone) {
             if (longitude) {
@@ -120,6 +122,17 @@ function processAutocomplete(e, selector, prefix) {
         units = localStorage['units']
     };
     const queryAdditions = {};
+    // if id is a number, it's a checkpoint ID
+    if (typeof id === "number") {
+        localStorage.setItem(`${prefix}Location`, location);
+        prefix = (parseInt)`loc-${id}`
+        queryAdditions[`${cpId}-lat`] = lat;
+        queryAdditions[`${cpId}-lng`] = lng;
+        updateUrl(queryAdditions, true);
+        return [false, lat, lng];
+    };
+
+    // if it's not a number, it was passed as a prefix variable:
     if (prefix === "weather") {
         queryAdditions.location = location;
         queryAdditions.latitude = lat;
@@ -128,14 +141,15 @@ function processAutocomplete(e, selector, prefix) {
         updateUrl(queryAdditions, false);
         return [units, lat, lng];
     };
-    if (prefix.startsWith("loc-cp")) {
-        const cpId = parseCpId(prefix);
-        console.log(`parsed to ${cpId}`);
-        queryAdditions[`${cpId}Lat`] = lat;
-        queryAdditions[`${cpId}Lng`] = lng;
-        updateUrl(queryAdditions, true);
-        return [false, lat, lng];
-    };
+    // if (prefix.startsWith("loc-cp")) {
+    //     debugger;
+    //     const cpId = parseCpId(prefix);
+    //     console.log(`parsed to ${cpId}`);
+    //     queryAdditions[`${cpId}Lat`] = lat;
+    //     queryAdditions[`${cpId}Lng`] = lng;
+    //     updateUrl(queryAdditions, true);
+    //     return [false, lat, lng];
+    // };
     return [false, false, false];
 }
 
