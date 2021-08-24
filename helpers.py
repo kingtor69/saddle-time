@@ -33,6 +33,7 @@ DEFAULT_LOC_LAT = 37.746998
 DEFAULT_LOC_LNG = -122.418653
 DEFAULT_UNITS = "imperial"
 
+
 def unit_markers(units):
     """show unit markers for different unit bases (degrees Celsius vs Farrenheit, etc)"""
     if units=="imperial":
@@ -249,3 +250,55 @@ def mapbox_directions(coordinates):
 
     print(f'response {resp}')
     return resp
+
+def parseGeocode(arguments):
+    """formats geocode for mapbox (f'{lng},{lat}')
+    in order of route
+    returns ordered list"""
+    
+    id_list = []
+    sortable_args = {}
+    sorted_geocodes = []
+    
+    # this will be the return string when it's done
+    geostring = ""
+
+    # temporary, but used in multiple iterations of for loop, so defined here:
+    geocode = ""
+
+    for key in arguments:
+        value = arguments[key]
+        id3 = key[0:3]
+        id2 = key[0:2]
+        id1 = key[0:1]
+        id_int = 0
+        try:
+            id_int = int(id3)
+        except:
+            try:
+                id_int = int(id2)
+            except:
+                id_int = int(id1)
+
+        print('******')
+        print(key)
+        print(value)
+        print('----')
+        if key[len(key) -1] == "g":
+            geocode += f'{value},'
+            print(f'lng added for: {geocode}')
+        if key[len(key) -1] == "t":
+            id_list.append(id_int)
+            geocode += value
+            print(f'lat added for: {geocode}')
+            sortable_args[id_int] = geocode
+            geocode = ""
+    for key in sorted(id_list):
+        sorted_geocodes.append(f'{sortable_args[key]}')
+
+    for code in sorted_geocodes:
+        geostring+=f'{code};'
+    # remove trailing semi-colon
+    geostring = geostring[:-1]
+
+    return geostring

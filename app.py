@@ -245,20 +245,8 @@ def logout():
 @app.route('/api/routes/preview', methods=["GET"])
 def preview_route():
     """Displays a route from Mapbox API."""
-    ids = []
-    lngs_lats = []
-    for key in request.args:
-        id3 = key[0:3]
-        id2 = key[0:2]
-        id1 = key[0:1]
-        try:
-            ids.append(int(id3))
-        except:
-            try:
-                ids.append(int(id2))
-            except:
-                ids.append(int(id1))
-    # OK, now you've got a list of the ID numbers, now what?
+    parseData(request.args)
+    
 
 @app.route('/api/routes/new', methods=["GET","POST"])
 def create_new_route():
