@@ -263,8 +263,9 @@ def parseGeocode(arguments):
     # this will be the return string when it's done
     geostring = ""
 
-    # temporary, but used in multiple iterations of for loop, so defined here:
-    geocode = ""
+    # temporary, but need to persist over multiple iterations of loop, so defined here:
+    lat = False
+    lng = False
 
     for key in arguments:
         value = arguments[key]
@@ -280,25 +281,27 @@ def parseGeocode(arguments):
             except:
                 id_int = int(id1)
 
-        print('******')
-        print(key)
-        print(value)
-        print('----')
+        # print('******')
+        # print(key)
+        # print(value)
+        # print('----')
+
+        # thought this was going to fix disorderly test arguments, but it does not because it's only storing a lng and lat until it gets two of them regardless of checkpoint id
+        # solution /might/ be to create an object that is the value of each int_id key with lat and lng
         if key[len(key) -1] == "g":
-            geocode += f'{value},'
-            print(f'lng added for: {geocode}')
+            lng = value
         if key[len(key) -1] == "t":
+            lat = value
+        
+        if (lat and lng):
             id_list.append(id_int)
-            geocode += value
-            print(f'lat added for: {geocode}')
-            sortable_args[id_int] = geocode
-            geocode = ""
+            sortable_args[id_int] = f'{lng},{lat};'
+            lat = False
+            lng = False
+
     for key in sorted(id_list):
-        sorted_geocodes.append(f'{sortable_args[key]}')
+        geostring+=f'{sortable_args[key]}'
 
-    for code in sorted_geocodes:
-        geostring+=f'{code};'
-    # remove trailing semi-colon
+    # remove trailing semi-colon and return string
     geostring = geostring[:-1]
-
     return geostring

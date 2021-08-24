@@ -53,8 +53,8 @@ for (let checkpointLocation of checkpointLocations) {
         // update URL
 
         // preview route from current data
-    })
-}
+    });
+};
 
 routeForm.addEventListener('submit', previewRoute());
 
@@ -64,8 +64,8 @@ async function previewRoute() {
         // let url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/'
         // let token = `access_token=${}`
         let url = '/api/routes/preview?'
-        for (const [key, value] of routeData) {
-            url += `${key}=${value}&`
+        for (const key in routeData) {
+            url += `${key}=${routeData[key]}&`
         };
         url = url.slice(0, -1);
         resp = await axios.get(url);
@@ -73,14 +73,21 @@ async function previewRoute() {
     }
     catch (err) {
         newError = document.createElement('p');
-        newError.classList.add('text-warning');
-        newError.innerHTML = `
-            ${err}
-            <br>
-            please try again with more information
-        `;
+        try {
+            if (err.isAxiosError) {
+                newError.classList.add('text-info');
+                newError.innerText = "500 (eventually: 'preview will appear when two or more checkpoints are entered')"
+            } 
+        }
+        catch {
+            newError.classList.add('text-warning');
+            newError.innerHTML = `
+                ${err}
+                <br>
+                please try again with more information
+            `;
+        }
         flashDiv.appendChild(newError);
-        return;
     }
 }
 
