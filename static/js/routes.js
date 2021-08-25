@@ -72,6 +72,7 @@ async function previewRoute() {
         routeFromApi = JSON.parse(resp);
     }
     catch (err) {
+        flashDiv.innerHTML = "";
         newError = document.createElement('p');
         try {
             if (err.isAxiosError) {
