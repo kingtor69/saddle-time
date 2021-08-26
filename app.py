@@ -246,9 +246,11 @@ def logout():
 def preview_route():
     """Displays a route from Mapbox API."""
     geostring = parse_geocode(request.args.to_dict())
+    if type(geostring) == dict:
+        return jsonify({"errors": geostring})
+    
     url = f"https://api.mapbox.com/directions/v5/mapbox/cycling/{geostring}?access_token={MB_API_KEY}"
-    import pdb
-    pdb.set_trace
+    return {"errors": {"url is": url, "geostring is": geostring}}
 
 @app.route('/api/routes/new', methods=["GET","POST"])
 def create_new_route():

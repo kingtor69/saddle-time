@@ -256,14 +256,12 @@ def parse_geocode(arguments):
     returns string mapbox expects for the route parameters
     i.e. f'{lng},{lat};{lng},{lat};{lng},{lat}'"""
     
-    id_list = []
-    sortable_args = {}
-    sorted_geocodes = []
-    
     # this will be the return string when it's done
     geostring = ""
 
-    # temporary, but need to persist over multiple iterations of loop, so defined here:
+    # termp variables used to sort everything properly
+    id_list = []
+    sortable_args = {}
     lat = False
     lng = False
 
@@ -279,15 +277,15 @@ def parse_geocode(arguments):
             try:
                 id_int = int(id2)
             except:
-                id_int = int(id1)
-
-        # print('******')
-        # print(key)
-        # print(value)
-        # print('----')
+                try:
+                    id_int = int(id1)
+                except:
+                    return {"garbage in garbage out error": f"{key} can't be parsed to an id"}
 
         # thought this was going to fix disorderly test arguments, but it does not because it's only storing a lng and lat until it gets two of them regardless of checkpoint id
         # solution /might/ be to create an object that is the value of each int_id key with lat and lng
+        # or it might be to refactor the js to send the geostring as mapbox expects it
+        # or maybe just to trust you're passing the lat and lng of each checkpoint
         if key[len(key) -1] == "g":
             lng = value
         if key[len(key) -1] == "t":

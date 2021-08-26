@@ -32,10 +32,11 @@ for (let checkpointLocation of checkpointLocations) {
         };
         console.log('cpid: ', cpId);
         cpLatLng = processAutocomplete(evt, checkpointLocation, cpId);
-        // not using the boolean part of the return, so ditch it:
+        // this is not using the boolean part of the return, so ditch it:
         cpLatLng.shift();
         const routeDataLatLng = {};
-        routeDataLatLng[`cp${cpId}LatLng`] = cpLatLng;
+        // routeDataLatLng[`cp${cpId}LatLng`] = cpLatLng;
+        routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
         addObjToLocalStorage('routeData', routeDataLatLng)
         // U R THERE (in that function)
         let storedData;
@@ -67,7 +68,9 @@ async function previewRoute() {
         };
         url = url.slice(0, -1);
         resp = await axios.get(url);
-        routeFromApi = JSON.parse(resp);
+        if ("errors" in resp.data) {
+            handleErrors (resp.data.errors)
+        }
     // }
     // catch (err) {
     //     flashDiv.innerHTML = "";
