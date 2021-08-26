@@ -24,7 +24,6 @@ if (queryString.location) {
     });
 };
 
-
 // let weatherLocation = (localStorage['weatherLocation']) ; defaultLocation;
 
 unitsSelector.addEventListener('change', function(evt) {

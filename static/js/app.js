@@ -177,3 +177,13 @@ function parseCpId(elementId) {
     };
     return false;
 }
+
+// started rabbitholing on this.... it can wait
+function handleError(errObj) {
+    // flashDiv.innerHTML = "";
+    // newError = document.createElement('p');
+    // newError.innerHTML = 
+    // if (err.isAxiosError) {
+    //     newError.classList.add('text-info');
+    //     newError.innerText = 
+}

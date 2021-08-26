@@ -251,10 +251,10 @@ def mapbox_directions(coordinates):
     print(f'response {resp}')
     return resp
 
-def parseGeocode(arguments):
-    """formats geocode for mapbox (f'{lng},{lat}')
-    in order of route
-    returns ordered list"""
+def parse_geocode(arguments):
+    """formats geocode for mapbox in order of route
+    returns string mapbox expects for the route parameters
+    i.e. f'{lng},{lat};{lng},{lat};{lng},{lat}'"""
     
     id_list = []
     sortable_args = {}

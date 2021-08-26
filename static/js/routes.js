@@ -59,10 +59,8 @@ for (let checkpointLocation of checkpointLocations) {
 routeForm.addEventListener('submit', previewRoute());
 
 async function previewRoute() {
-    try {
+    // try {
         const routeData = JSON.parse(localStorage.routeData);
-        // let url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/'
-        // let token = `access_token=${}`
         let url = '/api/routes/preview?'
         for (const key in routeData) {
             url += `${key}=${routeData[key]}&`
@@ -70,26 +68,26 @@ async function previewRoute() {
         url = url.slice(0, -1);
         resp = await axios.get(url);
         routeFromApi = JSON.parse(resp);
-    }
-    catch (err) {
-        flashDiv.innerHTML = "";
-        newError = document.createElement('p');
-        try {
-            if (err.isAxiosError) {
-                newError.classList.add('text-info');
-                newError.innerText = "500 (eventually: 'preview will appear when two or more checkpoints are entered')"
-            } 
-        }
-        catch {
-            newError.classList.add('text-warning');
-            newError.innerHTML = `
-                ${err}
-                <br>
-                please try again with more information
-            `;
-        }
-        flashDiv.appendChild(newError);
-    }
+    // }
+    // catch (err) {
+    //     flashDiv.innerHTML = "";
+    //     newError = document.createElement('p');
+    //     try {
+    //         if (err.isAxiosError) {
+    //             newError.classList.add('text-info');
+    //             newError.innerText = "Something went wrong retrieving your route from the maps database. Please refine your search or try again later."
+    //         } 
+    //     }
+    //     catch {
+    //         newError.classList.add('text-warning');
+    //         newError.innerHTML = `
+    //             ${err}
+    //             <br>
+    //             please try again with more information
+    //         `;
+    //     }
+    //     flashDiv.appendChild(newError);
+    // }
 }
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints
