@@ -248,7 +248,6 @@ def mapbox_directions(coordinates):
     # > /home/kingtor/Documents/github-public-repos/saddle-time/venv/lib/python3.7/site-packages/requests/api.py(64)get()
     # -> def get(url, params=None, **kwargs):
 
-    print(f'response {resp}')
     return resp
 
 def parse_geocode(arguments):
@@ -282,23 +281,19 @@ def parse_geocode(arguments):
                 except:
                     return {"garbage in garbage out error": f"{key} can't be parsed to an id"}
 
-        # thought this was going to fix disorderly test arguments, but it does not because it's only storing a lng and lat until it gets two of them regardless of checkpoint id
-        # solution /might/ be to create an object that is the value of each int_id key with lat and lng
-        # or it might be to refactor the js to send the geostring as mapbox expects it
-        # or maybe just to trust you're passing the lat and lng of each checkpoint
-        if key[len(key) -1] == "g":
-            lng = value
-        if key[len(key) -1] == "t":
-            lat = value
-        
-        if (lat and lng):
+        if not id_int in id_list:
             id_list.append(id_int)
-            sortable_args[id_int] = f'{lng},{lat};'
-            lat = False
-            lng = False
+        if not id_int in sortable_args:
+            sortable_args[id_int] = {}
 
-    for key in sorted(id_list):
-        geostring+=f'{sortable_args[key]}'
+        if key[len(key) -1] == "g":
+            sortable_args[id_int]['lng'] = value
+        if key[len(key) -1] == "t":
+            sortable_args[id_int]['lat'] = value
+        
+    # now build the string
+    for i in sorted(id_list):
+        geostring+=f"{sortable_args[i]['lng']},{sortable_args[i]['lat']};"
 
     # remove trailing semi-colon and return string
     geostring = geostring[:-1]
