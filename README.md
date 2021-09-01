@@ -40,9 +40,12 @@ These are currently being used to gather API information from various sources fr
 ##### /api/routes/preview
 This will return routes from the mapbox directions API. 
 
-***required data***
-At least 2 checkpoints (usually 0 and 999 for start and end of route) and their lattitude and longitude. The checkpoints data should be grouped together, but the order of lattitude and longitude is not important:
+****required data****
+
+The latitude and longitude for at least 2 checkpoints. The numbers are not important, but the order of numbers is. *I use n=0 for the start and n=999 for the end of a route.* The latitude and longitude should be grouped together by checkpoint number, but numbers need not be in order, or does latitude or longitude need to come first: 
  | key | value |
  | :---: | :--- |
- | *n*-Lat | *float number between -90.0 and 90.0* |
- | *n*-Lng | *float number between -180.0 and 180.0* |
+ | *n*-lat | *float number between -90.0 and 90.0* |
+ | *n*-lng | *float number between -180.0 and 180.0* |
+
+*example url:* `http://127.0.0.1:5000/api/routes/preview?999-lat=42.32856&999-lng=-83.03999&0-lat=37.746998&0-lng=-122.418653`

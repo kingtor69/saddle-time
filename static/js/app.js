@@ -189,3 +189,15 @@ function handleErrors(errsObj) {
 
     console.log(errsObj)
 }
+
+function dataFromQueryString() {
+// adapted function from stack overflow, crashed before copying link or testing function. Recovered from crash long enough to save this before I needed a break. ;)
+    const query = window.location.search.substring(1);
+    queryObject = {};
+    let data = query.split('&');
+    for (let i = 0; i < data.length; i++) {
+        let datum = data[i].split('=');
+        queryObject[decodeURIComponent(datum[0])] = decodeURIComponent(datum[1]);
+    }
+    return queryObject;
+}

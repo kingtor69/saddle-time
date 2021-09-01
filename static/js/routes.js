@@ -61,7 +61,8 @@ routeForm.addEventListener('submit', previewRoute());
 
 async function previewRoute() {
     // try {
-        const routeData = JSON.parse(localStorage.routeData);
+        // const routeData = JSON.parse(localStorage.routeData);
+        const routeData = dataFromQueryString();
         let url = '/api/routes/preview?'
         for (const key in routeData) {
             url += `${key}=${routeData[key]}&`
