@@ -76,7 +76,7 @@ async function previewRoute() {
     };
     let routes = {};
     if ("routes" in resp.data) {
-        routes = resp.data;
+        routes = resp.data.routes;
         console.log (routes);
     } else {
         handleErrors({"routing error": "No bicycle routes were found for these checkpoints. Please try something else."})
