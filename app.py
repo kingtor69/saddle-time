@@ -255,7 +255,7 @@ def preview_route():
     
     # url = f"https://api.mapbox.com/directions/v5/mapbox/cycling/{geostring}?access_token={MB_API_KEY}"
     try:
-        return mapbox_directions(geostring)
+        return jsonify(mapbox_directions(geostring))
     except:
         return {"errors": {"internal error": f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'}}
 

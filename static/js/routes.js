@@ -60,42 +60,27 @@ for (let checkpointLocation of checkpointLocations) {
 routeForm.addEventListener('submit', previewRoute());
 
 async function previewRoute() {
-    // try {
-        // const routeData = JSON.parse(localStorage.routeData);
-        const routeData = dataFromQueryString();
-        let url = '/api/routes/preview?'
-        for (const key in routeData) {
-            url += `${key}=${routeData[key]}&`
-        };
-        url = url.slice(0, -1);
-        resp = await axios.get(url);
-        if ("errors" in resp.data) {
-            handleErrors (resp.data.errors)
-        }
-        else {
-            console.log('got the preview data')
-            console.log(resp.data)
-        }
-    // }
-    // catch (err) {
-    //     flashDiv.innerHTML = "";
-    //     newError = document.createElement('p');
-    //     try {
-    //         if (err.isAxiosError) {
-    //             newError.classList.add('text-info');
-    //             newError.innerText = "Something went wrong retrieving your route from the maps database. Please refine your search or try again later."
-    //         } 
-    //     }
-    //     catch {
-    //         newError.classList.add('text-warning');
-    //         newError.innerHTML = `
-    //             ${err}
-    //             <br>
-    //             please try again with more information
-    //         `;
-    //     }
-    //     flashDiv.appendChild(newError);
-    // }
+    const routeData = dataFromQueryString();
+    let url = '/api/routes/preview?'
+    for (const key in routeData) {
+        url += `${key}=${routeData[key]}&`
+    };
+    url = url.slice(0, -1);
+    resp = await axios.get(url);
+    if ("errors" in resp.data) {
+        handleErrors (resp.data.errors);
+    }
+    else {
+        console.log('got the preview data');
+        console.log(resp.data);
+    };
+    let routes = {};
+    if ("routes" in resp.data) {
+        routes = resp.data;
+        console.log (routes);
+    } else {
+        handleErrors({"routing error": "No bicycle routes were found for these checkpoints. Please try something else."})
+    }
 }
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints

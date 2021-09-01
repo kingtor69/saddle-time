@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import session, g
+from flask import session
 from models import RouteCheckpoint, User, Route, Checkpoint, RouteCheckpoint
 
 # from urllib2 import urlopen
@@ -236,13 +236,13 @@ def string_from_geocode(geocode):
 
 def mapbox_directions(coordinates):
     """receives coordinates in mapbox format ({lng},{lat};{lng},{lat},&c.) and returns route data"""
+
+
     url = f'{MB_DIRECTIONS_BASE_URL}{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
 
     resp = requests.get(url)
-    response = resp.data
-    
-    
-    return response.json()
+
+    return resp.json()
 
 def parse_geocode(arguments):
     """formats geocode for mapbox in order of route

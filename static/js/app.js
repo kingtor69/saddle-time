@@ -191,7 +191,9 @@ function handleErrors(errsObj) {
 }
 
 function dataFromQueryString() {
-// adapted function from stack overflow, crashed before copying link or testing function. Recovered from crash long enough to save this before I needed a break. ;)
+    // function adapted from https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
+    // answer by https://stackoverflow.com/users/44852/tarik
+
     const query = window.location.search.substring(1);
     queryObject = {};
     let data = query.split('&');
