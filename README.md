@@ -43,5 +43,6 @@ This will return routes from the mapbox directions API.
 ***required data***
 At least 2 checkpoints (usually 0 and 999 for start and end of route) and their lattitude and longitude. The checkpoints data should be grouped together, but the order of lattitude and longitude is not important:
  | key | value |
+ | :---: | :--- |
  | *n*-Lat | *float number between -90.0 and 90.0* |
  | *n*-Lng | *float number between -180.0 and 180.0* |
