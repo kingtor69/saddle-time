@@ -32,3 +32,16 @@ APIs to be used can be found in api.py
  - currently called "new" route page, but I think this will be the master route page, offering editability on that page and using different API calls to create new routes in the database or edit existing entries
  - bicycle type is still an active choice field, but will likely be removed until ORS is implemented
    - (there is definitely need for this functionality: yesterday I was sent over a dirt path on my road bike by google maps)
+
+### RESTful API calls
+These are currently being used to gather API information from various sources from JavaScript via Python/Flask.
+
+#### endpoints:
+##### /api/routes/preview
+This will return routes from the mapbox directions API. 
+
+***required data***
+At least 2 checkpoints (usually 0 and 999 for start and end of route) and their lattitude and longitude. The checkpoints data should be grouped together, but the order of lattitude and longitude is not important:
+ | key | value |
+ | *n*-Lat | *float number between -90.0 and 90.0* |
+ | *n*-Lng | *float number between -180.0 and 180.0* |

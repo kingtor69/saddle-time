@@ -71,6 +71,10 @@ async function previewRoute() {
         if ("errors" in resp.data) {
             handleErrors (resp.data.errors)
         }
+        else {
+            console.log('got the preview data')
+            console.log(resp.data)
+        }
     // }
     // catch (err) {
     //     flashDiv.innerHTML = "";

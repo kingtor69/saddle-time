@@ -245,12 +245,19 @@ def logout():
 @app.route('/api/routes/preview', methods=["GET"])
 def preview_route():
     """Displays a route from Mapbox API."""
-    geostring = parse_geocode(request.args.to_dict())
+    try:
+        geostring = parse_geocode(request.args.to_dict())
+    except: 
+        error = {"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}}
+        return 
     if type(geostring) == dict:
         return jsonify({"errors": geostring})
     
-    url = f"https://api.mapbox.com/directions/v5/mapbox/cycling/{geostring}?access_token={MB_API_KEY}"
-    return {"errors": {"url is": url, "geostring is": geostring}}
+    # url = f"https://api.mapbox.com/directions/v5/mapbox/cycling/{geostring}?access_token={MB_API_KEY}"
+    try:
+        return mapbox_directions(geostring)
+    except:
+        return {"errors": {"internal error": f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'}}
 
 @app.route('/api/routes/new', methods=["GET","POST"])
 def create_new_route():
