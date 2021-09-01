@@ -1,11 +1,8 @@
-// selectTwo(checkpointLocations);
-// console.log(checkpointLocations);
-// let location;
-
 // get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 
+// maybe ditch this next bit
 if (Object.keys(routeData).length < 1) {
     // if queryString is empty, check for current data from localStorage 
     if ('routeData' in localStorage) {
@@ -19,10 +16,6 @@ if (Object.keys(routeData).length < 1) {
 
 for (let checkpointLocation of checkpointLocations) {
     selectTwo(checkpointLocation);
-    // if (checkpointLocation.select2('data')[0].text) {
-    //     location = checkpointLocation.select2('data')[0].text
-    // }
-    // checkpointIndex = parseIdForCpIndex(location.id)
     checkpointLocation.change((evt) => {
         evt.preventDefault();
         console.log('elementid: ', checkpointLocation[0].id);
@@ -35,10 +28,10 @@ for (let checkpointLocation of checkpointLocations) {
         // this is not using the boolean part of the return, so ditch it:
         cpLatLng.shift();
         const routeDataLatLng = {};
-        // routeDataLatLng[`cp${cpId}LatLng`] = cpLatLng;
         routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
+        // I don't think I'm using, or need to use, localStorage.routeData right now for checkpoints' geocodes
+        // i.e. there's probably some useless code around here
         addObjToLocalStorage('routeData', routeDataLatLng)
-        // U R THERE (in that function)
         let storedData;
         if ('routeData' in localStorage) {
             let json = localStorage.getItem('routeData');
@@ -49,11 +42,9 @@ for (let checkpointLocation of checkpointLocations) {
             routeDataLatLng[key] = storedData[key];
         };
         localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
-        previewRoute();
-        // store to localStorage
-        // update URL
-
-        // preview route from current data
+        let routes = previewRoute();
+        // store *this* to localStorage?
+        displayRoutes(routes);
     });
 };
 
@@ -78,6 +69,7 @@ async function previewRoute() {
     if ("routes" in resp.data) {
         routes = resp.data.routes;
         console.log (routes);
+        return routes;
     } else {
         handleErrors({"routing error": "No bicycle routes were found for these checkpoints. Please try something else."})
     }
@@ -123,20 +115,4 @@ function addObjToLocalStorage(key, valueObj) {
         return;
     }
 }
-
-// pre-populating the "start" checkpoint (cp0) is happening in PythonFlask now, and I think that's why I started all this
-// for (let locator of $('select.checkpoint-location')) {
-//     selectTwo(locator);
-// }
-
-// $('#cp-0-')
-
-// if ($('#map-lat') && $('#map-lng')) {
-
-// };
-
-// async function reverseGeocode(lat, lng) {
-//     resp = await axios.get(`/api/location?lat=${lat}&lng=${lng}`)
-//     console.log(resp)
-// };
 
