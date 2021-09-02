@@ -42,13 +42,22 @@ for (let checkpointLocation of checkpointLocations) {
             routeDataLatLng[key] = storedData[key];
         };
         localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
-        let routes = previewRoute();
+        if (goodRouteData()) {
+            let routes = previewRoute();
+            displayRoutes(routes);
+        }
         // store *this* to localStorage?
-        displayRoutes(routes);
     });
 };
 
-routeForm.addEventListener('submit', previewRoute());
+routeForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (goodRouteData()) {
+        previewRoute();
+    } else {
+        handleErrors({"feed me more data": "there is not enough valid route data to preview a route"})
+    }
+});
 
 async function previewRoute() {
     const routeData = dataFromQueryString();
@@ -116,3 +125,26 @@ function addObjToLocalStorage(key, valueObj) {
     }
 }
 
+function goodRouteData() {
+    // Check that query string has lat and lng for 2 or more checkpoints. Returns boolean.
+    let data = parseCurrentQueryString();
+    let dataKeys = Object.keys(data);
+    let checkpoints = 0;
+    for (let i = 0; i < dataKeys.length; i++) {
+        // if key does NOT start with a number, it's not a checkpoint
+        if (parseInt(dataKeys[i])) {
+            // do we have two of the same number in a row?
+            if (i > 0 && parseInt(dataKeys[i] === parseInt(dataKeys[i-1]))) {
+                // finally, does that pair of keys each contain one of "lat" and "lng" (in either order)
+                if (("lat" in dataKeys[i] && "lng" in dataKeys[i-1]) || "lng" in dataKeys[i] && "lat" in dataKeys[i-1]) {
+                    // OK, that's a valid checkpoint
+                    checkpoints ++
+                }
+            }
+        }
+    }
+    if (checkpoints >= 2) {
+        return true;
+    }
+    return false;
+}
