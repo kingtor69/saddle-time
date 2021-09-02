@@ -293,7 +293,7 @@ def parse_geocode(arguments):
     return (geoarray, geostring)
 
 def ORS_directions(geoarray, profile):
-    """receives coordinates in ORS formate([{lng},{lat}],[{lng},{lat}],[&c.]])
+    """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
     """
     url = f'{ORS_DIRECTIONS_BASE_URL}{profile}'
 
