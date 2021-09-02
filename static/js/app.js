@@ -179,15 +179,28 @@ function parseCpId(elementId) {
 }
 
 // started rabbitholing on this.... it can wait
-function handleErrors(errsObj) {
-    // flashDiv.innerHTML = "";
-    // newError = document.createElement('p');
-    // newError.innerHTML = 
-    // if (err.isAxiosError) {
-    //     newError.classList.add('text-info');
-    //     newError.innerText = 
-
-    console.log(errsObj)
+function handleErrors(errs) {
+    flashDiv.innerHTML = "";
+    if (typeof errs === "object") {
+        let errsKeys = Object.keys(errs);
+        const errCodes = ['info', 'success', 'danger', 'primary', 'secondary']
+        for (let key of errsKeys) {
+            newError = document.createElement('p');
+            newError.innerHTML = ""
+            if (key in errCodes) {
+                newError.classList.add(`text-${key}`);
+                newError.innerText = `${errs[key]}`
+            } else {
+                newError.classList.add('text-warning');
+                newError.innerText = `${key}: ${errs[key]}`
+            }
+            flashDiv.appendChild(newError)
+            flashDiv.appendChild(document.createElement('br'))
+        }
+    } else {
+        console.log(errs)
+        handleErrors({"thrown error": "not sure what.... better check into it"})
+    }
 }
 
 function dataFromQueryString() {
