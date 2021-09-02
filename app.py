@@ -244,9 +244,13 @@ def logout():
 ########################
 @app.route('/api/routes/preview', methods=["GET"])
 def preview_route():
-    """Displays a route from Mapbox API."""
+    """Returns a route or choices of routes. Tries ORS first, then mapbox if that yields no results. 
+    Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
+    Also accepts profile type, defaults to "regular" (which is translated to "bicycle" for mapbox)
+    """
+    
     try:
-        geostring = parse_geocode(request.args.to_dict())
+        (geoarray, geostring) = parse_geocode(request.args.to_dict())
     except: 
         error = {"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}}
         return 
@@ -254,10 +258,20 @@ def preview_route():
         return jsonify({"errors": geostring})
     
     # url = f"https://api.mapbox.com/directions/v5/mapbox/cycling/{geostring}?access_token={MB_API_KEY}"
+    errors_object = {}
+
     try:
-        return jsonify(mapbox_directions(geostring))
+        return {"ORS": jsonify(ORS_directions(geoarray))}
     except:
-        return {"errors": {"internal error": f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'}}
+        errors_object['ORS error'] = f'ORS_directions in helpers.py is not responding to these coordinates: {geoarray}'
+        try:
+            return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
+        except:
+            # at the moment, these error messages are written for development
+            errors_object['mapbox error'] = f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'
+    
+    # if we're here, both have failed and errors_object should be returned
+    return {"errors": errors_object}
 
 @app.route('/api/routes/new', methods=["GET","POST"])
 def create_new_route():
