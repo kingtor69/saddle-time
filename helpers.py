@@ -12,7 +12,6 @@ CURR_ROUTE = "route_in_progress"
 CURR_CHECKPOINT_LIST = "checkpoints_in_use"
 GUEST = User(username="guest", password="fakepassword")
 
-ORS_API_BASE_URL = "https://api.openrouteservice.org/v2/directions/"
 MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
@@ -21,10 +20,13 @@ MB_API_BASE_URL = "https://api.mapbox.com/"
 MB_GEOCODE_BASE_URL = f"{MB_API_BASE_URL}geocoding/v5/mapbox.places/"
 MB_DIRECTIONS_BASE_URL = f"{MB_API_BASE_URL}directions/v5/mapbox/"
 
-ORS_API_KEY = os.environ['ORS_API_KEY']
 MQ_API_KEY = os.environ['MQ_API_KEY']
 OW_API_KEY = os.environ['OW_API_KEY']
 MB_API_KEY = os.environ['MB_API_KEY']
+
+# ORS for future development:
+# ORS_API_BASE_URL = "https://api.openrouteservice.org/v2/directions/"
+# ORS_API_KEY = os.environ['ORS_API_KEY']
 
 DEFAULT_LOCATION_LOGICAL_NAME = '"Coffee Shop" on Mission St, San Francisco'
 DEFAULT_LOCATION = "3139 Mission St, San Francisco, CA 94110"
@@ -236,16 +238,17 @@ def string_from_geocode(geocode):
 def parse_geocode(arguments):
     """formats geocode for supported services in order of route
     Currently, two services are supported:
-        ORS (Open Route Service):
-            returns the array ORS expects for route parameters
-            i.e. f'[[{lat},{lng}],[{lat},{lng}]]
+        *** ORS is for future development, so written code is commented out ***
+        # ORS (Open Route Service):
+        #     returns the array ORS expects for route parameters
+        #     i.e. f'[[{lat},{lng}],[{lat},{lng}]]
         Mapbox:
             returns string mapbox expects for the route parameters
             i.e. f'{lat},{lng};{lat},{lng};{lat},{lng}'
         NOTE: this method parses and returns data for both services
         """
     # these variables will be the return value
-    geoarray = []
+    # geoarray = []
     geostring = ""
     
 
@@ -284,28 +287,28 @@ def parse_geocode(arguments):
         
     # now build the array and string
     for i in sorted(id_list):
-        geoarray.append([sortable_args[i]['lng'],sortable_args[i]['lat']])
+        # geoarray.append([sortable_args[i]['lng'],sortable_args[i]['lat']])
         geostring+=f"{sortable_args[i]['lng']},{sortable_args[i]['lat']};"
 
     # remove trailing semi-colon and return string
     geostring = geostring[:-1]
         
-    return (geoarray, geostring)
+    # return (geoarray, geostring)
+    return geostring
 
-def ORS_directions(geoarray, profile):
-    """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
-    """
-    url = f'{ORS_DIRECTIONS_BASE_URL}{profile}'
+# def ORS_directions(geoarray, profile="regular"):
+#     """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
+#     """
+#     url = f'{ORS_DIRECTIONS_BASE_URL}{profile}'
 
-    resp = requests.post()
+#     resp = requests.post()
 
-def mapbox_directions(coordinates, profile):
+def mapbox_directions(coordinates):
     """receives coordinates in mapbox format ({lng},{lat};{lng},{lat},&c.) and returns route data"""
 
-
+    profile = "cycling"
     url = f'{MB_DIRECTIONS_BASE_URL}{profile}/{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
 
     resp = requests.get(url)
 
     return resp.json()
-

@@ -244,31 +244,36 @@ def logout():
 ########################
 @app.route('/api/routes/preview', methods=["GET"])
 def preview_route():
-    """Returns a route or choices of routes. Tries ORS first, then mapbox if that yields no results. 
+    """Returns a route or choices of routes. Commented-out code will be for future development, but for now the routes all come from the Mapbox API. 
     Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
-    Also accepts profile type, defaults to "regular" (which is translated to "bicycle" for mapbox)
+    Also will accept profile type, defaults to "regular" (which is translated to "cycle" for mapbox)
     """
     
+    requests_dic = parse_geocode(request.args.to_dict())
+    # profile = ""
+    # if "profile" in requests_dic:
+    #     profile = requests_dic.profile
+
     try:
-        (geoarray, geostring) = parse_geocode(request.args.to_dict())
+        geostring = parse_geocode(requests_dic)
     except: 
         error = {"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}}
         return 
     if type(geostring) == dict:
         return jsonify({"errors": geostring})
     
-    # url = f"https://api.mapbox.com/directions/v5/mapbox/cycling/{geostring}?access_token={MB_API_KEY}"
     errors_object = {}
 
+    # for future development using ORS directions
+    # try:
+    #     return {"ORS": jsonify(ORS_directions(geoarray, profile))}
+    # except:
+    #     errors_object['ORS error'] = f'ORS_directions in helpers.py is not responding to these coordinates: {geoarray}'
     try:
-        return {"ORS": jsonify(ORS_directions(geoarray))}
+        return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
     except:
-        errors_object['ORS error'] = f'ORS_directions in helpers.py is not responding to these coordinates: {geoarray}'
-        try:
-            return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
-        except:
-            # at the moment, these error messages are written for development
-            errors_object['mapbox error'] = f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'
+        # at the moment, these error messages are written for development
+        errors_object['mapbox error'] = f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'
     
     # if we're here, both have failed and errors_object should be returned
     return {"errors": errors_object}
@@ -359,7 +364,7 @@ def process_new_route_form():
     #     additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
     # start_form=start_form, end_form=end_form, additional_forms=additional_forms, 
-    return render_template ('route-new.html', cps=cps, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
+    return render_template ('route-ors.html', cps=cps, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 
 @app.route('/api/routes')
 def display_available_routes():
@@ -402,7 +407,7 @@ def get_geocode_for_location():
         #         flash('The starting location could not be located. Please try again.', 'warning')
         #     else:
         #         flash('Neither of those locations could be located. Please try again')
-        #     return render('route-new.html', form=form)
+        #     return render('route-ors.html', form=form)
 
 
         # if len(start_geoloc) > 1 or len(end_geoloc) > 1:

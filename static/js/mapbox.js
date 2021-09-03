@@ -1,3 +1,5 @@
+// This file contains code that is either directly from or lightly adapted from code in mapbox' docs (https://docs.mapbox.com)
+
 let mapLat = defaultLoc_lat;
 let mapLng = defaultLoc_lng;
 const geocode = [mapLng, mapLat];
@@ -90,7 +92,6 @@ for (let cpl of cpls) {
     checkpointLocations.push(checkpointLocation);
 }
 
-
 function centerMap(lat, lng) {
     map.flyTo({
         center: [lng, lat]
@@ -133,4 +134,13 @@ function placeMarker(color, lat, lng) {
             }
         });
     })
+}
+
+function displayDirections(routeObject) {
+    map.addControl(
+        new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+        }),
+        'top-left'
+        );
 }
