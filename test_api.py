@@ -55,3 +55,13 @@ class GeocodeAPITestCase(TestCase):
 
 class WeatherAPITestCase (TestCase):
     """test that weather API calls are returning valid data"""
+
+class RouteAPITestCase (TestCase):
+    """test routing API cases"""
+    def test_flask_routes_route(self):
+        """test that data coming from JS to Flask routes '/api/routes' are working properly"""
+        good_route_data = ""
+
+    def test_mapbox_route_API(self):
+        """test mapbox API calls """
+        

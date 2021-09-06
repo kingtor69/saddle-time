@@ -245,7 +245,7 @@ def parse_geocode(arguments):
         Mapbox:
             returns string mapbox expects for the route parameters
             i.e. f'{lat},{lng};{lat},{lng};{lat},{lng}'
-        NOTE: this method parses and returns data for both services
+        NOTE: this method can parse and return data for both services, but is currently only doing so for mapbox (commented out references to geoarray are for ORS)
         """
     # these variables will be the return value
     # geoarray = []
