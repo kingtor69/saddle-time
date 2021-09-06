@@ -43,7 +43,7 @@ function selectTwo(jQueryElement) {
         },
         // allowClear: true
     });
-}
+};
 
 
 function updateUrl(queryAdditions, keepCurrent) {
@@ -63,7 +63,7 @@ function updateUrl(queryAdditions, keepCurrent) {
     };
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
-}
+};
 
 function parseCurrentQueryString() {
     const queryCurrent = new URLSearchParams(window.location.search);
@@ -72,7 +72,7 @@ function parseCurrentQueryString() {
         queryObject[key] = value;
     };
     return queryObject;
-}
+};
 
 function processAutocomplete(e, selector, id) {
     // variable definitions with autocomplete anddefault values
@@ -152,7 +152,7 @@ function processAutocomplete(e, selector, id) {
     //     return [false, lat, lng];
     // };
     return [false, false, false];
-}
+};
 
 function parseCpId(elementId) {
     let parsedId = "";
@@ -176,7 +176,7 @@ function parseCpId(elementId) {
         };
     };
     return false;
-}
+};
 
 // started rabbitholing on this.... it can wait
 function handleErrors(errs) {
@@ -201,7 +201,7 @@ function handleErrors(errs) {
         console.log(errs)
         handleErrors({"thrown error": "not sure what.... better check into it"})
     }
-}
+};
 
 function dataFromQueryString() {
     // function adapted from https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
@@ -215,4 +215,10 @@ function dataFromQueryString() {
         queryObject[decodeURIComponent(datum[0])] = decodeURIComponent(datum[1]);
     }
     return queryObject;
-}
+};
+
+function isInteger(str) {
+    let parsed = parseInt(str);
+    if (isNaN(parsed)) {return false};
+    return true;
+};

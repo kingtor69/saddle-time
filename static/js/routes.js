@@ -31,17 +31,17 @@ for (let checkpointLocation of checkpointLocations) {
         routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
         // I don't think I'm using, or need to use, localStorage.routeData right now for checkpoints' geocodes
         // i.e. there's probably some useless code around here
-        addObjToLocalStorage('routeData', routeDataLatLng)
-        let storedData;
-        if ('routeData' in localStorage) {
-            let json = localStorage.getItem('routeData');
-            storedData = JSON.parse(json);
-            localStorage.removeItem('routeData');
+        // addObjToLocalStorage('routeData', routeDataLatLng)
+        // let storedData;
+        // if ('routeData' in localStorage) {
+            // let json = localStorage.getItem('routeData');
+            // storedData = JSON.parse(json);
+            // localStorage.removeItem('routeData');
         };
-        for (let key in storedData) {
-            routeDataLatLng[key] = storedData[key];
+        // for (let key in storedData) {
+            // routeDataLatLng[key] = storedData[key];
         };
-        localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
+        // localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
         if (goodRouteData()) {
             let routes = previewRoute();
             displayRoutes(routes);
@@ -128,23 +128,27 @@ function addObjToLocalStorage(key, valueObj) {
 function goodRouteData() {
     // Check that query string has lat and lng for 2 or more checkpoints. Returns boolean.
     let data = parseCurrentQueryString();
-    let dataKeys = Object.keys(data);
+    const dataKeys = Object.keys(data);
+    dataKeys.sort();
     let checkpoints = 0;
-    for (let i = 0; i < dataKeys.length; i++) {
-        // if key does NOT start with a number, it's not a checkpoint
-        if (parseInt(dataKeys[i])) {
-            // do we have two of the same number in a row?
-            if (i > 0 && parseInt(dataKeys[i] === parseInt(dataKeys[i-1]))) {
-                // finally, does that pair of keys each contain one of "lat" and "lng" (in either order)
-                if (("lat" in dataKeys[i] && "lng" in dataKeys[i-1]) || "lng" in dataKeys[i] && "lat" in dataKeys[i-1]) {
-                    // OK, that's a valid checkpoint
-                    checkpoints ++
-                }
-            }
-        }
-    }
-    if (checkpoints >= 2) {
-        return true;
-    }
-    return false;
-}
+    const dataKeysSplit = [];
+    for (let key of dataKeys) {
+        numLatOrLng = key.split('-');
+        dataKeysSplit.push(numLatOrLng);
+    };
+    // I'm not using filter right.... stand by
+    cpKeysSplit = dataKeysSplit.filter(splitKey => isInteger(splitKey[0]))
+    // now we have a sorted array of arrays (I'd use tuples if I were in Python) like this [[cp#, latOrLng], &c]
+    // there should be exactly two of each checkpoint number (dataKeysSplit[i][0]), one "lat" and one "lng" (dataKeysSplit[i][1]);
+    for (let i=0; i<dataKeysSplit.length; i+=2) {
+        let thisKey = dataKeysSplit[i];
+        let nextKey = dataKeysSplit[i+1];
+        if (thisKey[0] !== nextKey[0]) {
+            return false;
+        };
+        if ((thisKey[1] !== "lat" && nextKey[1] !== "lng") || (thisKey[1] !== "lng" && nextKey[1] !== "lat")) {
+            return false;
+        };
+    };
+    return true;
+};

@@ -27,8 +27,11 @@ APIs to be used can be found in api.py
 
 ## Route page
  - currently called "new" route page, but I think this will be the master route page, offering editability on that page and using different API calls to create new routes in the database or edit existing entries
- - bicycle type is still an active choice field, but will likely be removed until ORS is implemented
-   - (there is definitely need for this functionality: yesterday I was sent over a dirt path on my road bike by google maps)
+ - bicycle type is in the WTForm, but is inactive until ORS is implemented
+   - there is definitely need for this functionality: 
+     - yesterday I was sent over a dirt path on my road bike by google maps
+     - it appears from some testing I've done that mapbox is likely to do the same thing
+     - ORS' "regular" bike seems to do it, too
 
 ## RESTful API calls
 These are currently being used to gather API information from various sources from JavaScript via Python/Flask.
