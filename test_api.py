@@ -57,10 +57,16 @@ class WeatherAPITestCase (TestCase):
     """test that weather API calls are returning valid data"""
 
 class RouteAPITestCase (TestCase):
-    """test routing API cases"""
+    """test Flask API cases"""
     def test_flask_routes_route(self):
         """test that data coming from JS to Flask routes '/api/routes' are working properly"""
-        good_route_data = ""
+        good_route_qString = "?0-lat=37.746998&0-lng=-122.418653&999-lat=37.801237&999-lng=-122.40072"
+        bad_route_qString = "?0-lng=37.746998&0-lat=-122.418653&999-lng=37.801237&999-lat=-122.40072"
+
+        good_resp = requests.get(f'/api/routes/new{good_route_qString}')
+        bad_resp = requests.get(f'/api/routes/preview{bad_route_qString}')
+
+        good_result = ""
 
     def test_mapbox_route_API(self):
         """test mapbox API calls """

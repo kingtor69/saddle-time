@@ -1,10 +1,7 @@
 # SaddleTime
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
-## laptop branch
-This branch is doing simpler tasks that are easier on RAM and will be merged into main.
-
-### Schema & API information:
+## Schema & API information:
 Schema can be found in schema.sql
 APIs to be used can be found in api.py
  - Open Weather: gives weather information (current and forecast) about route location
@@ -19,30 +16,30 @@ APIs to be used can be found in api.py
     - electric
     - mountain
 
-### TESTING
-##### Python unittests need to be moved to root folder to work
+## TESTING
+##### Python unittest files are in the root folder
 ##### I wrote some JS Jasmine tests in static/js/tests, but most of the testing was done in Python unittests
 
-### Home page displays local weather
+## Home page displays local weather
  - app.py and helpers.py load default options and will be used to manage user defaults for logged-in users
  - weather.js deals with dynamic changes
  - future development: option to use browser location
 
-### Route page
+## Route page
  - currently called "new" route page, but I think this will be the master route page, offering editability on that page and using different API calls to create new routes in the database or edit existing entries
  - bicycle type is still an active choice field, but will likely be removed until ORS is implemented
    - (there is definitely need for this functionality: yesterday I was sent over a dirt path on my road bike by google maps)
 
-### RESTful API calls
+## RESTful API calls
 These are currently being used to gather API information from various sources from JavaScript via Python/Flask.
 
-#### endpoints:
-##### /api/routes/preview
+### endpoints:
+#### /api/routes/preview
 This will return routes from the mapbox directions API. 
 
 ****required data****
 
-The latitude and longitude for at least 2 checkpoints. The numbers are not important, but the order of numbers is. *I use n=0 for the start and n=999 for the end of a route.* The latitude and longitude should be grouped together by checkpoint number, but numbers need not be in order, or does latitude or longitude need to come first: 
+The latitude and longitude for at least 2 checkpoints. *I use n=0 for the start and n=999 for the end of a route.* They will be processed in numerical order and regardless of whether latitude comes first or vice versa.
  | key | value |
  | :---: | :--- |
  | *n*-lat | *float number between -90.0 and 90.0* |

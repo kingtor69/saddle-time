@@ -1,7 +1,6 @@
 import os
 from unittest import TestCase
 from helpers import *
-import requests
 
 from app import app
 
