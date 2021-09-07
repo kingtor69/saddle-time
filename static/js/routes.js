@@ -37,14 +37,17 @@ for (let checkpointLocation of checkpointLocations) {
             // let json = localStorage.getItem('routeData');
             // storedData = JSON.parse(json);
             // localStorage.removeItem('routeData');
-        };
+        // };
         // for (let key in storedData) {
             // routeDataLatLng[key] = storedData[key];
-        };
+        // };
         // localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
         if (goodRouteData()) {
             let routes = previewRoute();
             displayRoutes(routes);
+        } else {
+            handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
+
         }
         // store *this* to localStorage?
     });
@@ -55,7 +58,7 @@ routeForm.addEventListener('submit', (e) => {
     if (goodRouteData()) {
         previewRoute();
     } else {
-        handleErrors({"feed me more data": "there is not enough valid route data to preview a route"})
+        handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"})
     }
 });
 
@@ -66,7 +69,14 @@ async function previewRoute() {
         url += `${key}=${routeData[key]}&`
     };
     url = url.slice(0, -1);
-    resp = await axios.get(url);
+    try {
+        resp = await axios.get(url);
+    } catch (err) {
+        console.error(err);
+        handleErrors(err);
+        return;
+    }
+    
     if ("errors" in resp.data) {
         handleErrors (resp.data.errors);
     }
@@ -136,7 +146,7 @@ function goodRouteData() {
         numLatOrLng = key.split('-');
         dataKeysSplit.push(numLatOrLng);
     };
-    // I'm not using filter right.... stand by
+    let cpKeysSplit;
     cpKeysSplit = dataKeysSplit.filter(splitKey => isInteger(splitKey[0]))
     // now we have a sorted array of arrays (I'd use tuples if I were in Python) like this [[cp#, latOrLng], &c]
     // there should be exactly two of each checkpoint number (dataKeysSplit[i][0]), one "lat" and one "lng" (dataKeysSplit[i][1]);
@@ -146,9 +156,13 @@ function goodRouteData() {
         if (thisKey[0] !== nextKey[0]) {
             return false;
         };
-        if ((thisKey[1] !== "lat" && nextKey[1] !== "lng") || (thisKey[1] !== "lng" && nextKey[1] !== "lat")) {
+        if ((thisKey[1] !== "lat" || nextKey[1] !== "lng") && (thisKey[1] !== "lng" || nextKey[1] !== "lat")) {
             return false;
         };
     };
     return true;
+};
+
+function displayRoutes(routes) {
+    console.log(`let's display this, yo: ${routes}`)
 };

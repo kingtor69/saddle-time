@@ -65,9 +65,12 @@ class RouteAPITestCase (TestCase):
 
         good_resp = requests.get(f'/api/routes/new{good_route_qString}')
         bad_resp = requests.get(f'/api/routes/preview{bad_route_qString}')
+        
+        self.assertEqual(good_resp.status_code, 200)
+        # self.assertEqual(bad_resp.status_code, 404)
 
-        good_result = ""
+
 
     def test_mapbox_route_API(self):
         """test mapbox API calls """
-        
+
