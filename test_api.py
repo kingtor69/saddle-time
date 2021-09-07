@@ -19,6 +19,7 @@ class GeocodeAPITestCase(TestCase):
         self.assertFalse(geocode_from_location_mq(unfound_loc))
         self.assertEqual(len(geocode_from_location_mq(mult_choice_loc)), 2)
         self.assertEqual((geocode_from_location_mq(mult_choice_loc)), [mult_choice0_code, mult_choice1_code])
+
     def test_geocoding_API_call(self):
         good_loc = "9201 Pan American FWY NE, Albuquerque, NM 87113"
         good_code = (35.190564, -106.580526)
@@ -63,14 +64,12 @@ class RouteAPITestCase (TestCase):
         good_route_qString = "?0-lat=37.746998&0-lng=-122.418653&999-lat=37.801237&999-lng=-122.40072"
         bad_route_qString = "?0-lng=37.746998&0-lat=-122.418653&999-lng=37.801237&999-lat=-122.40072"
 
-        good_resp = requests.get(f'/api/routes/new{good_route_qString}')
+        good_resp = requests.get(f'127.0.0.1:5000/api/routes/preview{good_route_qString}')
         bad_resp = requests.get(f'/api/routes/preview{bad_route_qString}')
         
         self.assertEqual(good_resp.status_code, 200)
         # self.assertEqual(bad_resp.status_code, 404)
 
 
-
-    def test_mapbox_route_API(self):
-        """test mapbox API calls """
-
+    # def test_mapbox_route_API(self):
+    #     """test mapbox API calls """

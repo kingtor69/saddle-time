@@ -116,6 +116,9 @@ def autocomplete_options_from_mapbox(term):
 def geocode_from_location_mb(location):
     """uses mapbox to gather geocode information, returning geocode for the first result in mapbox' format (longitude, latitude) even though that's weird"""
     query_url = f'{MB_GEOCODE_BASE_URL}{location}.json?access_token={MB_API_KEY}'
+    print('---------------')
+    print(query_url)
+    print('---------------')
     resp = requests.get(query_url)
     return resp.json()["features"][0]['center']
 
@@ -247,6 +250,7 @@ def parse_geocode(arguments):
             i.e. f'{lat},{lng};{lat},{lng};{lat},{lng}'
         NOTE: this method can parse and return data for both services, but is currently only doing so for mapbox (commented out references to geoarray are for ORS)
         """
+
     # these variables will be the return value
     # geoarray = []
     geostring = ""
@@ -257,42 +261,35 @@ def parse_geocode(arguments):
     sortable_args = {}
     lat = False
     lng = False
+    errors = {}
 
     for key in arguments:
         value = arguments[key]
-        id3 = key[0:3]
-        id2 = key[0:2]
-        id1 = key[0:1]
-        id_int = 0
-        try:
-            id_int = int(id3)
+        key_split = key.split('-')
+        id_int = None
+        try: 
+            id_int = int(key_split[0])
+            if not id_int in id_list:
+                id_list.append(id_int)
+            if not id_int in sortable_args:
+                sortable_args[id_int] = {}
+
+            sortable_args[id_int][key_split[1]] = value
+
         except:
-            try:
-                id_int = int(id2)
-            except:
-                try:
-                    id_int = int(id1)
-                except:
-                    return {"garbage in garbage out error": f"{key} can't be parsed to an id"}
+            errors["garbage in garbage out error"] = f"{key} can't be parsed to an id"
 
-        if not id_int in id_list:
-            id_list.append(id_int)
-        if not id_int in sortable_args:
-            sortable_args[id_int] = {}
-
-        if key[len(key) -1] == "g":
-            sortable_args[id_int]['lng'] = value
-        if key[len(key) -1] == "t":
-            sortable_args[id_int]['lat'] = value
-        
     # now build the array and string
     for i in sorted(id_list):
         # geoarray.append([sortable_args[i]['lng'],sortable_args[i]['lat']])
         geostring+=f"{sortable_args[i]['lng']},{sortable_args[i]['lat']};"
 
-    # remove trailing semi-colon and return string
+    # remove trailing semi-colon
     geostring = geostring[:-1]
-        
+    
+    if errors:
+        return {"errors": errors}
+
     # return (geoarray, geostring)
     return geostring
 

@@ -69,6 +69,7 @@ async function previewRoute() {
         url += `${key}=${routeData[key]}&`
     };
     url = url.slice(0, -1);
+    console.log("url = ", url)
     try {
         resp = await axios.get(url);
     } catch (err) {
