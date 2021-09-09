@@ -249,15 +249,12 @@ def preview_route():
     Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
     Also will accept profile type, defaults to "regular" (which is translated to "cycle" for mapbox)
     """
-    import pdb
-    pdb.set_trace()
-    requests_dic = parse_geocode(request.args.to_dict())
     # profile = ""
     # if "profile" in requests_dic:
     #     profile = requests_dic.profile
 
     try:
-        geostring = parse_geocode(requests_dic)
+        geostring = parse_geocode(request.args.to_dict())
     except: 
         return jsonify({"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}})
     if type(geostring) == dict:
