@@ -68,7 +68,6 @@ async function previewRoute() {
         url += `${key}=${routeData[key]}&`
     };
     url = url.slice(0, -1);
-    console.log("url = ", url)
     try {
         resp = await axios.get(url);
     } catch (err) {
@@ -161,16 +160,13 @@ function goodRouteData() {
 };
 
 function displayRoutes(routes) {
-    console.log(`let's display this, yo:`)
-    console.log(routes)
     // add "preferred" flag to routes[0]
     routes[0]['preferred'] = true;
     // set "preferred" to false for the rest
     for (let i = 1; i < routes.length; i++) {
         routes[i]['preferred'] = false;
     };
-    for (let route of routes) {
-        
-    }
-
+    for (let i=0; i<routes.length; i++) {
+        drawRoute(routes[i], i);
+    };
 };

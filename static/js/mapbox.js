@@ -144,3 +144,48 @@ function displayDirections(routeObject) {
         'top-left'
         );
 }
+
+function drawRoute(routeData, index) {
+    let color = '#aaa';
+    if (routeData.preffered) {
+        color = '#0080ff';
+    };
+    const routeCoordinates = routeData.geometry.coordinates
+    // const coordinates = [];
+    // for (let leg=0; leg<routeCoordinates.length; leg++) {
+    //     coordinates.append(routeCoordinates[leg]);
+    // };
+
+    map.addSource(`route${index}`, {
+        'type': 'geojson',
+        'data': {
+            'type': 'Feature',
+            'geometry': {
+                'type': routeData.geometry.type,
+                'coordinates': routeData.geometry.coordinates
+            }
+        }
+    });
+
+    // map.addLayer({
+    //     'id': `route${index}`,
+    //     'type': 'fill',
+    //     'source': `route${index}`, // reference the data source
+    //     'layout': {}
+    //     'paint': {
+    //         'fill-color': '#0080ff', // blue color fill
+    //         'fill-opacity': 0.5
+    //     }
+    // });
+
+    map.addLayer({
+        'id': 'line${index}',
+        'type': 'line',
+        'source': `route${index}`,
+        'layout': {},
+        'paint': {
+            'line-color': color,
+            'line-width': 3
+        }
+    });
+}
