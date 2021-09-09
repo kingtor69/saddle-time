@@ -55,3 +55,17 @@ class GeocodeParsingTestCase(TestCase):
 # orderly_route_qString = "0-lng=-102.9248&0-lat=31.2593&3-lng=-103.0001&3-lat=31.1948&999-lng=-103.1123&999-lat=30.8374"
 
 # semi_orderly_route_qString = "0-lng=-102.9248&0-lat=31.2593&999-lng=-103.1123&999-lat=30.8374&3-lng=-103.0001&3-lat=31.1948"
+
+class ParseGeocodeTestCase(TestCase):
+    """tests formatting of geocode route data being parsed for mapbox API's formatting
+    arguments from Flask requests are passed in to the function and a string should be returned"""
+    def test_parse_geocode(self):
+        good_args = {'0-lng': '-106.582998', '0-lat': '35.191097', '999-lng': '-106.540495', '999-lat': '35.12415'}
+        good_geostring = "-106.582998,35.191097;-106.540495,35.12415"
+
+        self.assertEqual(parse_geocode(good_args), good_geostring)
+
+
+class MapboxRoutesTestCase(TestCase):
+    """test the functioning of mapbox routes API calling coming from Flask route (see test_api.py for that functionality)"""
+

@@ -1,10 +1,14 @@
 import os
 from unittest import TestCase
 from helpers import *
+from external_api_calls import *
 import requests
 
 from app import app
 
+##############################
+##### external API calls #####
+##############################
 class GeocodeAPITestCase(TestCase):
     """Test retrieving geocode information from Mapquest API"""
     def test_geocoding_method(self):
@@ -57,19 +61,37 @@ class GeocodeAPITestCase(TestCase):
 class WeatherAPITestCase (TestCase):
     """test that weather API calls are returning valid data"""
 
-class RouteAPITestCase (TestCase):
+class RouteAPITestCase(TestCase):
+    """test route data API calls"""
+    def test_mapbox_api(self):
+        """test route data returning from mapbox API"""
+        good_geostring = "-106.582998,35.191097;-106.540495,35.12415"
+        success_resp = requests.get(f'{MB_DIRECTIONS_BASE_URL}cycling/{good_geostring}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}')
+
+
+        self.assertEqual(success_resp.status_code, 200)
+
+
+###################################
+##### Flask API calls from JS #####
+###################################
+class FlaskRouteAPITestCase (TestCase):
     """test Flask API cases"""
     def test_flask_routes_route(self):
         """test that data coming from JS to Flask routes '/api/routes' are working properly"""
         good_route_qString = "?0-lat=37.746998&0-lng=-122.418653&999-lat=37.801237&999-lng=-122.40072"
         bad_route_qString = "?0-lng=37.746998&0-lat=-122.418653&999-lng=37.801237&999-lat=-122.40072"
 
-        good_resp = requests.get(f'127.0.0.1:5000/api/routes/preview{good_route_qString}')
-        bad_resp = requests.get(f'/api/routes/preview{bad_route_qString}')
+        good_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preview{good_route_qString}')
+        bad_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preview{bad_route_qString}')
+        bad_url_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preveiw{good_route_qString}')
+        very_bad_url_resp = requests.get(f'http://127.0.0.1:5000/aapi/routes/preveiw{good_route_qString}')
         
         self.assertEqual(good_resp.status_code, 200)
-        # self.assertEqual(bad_resp.status_code, 404)
+        self.assertNotIn("Errors", good_resp.json())
+        self.assertIn("routes", good_resp.json())
+        self.assertEqual(bad_resp.status_code, 200)
+        self.assertIn("Errors", bad_resp.json())
+        self.assertEqual(bad_url_resp.status_code, 500)
+        self.assertEqual(very_bad_url_resp.status_code, 404)
 
-
-    # def test_mapbox_route_API(self):
-    #     """test mapbox API calls """

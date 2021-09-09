@@ -7,6 +7,7 @@ import requests
 from models import db, connect_db, User, Route, Checkpoint
 from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
 from helpers import *
+from external_api_calls import *
 
 app=Flask(__name__)
 
@@ -248,6 +249,8 @@ def preview_route():
     Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
     Also will accept profile type, defaults to "regular" (which is translated to "cycle" for mapbox)
     """
+    import pdb
+    pdb.set_trace()
     requests_dic = parse_geocode(request.args.to_dict())
     # profile = ""
     # if "profile" in requests_dic:
