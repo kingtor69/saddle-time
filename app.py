@@ -162,6 +162,8 @@ def return_user_profile(user_id):
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     weather = current_weather_from_geocode((user.default_geocode_lat, user.default_geocode_lng))
+    import pdb
+    pdb.set_trace()
     return render_template ('user.html', user=user, weather=weather)
 
 @app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])
@@ -262,7 +264,10 @@ def preview_route():
     
     errors_object = {}
 
-    return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
+    try:
+        return jsonify(mapbox_directions(geostring))
+    except:
+        return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
 
     # for future development using ORS directions
     # try:

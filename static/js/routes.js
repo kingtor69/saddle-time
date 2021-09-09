@@ -43,8 +43,7 @@ for (let checkpointLocation of checkpointLocations) {
         // };
         // localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
         if (goodRouteData()) {
-            let routes = previewRoute();
-            displayRoutes(routes);
+            previewRoute();
         } else {
             handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
 
@@ -76,20 +75,17 @@ async function previewRoute() {
         console.error(err);
         handleErrors(err);
         return;
-    }
+    };
     
     if ("errors" in resp.data) {
         handleErrors (resp.data.errors);
-    }
-    else {
-        console.log('got the preview data');
-        console.log(resp.data);
+    } else if ("Errors" in resp.data) {
+        handleErrors(resp.data.Errors);
     };
     let routes = {};
     if ("routes" in resp.data) {
         routes = resp.data.routes;
-        console.log (routes);
-        return routes;
+        displayRoutes(routes);
     } else {
         handleErrors({"routing error": "No bicycle routes were found for these checkpoints. Please try something else."})
     }
@@ -165,5 +161,16 @@ function goodRouteData() {
 };
 
 function displayRoutes(routes) {
-    console.log(`let's display this, yo: ${routes}`)
+    console.log(`let's display this, yo:`)
+    console.log(routes)
+    // add "preferred" flag to routes[0]
+    routes[0]['preferred'] = true;
+    // set "preferred" to false for the rest
+    for (let i = 1; i < routes.length; i++) {
+        routes[i]['preferred'] = false;
+    };
+    for (let route of routes) {
+        
+    }
+
 };

@@ -2,6 +2,7 @@ import os
 import requests
 from flask import session
 from models import User
+from helpers import *
 
 CURR_USER = "logged_in_user"
 CURR_ROUTE = "route_in_progress"
@@ -73,9 +74,6 @@ def autocomplete_options_from_mapbox(term):
 def geocode_from_location_mb(location):
     """uses mapbox to gather geocode information, returning geocode for the first result in mapbox' format (longitude, latitude) even though that's weird"""
     query_url = f'{MB_GEOCODE_BASE_URL}{location}.json?access_token={MB_API_KEY}'
-    print('---------------')
-    print(query_url)
-    print('---------------')
     resp = requests.get(query_url)
     return resp.json()["features"][0]['center']
 
@@ -87,6 +85,7 @@ def current_weather_from_geocode(geocode, units="metric"):
         (deg, vel) = unit_markers(units)
         response = requests.get(f'{OW_API_BASE_URL}weather?appid={OW_API_KEY}&lon={geocode[1]}&lat={geocode[0]}&units={units}')
         resp = response.json()
+
         city = resp["name"]
         conditions = resp["weather"][0]["description"].title()
         weather_icon_url = f'{WEATHER_ICON_BASE_URL}{resp["weather"][0]["icon"]}{WEATHER_ICON_SUFFIX}'

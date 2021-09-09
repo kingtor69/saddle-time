@@ -60,6 +60,16 @@ class GeocodeAPITestCase(TestCase):
 
 class WeatherAPITestCase (TestCase):
     """test that weather API calls are returning valid data"""
+    # this test isn't working, but the function is, so I'll come back to it
+    # def test_weather_from_geocode(self):
+    #     """test weather API call to OWS"""
+    #     good_geocode = "[35.191097, -106.582998]"
+    #     name = "North Valley"
+    #     weather = current_weather_from_geocode(good_arguments)
+
+    #     self.assertIn("current_weather_details", weather)
+
+
 
 class RouteAPITestCase(TestCase):
     """test route data API calls"""
@@ -70,6 +80,7 @@ class RouteAPITestCase(TestCase):
 
 
         self.assertEqual(success_resp.status_code, 200)
+
 
 
 ###################################
