@@ -127,7 +127,7 @@ weatherLocationSelector.change((e) => {
     centerMap(mapLat, mapLng);
     // console.log('remove bluePointer?');
     // if (map.hasImage(`bluePointer`)) { map.removeImage(`bluePointer`) };
-    placeMarker('blue', mapLat, mapLng);
+    placeMarker('blue', 'urhere', mapLat, mapLng);
 });
 
 // TODO: this is some semblance of logic for the browswer location

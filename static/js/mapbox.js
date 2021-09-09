@@ -98,11 +98,15 @@ function centerMap(lat, lng) {
     });
 };
 
-function placeMarker(color, lat, lng) {
+function placeMarker(color, id, lat, lng) {
     map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
         if (error) throw error;
-        if (map.hasImage(`${color}Pointer`)) { map.removeImage(`${color}Pointer`) };
-        map.addImage(`${color}Pointer`, image);
+        try {
+            map.removeImage(`${id}Pointer`)
+        } catch(err) {
+            console.log(`no pointer with id ${id} exists... yet`)
+        }
+        map.addImage(`${id}Pointer`, image);
         // Error: An image with this name already exists.
         // got that error before adding if map.hasImage
         // getting this one now:
@@ -116,7 +120,7 @@ function placeMarker(color, lat, lng) {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': geocode
+                            'coordinates': [lng, lat]
                         }
                     }
                 ]
@@ -136,18 +140,16 @@ function placeMarker(color, lat, lng) {
     })
 }
 
-function displayDirections(routeObject) {
-    map.addControl(
-        new MapboxDirections({
-        accessToken: mapboxgl.accessToken
-        }),
-        'top-left'
-        );
-}
 
 function drawRoute(routeData, index) {
+    try {
+        map.removeLayer(`line${index}`)
+        map.removeSource(`route${index}`)
+    } catch (err) {
+        console.error(`no existing layer ${index} to remove`)
+    }
     let color = '#aaa';
-    if (routeData.preffered) {
+    if (routeData.preferred) {
         color = '#0080ff';
     };
     const routeCoordinates = routeData.geometry.coordinates
@@ -179,13 +181,13 @@ function drawRoute(routeData, index) {
     // });
 
     map.addLayer({
-        'id': 'line${index}',
+        'id': `line${index}`,
         'type': 'line',
         'source': `route${index}`,
         'layout': {},
         'paint': {
             'line-color': color,
-            'line-width': 3
+            'line-width': 6
         }
     });
 }

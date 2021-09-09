@@ -55,17 +55,17 @@ async function previewRoute() {
         handleErrors(err);
         return;
     };
-    
     if ("errors" in resp.data) {
         handleErrors (resp.data.errors);
     } else if ("Errors" in resp.data) {
         handleErrors(resp.data.Errors);
     };
-    let routes = {};
-    if ("routes" in resp.data) {
-        routes = resp.data.routes;
-        displayRoutes(routes);
-    } else {
+
+    try {
+        let routes = resp.data.routes;
+        let waypoints = resp.data.waypoints;
+        displayRoutes(routes, waypoints);
+    } catch {
         handleErrors({"routing error": "No bicycle routes were found for these checkpoints. Please try something else."})
     }
 }
@@ -139,14 +139,22 @@ function goodRouteData() {
     return true;
 };
 
-function displayRoutes(routes) {
+function displayRoutes(routes, checkpoints) {
+    // add markers for start and end
+    placeMarker("green", 0, checkpoints[0][1], checkpoints[0][0])
+    placeMarker("red", 999, checkpoints[checkpoints.length-1][1], checkpoints[checkpoints.length-1][0])
+    // add markers for intermediate checkpoints
+    for (let i=1; i<checkpoints.length - 1; i++) {
+        let color = checkpointColors[i % checkpointColors.length]
+        placeMarker(color, i, checkpoints[i][1], checkpoints[i][0])
+    }
     // add "preferred" flag to routes[0]
     routes[0]['preferred'] = true;
     // set "preferred" to false for the rest
     for (let i = 1; i < routes.length; i++) {
         routes[i]['preferred'] = false;
     };
-    for (let i=0; i<routes.length; i++) {
+    for (let i=routes.length - 1; i >= 0; i--) {
         drawRoute(routes[i], i);
     };
 };
