@@ -2,17 +2,11 @@
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 
-// maybe ditch this next bit
-if (Object.keys(routeData).length < 1) {
-    // if queryString is empty, check for current data from localStorage 
-    if ('routeData' in localStorage) {
-        routeData = localStorage.routeData;
+window.addEventListener('DOMContentLoaded', (event) => {
+    if (goodRouteData()) {
+        previewRoute();
     };
-} else {
-    // if not, replace localStorage with queryString data
-    localStorage.removeItem('routeData');
-    localStorage.setItem('routeData', JSON.stringify(routeData));
-};
+});
 
 for (let checkpointLocation of checkpointLocations) {
     selectTwo(checkpointLocation);
@@ -29,26 +23,12 @@ for (let checkpointLocation of checkpointLocations) {
         cpLatLng.shift();
         const routeDataLatLng = {};
         routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
-        // I don't think I'm using, or need to use, localStorage.routeData right now for checkpoints' geocodes
-        // i.e. there's probably some useless code around here
-        // addObjToLocalStorage('routeData', routeDataLatLng)
-        // let storedData;
-        // if ('routeData' in localStorage) {
-            // let json = localStorage.getItem('routeData');
-            // storedData = JSON.parse(json);
-            // localStorage.removeItem('routeData');
-        // };
-        // for (let key in storedData) {
-            // routeDataLatLng[key] = storedData[key];
-        // };
-        // localStorage.setItem('routeData', JSON.stringify(routeDataLatLng));
         if (goodRouteData()) {
             previewRoute();
         } else {
             handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
 
         }
-        // store *this* to localStorage?
     });
 };
 
