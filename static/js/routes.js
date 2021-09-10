@@ -141,8 +141,9 @@ function goodRouteData() {
 
 function displayRoutes(routes, checkpoints) {
     // add markers for start and end
-    placeMarker("green", 0, checkpoints[0][1], checkpoints[0][0])
-    placeMarker("red", 999, checkpoints[checkpoints.length-1][1], checkpoints[checkpoints.length-1][0])
+    console.log(checkpoints);
+    placeMarker("green", 0, checkpoints[0].location);
+    placeMarker("red", 999, checkpoints[checkpoints.length-1].location);
     // add markers for intermediate checkpoints
     for (let i=1; i<checkpoints.length - 1; i++) {
         let color = checkpointColors[i % checkpointColors.length]

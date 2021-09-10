@@ -90,7 +90,7 @@ const checkpointLocations = [];
 for (let cpl of cpls) {
     const checkpointLocation = $(`#${cpl.id}`);
     checkpointLocations.push(checkpointLocation);
-}
+};
 
 function centerMap(lat, lng) {
     map.flyTo({
@@ -98,7 +98,8 @@ function centerMap(lat, lng) {
     });
 };
 
-function placeMarker(color, id, lat, lng) {
+function placeMarker(color, id, lngLat) {
+    console.log(`placeMarker(${color}, ${id}, ${lngLat})`)
     map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
         if (error) throw error;
         try {
@@ -120,7 +121,7 @@ function placeMarker(color, id, lat, lng) {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [lng, lat]
+                            'coordinates': lngLat
                         }
                     }
                 ]
@@ -133,7 +134,7 @@ function placeMarker(color, id, lat, lng) {
             'type': 'symbol',
             'source': 'point', // reference the data source
             'layout': {
-                'icon-image': `${color}Pointer`, // reference the image
+                'icon-image': `${id}Pointer`, // reference the image
                 'icon-size': 1
             }
         });
