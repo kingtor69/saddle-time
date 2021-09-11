@@ -1,6 +1,7 @@
 // get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
+const newCheckpoint = document.querySelector('#new-checkpoint')
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if (goodRouteData()) {
@@ -14,20 +15,21 @@ for (let checkpointLocation of checkpointLocations) {
         evt.preventDefault();
         console.log('elementid: ', checkpointLocation[0].id);
         cpId = parseCpId(checkpointLocation[0].id);
-        if (!cpId) {
-            alert ('something went wrong with that location, please try again');
-        };
-        console.log('cpid: ', cpId);
+        // if (!cpId) {
+        // this alert was popping up when it didn't seem there was anything wrong, so I just ditched it
+        //     alert ('something went wrong with that location, please try again');
+        // };
         cpLatLng = processAutocomplete(evt, checkpointLocation, cpId);
         // this is not using the boolean part of the return, so ditch it:
         cpLatLng.shift();
         const routeDataLatLng = {};
         routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
         if (goodRouteData()) {
-            previewRoute();
+            // reloading page is refreshing map more efficiently than erasing old routes/checkpoints/&c.
+            location.reload()
+            // previewRoute();
         } else {
             handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
-
         }
     });
 };
@@ -35,7 +37,8 @@ for (let checkpointLocation of checkpointLocations) {
 routeForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (goodRouteData()) {
-        previewRoute();
+        location.reload()
+        // previewRoute();
     } else {
         handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"})
     }
@@ -140,8 +143,8 @@ function goodRouteData() {
 };
 
 function displayRoutes(routes, checkpoints) {
+    // TODO: make these markers work
     // add markers for start and end
-    console.log(checkpoints);
     placeMarker("green", 0, checkpoints[0].location);
     placeMarker("red", 999, checkpoints[checkpoints.length-1].location);
     // add markers for intermediate checkpoints
@@ -157,5 +160,41 @@ function displayRoutes(routes, checkpoints) {
     };
     for (let i=routes.length - 1; i >= 0; i--) {
         drawRoute(routes[i], i);
+    };
+    for (let route of routes) {
+        if (route.preferred) {
+            showDirections(route)
+        }
+    }
+};
+
+function showDirections(route) {
+    const directionsDiv = document.querySelector('#directions');
+    const directionsOl = document.createElement('ol');
+    for (let leg of route.legs) {
+        const legLi = document.createElement('li');
+        legLi.classList.add('h4', 'py-2');
+        legLi.innerText = leg.summary;
+        directionsOl.appendChild(legLi);
+        const stepOl = document.createElement('ol');
+        for (let step of leg.steps) {
+            const stepLi = document.createElement('li');
+            stepLi.classList.add('my-2');
+            const stepButton = document.createElement('button');
+            stepButton.classList.add('step-buttons', 'btn', 'btn-outline-info', 'py-1');
+            stepButton.id = step.maneuver.location
+            stepButton.innerText = step.maneuver.instruction;
+            stepLi.appendChild(stepButton);
+            stepOl.appendChild(stepLi);
+        };
+        directionsOl.appendChild(stepOl)
+    };
+    directionsDiv.appendChild(directionsOl);
+    const stepButtons = $('.step-buttons');
+    for (let button of stepButtons) {
+        button.addEventListener('click', (e) => {
+            const stepLocation = button.id.split(',');
+            reCenterMap(stepLocation);
+        });
     };
 };

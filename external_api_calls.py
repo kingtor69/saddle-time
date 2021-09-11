@@ -16,6 +16,7 @@ WEATHER_ICON_SUFFIX = "@2x.png"
 MB_API_BASE_URL = "https://api.mapbox.com/"
 MB_GEOCODE_BASE_URL = f"{MB_API_BASE_URL}geocoding/v5/mapbox.places/"
 MB_DIRECTIONS_BASE_URL = f"{MB_API_BASE_URL}directions/v5/mapbox/"
+MB_MATCHING_BASE_URL = F"{MB_API_BASE_URL}matching/v5/mapbox/"
 
 MQ_API_KEY = os.environ['MQ_API_KEY']
 OW_API_KEY = os.environ['OW_API_KEY']
@@ -128,8 +129,29 @@ def mapbox_directions(coordinates):
     """receives coordinates in mapbox format ({lng},{lat};{lng},{lat},&c.) and returns route data"""
 
     profile = "cycling"
-    url = f'{MB_DIRECTIONS_BASE_URL}{profile}/{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
+    url_directions = f'{MB_DIRECTIONS_BASE_URL}{profile}/{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
 
-    resp = requests.get(url)
+    resp_directions = requests.get(url_directions)
+    resp_directions_json = resp_directions.json()
+    # an idea ahead of it's time to use mapbox' 'matching' feature to snap directions to street grid
+    # routes = resp_directions_json['routes']
+    # for route in routes:
+    #     geometry = route['geometry']
+    #     geometry['matching'] = mapbox_matching(geometry['coordinates'])
 
-    return resp.json()
+    return resp_directions_json
+
+def mapbox_matching(route_geometry):
+    """receives route geometry data as an ordered list and returns route data matched to mapbox's street grid"""
+
+    profile = "cycling"
+    coordinates = ""
+    for waypoint in route_geometry:
+        coordinates += f'{waypoint[0]},{waypoint[1]};'
+    # remove trailing semi-colon from finished string:
+    coordinates = coordinates[:-1]
+
+    url_matching = f'{MB_MATCHING_BASE_URL}{profile}/{coordinates}?access_token={MB_API_KEY}'
+    resp_matching = requests.get(url_matching)
+
+    return resp_matching.json()

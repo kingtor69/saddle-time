@@ -154,6 +154,7 @@ function drawRoute(routeData, index) {
         color = '#0080ff';
     };
     const routeCoordinates = routeData.geometry.coordinates
+    // const routeMatchingCoordinates = routeData.geometry.matching
     // const coordinates = [];
     // for (let leg=0; leg<routeCoordinates.length; leg++) {
     //     coordinates.append(routeCoordinates[leg]);
@@ -165,7 +166,7 @@ function drawRoute(routeData, index) {
             'type': 'Feature',
             'geometry': {
                 'type': routeData.geometry.type,
-                'coordinates': routeData.geometry.coordinates
+                'coordinates': routeCoordinates
             }
         }
     });
@@ -192,3 +193,9 @@ function drawRoute(routeData, index) {
         }
     });
 }
+
+function reCenterMap(location) {
+    // recenters map to geocode passed in as [ lng, lat ]
+    map.setCenter(location);
+    map.setZoom(20)
+};

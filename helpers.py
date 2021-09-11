@@ -83,14 +83,21 @@ def string_from_geocode(geocode):
 
 def parse_geocode(arguments):
     """formats geocode for supported services in order of route
+    input arguments are formated in a dict as such:
+        { 
+            0-lat: "42.2917",
+            0-lng: "-85.5872",
+            999-lat: "42.3487",
+            999-lng: "-83.0567"
+        }
     Currently, two services are supported:
         *** ORS is for future development, so written code is commented out ***
         # ORS (Open Route Service):
         #     returns the array ORS expects for route parameters
-        #     i.e. f'[[{lat},{lng}],[{lat},{lng}]]
+        #     i.e. [ [-85.5872,42.2917], [-83.0567,42.3487] ]
         Mapbox:
             returns string mapbox expects for the route parameters
-            i.e. f'{lat},{lng};{lat},{lng};{lat},{lng}'
+            i.e. '-85.5872,42.2917;-83.0567,42.3487'
         NOTE: this method can parse and return data for both services, but is currently only doing so for mapbox (commented out references to geoarray are for ORS)
         """
 

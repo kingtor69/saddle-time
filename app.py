@@ -369,7 +369,7 @@ def process_new_route_form():
     #     additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
     # start_form=start_form, end_form=end_form, additional_forms=additional_forms, 
-    return render_template ('route-ors.html', cps=cps, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
+    return render_template ('route.html', cps=cps, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 
 @app.route('/api/routes')
 def display_available_routes():
