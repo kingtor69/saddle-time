@@ -78,3 +78,14 @@ input.weather-city {
 button.btn-info {
 	color: #111;
 }
+
+ol.leg-list {
+	counter-reset: item;
+	list-style-type: none;
+}
+
+li.leg-list:before {
+	color: white;
+	content: "LEG " counter(item, decimal) ': ';
+	counter-increment: item;
+}

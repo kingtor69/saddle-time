@@ -29,7 +29,7 @@ for (let checkpointLocation of checkpointLocations) {
             location.reload()
             // previewRoute();
         } else {
-            handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
+            handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
         }
     });
 };
@@ -69,7 +69,7 @@ async function previewRoute() {
         let waypoints = resp.data.waypoints;
         displayRoutes(routes, waypoints);
     } catch {
-        handleErrors({"routing error": "No bicycle routes were found for these checkpoints. Please try something else."})
+        handleErrors({"info": "Please enter at least two valid checkpoints."})
     }
 }
 
@@ -171,23 +171,25 @@ function displayRoutes(routes, checkpoints) {
 function showDirections(route) {
     const directionsDiv = document.querySelector('#directions');
     const directionsOl = document.createElement('ol');
+    directionsOl.classList.add('pl-0', 'leg-list');
     for (let leg of route.legs) {
         const legLi = document.createElement('li');
-        legLi.classList.add('h4', 'py-2');
+        legLi.classList.add('h4', 'py-2', 'leg-list');
         legLi.innerText = leg.summary;
         directionsOl.appendChild(legLi);
         const stepOl = document.createElement('ol');
+        stepOl.classList.add('pl-0');
         for (let step of leg.steps) {
             const stepLi = document.createElement('li');
             stepLi.classList.add('my-2');
             const stepButton = document.createElement('button');
-            stepButton.classList.add('step-buttons', 'btn', 'btn-outline-info', 'py-1');
-            stepButton.id = step.maneuver.location
+            stepButton.classList.add('step-buttons', 'btn', 'btn-sm', 'btn-outline-info', 'py-1');
+            stepButton.id = step.maneuver.location;
             stepButton.innerText = step.maneuver.instruction;
             stepLi.appendChild(stepButton);
             stepOl.appendChild(stepLi);
         };
-        directionsOl.appendChild(stepOl)
+        directionsOl.appendChild(stepOl);
     };
     directionsDiv.appendChild(directionsOl);
     const stepButtons = $('.step-buttons');

@@ -187,7 +187,7 @@ function handleErrors(errs) {
         for (let key of errsKeys) {
             newError = document.createElement('p');
             newError.innerHTML = ""
-            if (key in errCodes) {
+            if (errCodes.includes(key)) {
                 newError.classList.add(`text-${key}`);
                 newError.innerText = `${errs[key]}`
             } else {

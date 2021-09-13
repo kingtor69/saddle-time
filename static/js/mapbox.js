@@ -197,5 +197,5 @@ function drawRoute(routeData, index) {
 function reCenterMap(location) {
     // recenters map to geocode passed in as [ lng, lat ]
     map.setCenter(location);
-    map.setZoom(20)
+    map.setZoom(16);
 };
