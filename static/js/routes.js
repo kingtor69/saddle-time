@@ -174,7 +174,11 @@ function showDirections(route) {
     directionsOl.classList.add('pl-0', 'leg-list');
     for (let leg of route.legs) {
         const legLi = document.createElement('li');
-        legLi.classList.add('h4', 'py-2', 'leg-list');
+        if (route.legs.length === 1) {
+            legLi.classList.add('h4', 'py-2', 'single-leg')
+        } else {
+            legLi.classList.add('h4', 'py-2', 'leg-list');
+        }
         legLi.innerText = leg.summary;
         directionsOl.appendChild(legLi);
         const stepOl = document.createElement('ol');

@@ -89,3 +89,8 @@ li.leg-list:before {
 	content: "LEG " counter(item, decimal) ': ';
 	counter-increment: item;
 }
+
+li.single-leg:before {
+	color: white;
+	content: "SELECTED ROUTE: ";
+}
