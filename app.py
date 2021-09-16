@@ -329,10 +329,6 @@ def create_new_route():
 def process_new_route_form():
     """render the RouteForm, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
-    # something is breaking Ashir's 'puter when the template loads.... 
-    # might be this cps thing...?
-    # but I doubt it...
-
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
     lats = []
     lngs = []

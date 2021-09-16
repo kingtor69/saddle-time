@@ -56,11 +56,11 @@
 </div>
 {% endmacro %}
 
-{% macro new_checkpoint() %}
+{% macro new_checkpoint(id) %}
   <div class="row justify-content-center checkpoint-rows checkpoint-rows" id="cpr-{{index}}-row">
     <div class="col col-2"></div>
     <div class="col col-10">
-        <button class="btn btn-outline-secondary btn-sm d-inline-block mt-2 py-0" id="new-checkpoint">insert new checkpoint here</button>
+        <button class="btn btn-outline-secondary btn-sm d-inline-block mt-2 py-0 new-checkpoint-button" id="new-checkpoint-{{ id }}">insert new checkpoint here</button>
     </div>
   </div>
 {% endmacro %}

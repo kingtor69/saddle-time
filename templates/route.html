@@ -33,7 +33,7 @@
 </div> -->
   <div class="row justify-content-center">
     <div class="col col-12 col-md-5">
-      <form action="" id="route-form">
+      <!-- <form action="" id="route-form">
         {% for field in route_form 
           if field.widget.input_type != 'hidden' %}
           <div class="form-group">
@@ -46,18 +46,36 @@
           {% endfor %}
           {{ route_form.hidden_tag() }}
         <button type="submit" class="btn btn-info rounded m-2 px-2">preview route</button>
-      </form>
+      </form> -->
+      <div class="row justify-content-center mt-5">
+        <div class="col col-3 d-none d-md-block"></div>
+        <div class="col col-md-6">
+          <button id="preview-route" class="btn btn-block btn-info rounded m-2" disabled>preview route</button>
+        </div>
+        <div class="col col-3 d-none d-md-block"></div>
+      </div>
+      <div class="row">
+        <div class="col col-3 d-none d-md-block"></div>
+        <div class="col col-md-6">
+          <button id="save-route" class="btn btn-block btn-primary rounded m-2" disabled>save route</button>
+        </div>
+        <div class="col col-3 d-none d-md-block"></div>
+      </div>
     </div>
-    <div class="col col-12 col-md-7">
+    <div class="col col-12 col-md-7" id="checkpoint-forms">
+      <!-- start checkpoint -->
       {{ checkpoint_form(0, locations[0])}}
 
-      {{ new_checkpoint() }}
+      <!-- insert checkpoint button -->
+      {{ new_checkpoint(1) }}
  
+      <!-- intermediate checkpoints (with new checkpoint button between) -->
       {% for i in range(1, cps+1) %}
       {{ checkpoint_form(i, locations[i] ) }}
-      {{ new_checkpoint() }}
+      {{ new_checkpoint(i+1) }}
       {% endfor %}
-      </ul>
+
+      <!-- end checkpoint -->
       {{ checkpoint_form(999, locations[cps+1])}}
     </div>
   </div>
@@ -67,9 +85,9 @@
     </div>
     <div class="col col-md-4">
       <div class="row"><div class="col" id="directions"></div></div>
-      <div class="row"><div class="col">
+      <!-- <div class="row"><div class="col">
         <button id="save-route" class="btn btn-block btn-primary">save route</button>
-      </div></div>
+      </div></div> -->
     </div>
   </div>
 {% endblock %}

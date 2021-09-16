@@ -1,10 +1,14 @@
 // get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
-const newCheckpoint = document.querySelector('#new-checkpoint')
+const newCheckpointButts = $('.new-checkpoint-button');
+const routeSaveButt = document.querySelector('#save-route');
+const routePreviewButt = document.querySelector('#preview-route')
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if (goodRouteData()) {
+        routePreviewButt.disabled = false;
+        routeSaveButt.disabled = false;
         previewRoute();
     };
 });
@@ -26,7 +30,7 @@ for (let checkpointLocation of checkpointLocations) {
         routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
         if (goodRouteData()) {
             // reloading page is refreshing map more efficiently than erasing old routes/checkpoints/&c.
-            location.reload()
+            location.reload();
             // previewRoute();
         } else {
             handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
@@ -34,14 +38,33 @@ for (let checkpointLocation of checkpointLocations) {
     });
 };
 
-routeForm.addEventListener('submit', (e) => {
+for (let newCheckpointButt of newCheckpointButts) {
+    newCheckpointButt.click(() => {
+        debugger;
+        console.log('clicked on a button');
+        console.log(newCheckpointButt);
+        // add cps=1 to qString if it isn't already there
+        let qString = parseCurrentQueryString();
+        if (qString.cps) {
+            qString.cps ++;
+        } else {
+            qString.csp = 1;
+        };
+        // increase cps by 1 in qString if it is
+        updateUrl(qString, false);
+        location.reload();
+    });
+}
+
+// routeForm.addEventListener('submit', (e) => {
+routePreviewButt.addEventListener('click', (e) => {
     e.preventDefault();
     if (goodRouteData()) {
-        location.reload()
+        location.reload();
         // previewRoute();
     } else {
         handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"})
-    }
+    };
 });
 
 async function previewRoute() {
@@ -97,27 +120,31 @@ function parseCpId (selectorId) {
     return false;
 };
 
-function addObjToLocalStorage(key, valueObj) {
-    if (key in localStorage) {
-        let currentValue = JSON.parse(localStorage[key]);
-        // U R HERE: untested
-        if (typeof currentValue === "object") {
-            for (let key in valueObj) {
-                currentValue[key] = valueObj[key]
-            };
-            return;
-        } 
-        throw new Error;
-    } else {
-        localStorage.setItem(key, JSON.stringify(valueObj))
-        return;
-    }
-}
+// function addObjToLocalStorage(key, valueObj) {
+//     if (key in localStorage) {
+//         let currentValue = JSON.parse(localStorage[key]);
+//         // U R HERE: untested
+//         if (typeof currentValue === "object") {
+//             for (let key in valueObj) {
+//                 currentValue[key] = valueObj[key]
+//             };
+//             return;
+//         }
+//         throw new Error;
+//     } else {
+//         localStorage.setItem(key, JSON.stringify(valueObj))
+//         return;
+//     };
+// };
 
 function goodRouteData() {
     // Check that query string has lat and lng for 2 or more checkpoints. Returns boolean.
     let data = parseCurrentQueryString();
     const dataKeys = Object.keys(data);
+    // there must be at least 4 keys in a valid route
+    if (dataKeys.length < 4) {
+        return false;
+    };
     dataKeys.sort();
     let checkpoints = 0;
     const dataKeysSplit = [];
