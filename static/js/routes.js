@@ -39,8 +39,7 @@ for (let checkpointLocation of checkpointLocations) {
 };
 
 for (let newCheckpointButt of newCheckpointButts) {
-    newCheckpointButt.click(() => {
-        debugger;
+    newCheckpointButt.addEventListener('click', (e) => {
         console.log('clicked on a button');
         console.log(newCheckpointButt);
         // add cps=1 to qString if it isn't already there
@@ -48,7 +47,7 @@ for (let newCheckpointButt of newCheckpointButts) {
         if (qString.cps) {
             qString.cps ++;
         } else {
-            qString.csp = 1;
+            qString.cps = 1;
         };
         // increase cps by 1 in qString if it is
         updateUrl(qString, false);
