@@ -8,7 +8,7 @@ const routePreviewButt = document.querySelector('#preview-route')
 window.addEventListener('DOMContentLoaded', (event) => {
     if (goodRouteData()) {
         routePreviewButt.disabled = false;
-        routeSaveButt.disabled = false;
+        if (routeSaveButt) routeSaveButt.disabled = false;
         previewRoute();
     };
 });
@@ -62,7 +62,7 @@ routePreviewButt.addEventListener('click', (e) => {
         location.reload();
         // previewRoute();
     } else {
-        handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"})
+        handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"});
     };
 });
 

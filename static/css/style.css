@@ -94,3 +94,8 @@ li.single-leg:before {
 	color: white;
 	content: "SELECTED ROUTE: ";
 }
+
+#directions {
+	max-height: 800px;
+	overflow-y: scroll;
+}
