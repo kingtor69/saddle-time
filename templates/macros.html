@@ -16,15 +16,8 @@
 {% macro checkpoint_form( index, location, location_value ) %}
 <div class="row justify-content-center checkpoint-rows" id="cpr-{{ index }}-row">
   <div class="col col-1">
-    {% if index == 0 %}
-      <p class="sideways">START</p>
-    {% elif index == 999 %}
-      <br>
-      <p class="sideways">END</p>
-    {% endif %}
-  </div>
-  <div class="col col-1">
-    {% if index == 0 %}
+    <!-- arrows commented out until they do something -->
+    <!-- {% if index == 0 %}
       <br>
     {% else %}
       <button class="arrows"><i class="far fa-arrow-alt-circle-up"></i></button>
@@ -33,9 +26,9 @@
       <br>
     {% else %} 
       <button class="arrows"><i class="far fa-arrow-alt-circle-down"></i></button>
-    {% endif %}
+    {% endif %} -->
   </div>
-  <div class="col col-10">
+  <div class="col col-11">
     <form action="" id="cpf-{{ index }}-checkpoint-form">
       <!-- Ashir's computer is breaking here with a NoneType on form being non-iterable -->
       <!-- {% for field in form 

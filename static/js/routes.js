@@ -67,7 +67,13 @@ routePreviewButt.addEventListener('click', (e) => {
 });
 
 async function previewRoute() {
-    const routeData = dataFromQueryString();
+    const queryData = dataFromQueryString();
+    const routeData = {};
+    for (let key in queryData) {
+        if (isCheckpointKey(key)) {
+            routeData[key] = queryData[key];
+        };
+    };
     let url = '/api/routes/preview?'
     for (const key in routeData) {
         url += `${key}=${routeData[key]}&`
@@ -138,6 +144,7 @@ function parseCpId (selectorId) {
 
 function goodRouteData() {
     // Check that query string has lat and lng for 2 or more checkpoints. Returns boolean.
+    // needs to ignore non-geocode string data
     let data = parseCurrentQueryString();
     const dataKeys = Object.keys(data);
     // there must be at least 4 keys in a valid route
@@ -148,11 +155,19 @@ function goodRouteData() {
     let checkpoints = 0;
     const dataKeysSplit = [];
     for (let key of dataKeys) {
-        numLatOrLng = key.split('-');
-        dataKeysSplit.push(numLatOrLng);
+        if (isCheckpointKey(key)) {
+            numLatOrLng = key.split('-');
+            dataKeysSplit.push(numLatOrLng);
+        };
     };
+
+    let cpKeysSplitIntTest;
+    // only keep keys that start with an integer
+    cpKeysSplitIntTest = dataKeysSplit.filter(splitKeyIntTest => isInteger(splitKeyIntTest[0]))
     let cpKeysSplit;
-    cpKeysSplit = dataKeysSplit.filter(splitKey => isInteger(splitKey[0]))
+    // ...and that are either "lat" or "lng" after a "-"
+    cpKeysSplit = dataKeysSplit.filter(splitKey => (splitKey[1] === "lat" || splitKey[1] === "lng"));
+    
     // now we have a sorted array of arrays (I'd use tuples if I were in Python) like this [[cp#, latOrLng], &c]
     // there should be exactly two of each checkpoint number (dataKeysSplit[i][0]), one "lat" and one "lng" (dataKeysSplit[i][1]);
     for (let i=0; i<dataKeysSplit.length; i+=2) {

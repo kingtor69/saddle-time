@@ -222,3 +222,15 @@ function isInteger(str) {
     if (isNaN(parsed)) {return false};
     return true;
 };
+
+function isCheckpointKey(key) {
+    // return true if passed key (string) is formatted correctly for a checkpoint as either latitude or longitude
+    let splitKey = key.split('-');
+    if (!(parseInt(splitKey[0]) >= 0)) {
+        return false;
+    };
+    if (splitKey[1] !== "lat" && splitKey[1] !== "lng") {
+        return false;
+    };
+    return true;
+};
