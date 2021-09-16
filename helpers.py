@@ -104,7 +104,6 @@ def parse_geocode(arguments):
     # these variables will be the return value
     # geoarray = []
     geostring = ""
-    
 
     # termp variables used to sort everything properly
     id_list = []
@@ -114,20 +113,20 @@ def parse_geocode(arguments):
     errors = {}
 
     for key in arguments:
-        value = arguments[key]
-        key_split = key.split('-')
-        id_int = None
-        try: 
-            id_int = int(key_split[0])
-            if not id_int in id_list:
-                id_list.append(id_int)
-            if not id_int in sortable_args:
-                sortable_args[id_int] = {}
-
-            sortable_args[id_int][key_split[1]] = value
-
-        except:
-            errors["garbage in garbage out error"] = f"{key} can't be parsed to an id"
+        # ignores non-geocode arguments
+        if key.find('lat') >= 0 or key.find('lng') >= 0:
+            value = arguments[key]
+            key_split = key.split('-')
+            id_int = None
+            try: 
+                id_int = int(key_split[0])
+                if not id_int in id_list:
+                    id_list.append(id_int)
+                if not id_int in sortable_args:
+                    sortable_args[id_int] = {}
+                sortable_args[id_int][key_split[1]] = value
+            except:
+                errors["garbage in garbage out error"] = f"{key} can't be parsed to an id"
 
     # now build the array and string
     for i in sorted(id_list):
@@ -139,9 +138,12 @@ def parse_geocode(arguments):
     
     if errors:
         return {"errors": errors}
-
+        
     # return (geoarray, geostring)
     return geostring
+
+
+
 
 # def ORS_directions(geoarray, profile="regular"):
 #     """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
