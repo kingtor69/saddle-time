@@ -39,12 +39,16 @@ map.on('load', function() {
     // 999 = red
     // odd = yellow
     // even = orange
-    if ($('#marker').text() === "urhere") {
+    const markerType = $('#marker').text();
+    if (markerType === "urhere") {
         color = 'blue';
         markerImg = `${checkpointFilename}${color}.png`;
-    } else if ($('#marker').text() === "cp0") {
+    } else if (markerType === "cp0") {
         color = 'green';
         markerImg = `${checkpointFilename}${color}.png`;
+    } else if (!markerType || markerType === "none") {
+        color = false;
+        markerImg = false;
     } else {
         color = 'gray';
         markerImg = `${checkpointFilename}${color}.png`;

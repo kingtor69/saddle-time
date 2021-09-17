@@ -145,7 +145,7 @@ def signup_new_user():
         new_user.profile_pic_image_url = form.profile_pic_image_url.data
         new_user.fav_bike = form.fav_bike.data
         new_user.bike_image_url = form.bike_image_url.data
-        new_user.default_bike_type = form.default_bike_type.data
+        # new_user.default_bike_type = form.default_bike_type.data
         new_user.weather_units = form.weather_units.data
         new_user.default_geocode = geocode_from_location_mq(form.default_location.data)
         db.session.add(new_user)

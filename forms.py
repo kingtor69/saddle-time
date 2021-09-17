@@ -20,7 +20,7 @@ class UserNewForm(FlaskForm):
     profile_pic_image_url = StringField("profile pic link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
     fav_bike = StringField("your favorite bike", validators=[Length(max=40, message="Wow, your bike has a long name. Please abbreviate that to 40 characters or fewer."), Optional()])
     bike_image_url = StringField("bike picture link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
-    default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
+    # default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
     # TODO: default_location should be a mapbox selector, but for now I'm leaving it out
     # default_location = StringField('your default route starting point')
     weather_units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
@@ -34,7 +34,7 @@ class UserEditForm(FlaskForm):
     profile_pic_image_url = StringField("profile pic link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
     fav_bike = StringField("your favorite bike", validators=[Length(max=40, message="Wow, your bike has a long name. Please abbreviate that to 40 characters or fewer."), Optional()])
     bike_image_url = StringField("bike picture link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
-    default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
+    # default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
     default_location = StringField('your default route starting point')
     weather_units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
 
