@@ -41,8 +41,19 @@
  
       <!-- intermediate checkpoints (with new checkpoint button between) -->
       {% for i in range(1, cps+1) %}
-      {{ checkpoint_form(i, locations[i] ) }}
-      {{ new_checkpoint(i+1) }}
+      <!-- <p class="text-warning">
+        i = {{ i }}<br>
+        new checkpoint id = {{ new_cp_id }}<br>
+        are those equal? = {{ i == new_cp_id }}
+      </p> -->
+        {% if i == new_cp_id %}
+          <!-- <p class="text-warning">this one should be blank</p> -->
+          {{ checkpoint_form(i, False)}}
+        {% else %}
+          <!-- <p class="text-warning">this one should have a location</p> -->
+          {{ checkpoint_form(i, locations[i]) }}
+        {% endif %}
+        {{ new_checkpoint(i+1) }}
       {% endfor %}
 
       <!-- end checkpoint -->

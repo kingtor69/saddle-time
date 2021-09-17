@@ -16,17 +16,19 @@
 {% macro checkpoint_form( index, location, location_value ) %}
 <div class="row justify-content-center checkpoint-rows" id="cpr-{{ index }}-row">
   <div class="col col-1">
-    <!-- arrows commented out until they do something -->
-    <!-- {% if index == 0 %}
-      <br>
+    {% if index == 0 %}
+    <br>
     {% else %}
-      <button class="arrows"><i class="far fa-arrow-alt-circle-up"></i></button>
+    <!-- arrows commented out until they do something -->
+      <!-- <button class="arrows"><i class="far fa-arrow-alt-circle-up"></i></button> -->
     {% endif %}
+    <button class="checkpoint-delete transparent-bg" id="cpd-{{ index }}"><i class="fa fa-trash text-warning"></i></button> 
     {% if index == 999 %}
       <br>
     {% else %} 
-      <button class="arrows"><i class="far fa-arrow-alt-circle-down"></i></button>
-    {% endif %} -->
+    <!-- arrows commented out until they do something -->
+      <!-- <button class="arrows"><i class="far fa-arrow-alt-circle-down"></i></button> -->
+    {% endif %}
   </div>
   <div class="col col-11">
     <form action="" id="cpf-{{ index }}-checkpoint-form">
@@ -50,7 +52,7 @@
 {% endmacro %}
 
 {% macro new_checkpoint(id) %}
-  <div class="row justify-content-center checkpoint-rows checkpoint-rows" id="cpr-{{index}}-row">
+  <div class="row justify-content-center checkpoint-rows checkpoint-rows" id="cpr-{{ id }}-row">
     <div class="col col-2"></div>
     <div class="col col-10">
         <button class="btn btn-outline-secondary btn-sm d-inline-block mt-2 py-0 new-checkpoint-button" id="new-checkpoint-{{ id }}">insert new checkpoint here</button>

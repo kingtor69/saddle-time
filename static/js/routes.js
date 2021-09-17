@@ -3,7 +3,8 @@ const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
 const routeSaveButt = document.querySelector('#save-route');
-const routePreviewButt = document.querySelector('#preview-route')
+const routePreviewButt = document.querySelector('#preview-route');
+const deleteCheckpointButts = $('.checkpoint-delete');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if (goodRouteData()) {
@@ -42,17 +43,33 @@ for (let newCheckpointButt of newCheckpointButts) {
     newCheckpointButt.addEventListener('click', (e) => {
         console.log('clicked on a button');
         console.log(newCheckpointButt);
-        // add cps=1 to qString if it isn't already there
+        // get checkpoint button ID# (id[2])
+        let buttId = newCheckpointButt.id;
+        let splitId = buttId.split('-');
+        let id = parseInt(splitId[2]);
+        if (!(id >= 0)) {
+            handleErrors({danger: "checkpoint button has no id number"});
+        };
         let qString = parseCurrentQueryString();
+        qString['new-id']=id;
+        // following makes another checkpoint, but doesn't specify where so it always ends up just before the end of the route
         if (qString.cps) {
+            // increase cps by 1 in qString if it's already there
             qString.cps ++;
         } else {
+            // add cps=1 to qString if it isn't
             qString.cps = 1;
         };
-        // increase cps by 1 in qString if it is
+        console.log(qString);
         updateUrl(qString, false);
         location.reload();
     });
+};
+
+for (let deleteCheckpointButt of deleteCheckpointButts) {
+    deleteCheckpointButt.addEventListener('click', (e) => {
+        console.log(e)
+    })
 }
 
 // routeForm.addEventListener('submit', (e) => {

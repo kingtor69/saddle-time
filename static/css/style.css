@@ -99,3 +99,11 @@ li.single-leg:before {
 	max-height: 800px;
 	overflow-y: scroll;
 }
+
+.transparent-bg {
+	background-color: #0000;
+}
+
+button.transparent-bg {
+	border: none;
+}

@@ -330,21 +330,29 @@ def process_new_route_form():
     """render the RouteForm, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
+    new_cp_id = int(request.args['new-id']) if request.args.get('new-id') else -1
     lats = []
     lngs = []
     locations = []
     locations_values = []
+    cp = 0
     for i in range(int(cps)+1):
-        if request.args.get(f'{i}-lat'):
-            lats.append(float(request.args.get(f'{i}-lat')))
-        else:
+        if i == new_cp_id:
             lats.append(False)
-        if request.args.get(f'{i}-lat'):
-            lngs.append(float(request.args.get(f'{i}-lng')))
-        else:
             lngs.append(False)
-        locations.append(location_from_geocode_mb(lats[i], lngs[i]))
-        locations_values.append(string_from_geocode([lats[i], lngs[i]]))
+            locations.append(False)
+        else:
+            if request.args.get(f'{cp}-lat'):
+                lats.append(float(request.args.get(f'{cp}-lat')))
+            else:
+                lats.append(False)
+            if request.args.get(f'{cp}-lat'):
+                lngs.append(float(request.args.get(f'{cp}-lng')))
+            else:
+                lngs.append(False)
+            locations.append(location_from_geocode_mb(lats[i], lngs[i]))
+            locations_values.append(string_from_geocode([lats[i], lngs[i]]))
+            cp += 1
     
     if request.args.get('999-lat'):
         lats.append(float(request.args.get('999-lat')))
@@ -365,7 +373,7 @@ def process_new_route_form():
     #     additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
     
     # start_form=start_form, end_form=end_form, additional_forms=additional_forms, 
-    return render_template ('route.html', cps=cps, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
+    return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 
 @app.route('/api/routes')
 def display_available_routes():
