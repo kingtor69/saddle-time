@@ -1,3 +1,4 @@
+console.log('routes.js');
 // get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');

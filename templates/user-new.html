@@ -36,7 +36,9 @@
                 {% endfor %} 
                 <tr>
                   <td>default location</td>
-                  <td colspan="2" id="default-location-autocomplete"></td>
+                  <td colspan="2" id="default-location-autocomplete">
+                    <select name="location" id="default-location-selector" class="mapbox-location-selector form-control">
+                  </td>
                 </tr>
                 <tr>
                   <td colspan="3" class="css-txt-center"><sup class="text-warning">*</sup> indicates required field</td>
@@ -50,8 +52,7 @@
           </form>
         </div>
       <div class="col col-12 col-md-6">
-        <p class="text-danger">There's supposed to be a map here. WTF?</p>
-        {{ mapbox(48.3544, -99.9981, 8, small, none) }}
+        {{ mapbox (0, 0, 0, medium, none)}}
       </div>
     </div>
 {% endblock %}

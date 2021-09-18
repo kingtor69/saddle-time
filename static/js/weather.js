@@ -1,4 +1,5 @@
 // TODO: make browser location work
+console.log('weather.js');
 // mapLat and mapLng are generated in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
 const unitsOptionMetric = document.querySelector('option.metric-option');

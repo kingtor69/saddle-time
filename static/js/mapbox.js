@@ -1,5 +1,5 @@
 // This file contains code that is either directly from or lightly adapted from code in mapbox' docs (https://docs.mapbox.com)
-
+console.log('mapbox.js');
 let mapLat = defaultLoc_lat;
 let mapLng = defaultLoc_lng;
 const geocode = [mapLng, mapLat];
@@ -95,6 +95,8 @@ for (let cpl of cpls) {
     const checkpointLocation = $(`#${cpl.id}`);
     checkpointLocations.push(checkpointLocation);
 };
+
+const defaultLocationSelector = $('default-location-selector')
 
 function centerMap(lat, lng) {
     map.flyTo({

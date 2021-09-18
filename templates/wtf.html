@@ -1,0 +1,7 @@
+{% extends base.html %}
+{% from 'macros.html' import mapbox %}
+
+{% block header %}Seriously, What The everlovin' F?{% endblock %}
+{% block content %}
+  {{ mapbox (48.3544, -99.9981, 8, small, none) }}
+(% endblock %)

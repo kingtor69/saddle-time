@@ -1,4 +1,4 @@
-
+console.log('app.js');
 const flashDiv = document.querySelector('#flashes');
 flashDiv.innerHTML = '';
 

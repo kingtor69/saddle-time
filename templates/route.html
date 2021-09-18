@@ -54,7 +54,7 @@
       <div class="row">
         <div class="col col-3 d-none d-md-block"></div>
         <div class="col col-md-6">
-          {% if g.user.username == "guest" %}
+          {% if not "user" in g %}
           <p class="text-info">
             you can save a route if you: 
             <button id="go-login" class="btn btn-block btn-outline-info rounded mx-2 my-1 pt-0 pb-1">login</button>
