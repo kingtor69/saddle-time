@@ -17,18 +17,18 @@
           <form action="/routes/new" method="GET" id="new-route-form">
             <input type="text" readonly class="d-none" id="map-center-lat" name="0-lat" value="{{ lat }}">
             <input type="text" readonly class="d-none" id="map-center-lng" name="0-lng" value="{{ lng }}">
-            <button type="submit" class="d-block btn btn-block btn-primary m-2 width-100" id="new-route-button">make new route{% if g.user.username == "guest" %} as guest{% endif %}</button>
+            <button type="submit" class="d-block btn btn-block btn-primary m-2 width-100" id="new-route-button">make new route{% if (not "user" in g) %} as guest{% endif %}</button>
           </form>
         </div>
-        {% if g.user.username == "guest" %}
-        <div class="row justify-content-center">
-          <div class="col col-6">
-            <a href="/login" class="d-block btn btn-block btn-info ml-2 my-2">log in</a>
+        {% if (not "user" in g) %}
+          <div class="row justify-content-center">
+            <div class="col col-6">
+              <a href="/login" class="d-block btn btn-block btn-info ml-2 my-2">log in</a>
+            </div>
+            <div class="col col-6">
+              <a href="/users/signup" class="d-block btn btn-block btn-success my-2 mr-2">sign up</a>
+            </div>
           </div>
-          <div class="col col-6">
-            <a href="/users/signup" class="d-block btn btn-block btn-success my-2 mr-2">sign up</a>
-          </div>
-        </div>
         {% endif %}
         <div class="row justify-content-center">
           <div class="col">

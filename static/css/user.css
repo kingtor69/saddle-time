@@ -5,3 +5,10 @@ img.bike-image-profile {
 img.user-profile-pic {
 	width: 60px;
 }
+
+#map {
+	min-width: 550px;
+	min-height: 550px;
+	width: 100%;
+	margin-top: 20px;
+}

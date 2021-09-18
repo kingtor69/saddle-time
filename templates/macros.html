@@ -67,8 +67,7 @@
         <th class="pt-4 my-3">
           <div class="row justify-content-left">
               <div id="weather-header" class="location-widget">
-                <p>Current weather in:</p>
-                <label for="weather-selector" class="location-field mapbox-location-label form-label" id="weather-city">{{ weather.city }}</label>
+                <label for="weather-selector" class="location-field mapbox-location-label form-label" id="weather-city">Current weather {% if "user" in g %}for {{ user.username }} {% endif %}at:</label>
                 <select name="location" id="weather-selector" class="mapbox-location-selector form-control">
                   <option value="{{ lat }}, {{ lng }}">{{ location }}</option>
                 </select>

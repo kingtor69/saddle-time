@@ -46,7 +46,7 @@ map.on('load', function() {
     } else if (markerType === "cp0") {
         color = 'green';
         markerImg = `${checkpointFilename}${color}.png`;
-    } else if (!markerType || markerType === "none") {
+    } else if (!markerType || markerType.toLowerCase() === "none") {
         color = false;
         markerImg = false;
     } else {

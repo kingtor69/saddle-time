@@ -2,9 +2,13 @@
 {% from 'macros.html' import mapbox %}
 {% block header %}New User{% endblock %}
 
+{% block page_sytle %}
+  <link rel="stylesheet" href="/static/css/user.css">
+{% endblock %}
+
 {% block content %}
     <div class="row justify-content-center">
-      <div class="col">
+      <div class="col col-12 col-md-6">
           <form action="#" method="POST" novalidate>
             <table>
               {{ form.hidden_tag() }}
@@ -45,9 +49,9 @@
             </table>
           </form>
         </div>
-      <div class="col">
+      <div class="col col-12 col-md-6">
         <p class="text-danger">There's supposed to be a map here. WTF?</p>
-        {{ mapbox(48.3544, 99.9981, 8, small, none) }}
+        {{ mapbox(48.3544, -99.9981, 8, small, none) }}
       </div>
     </div>
 {% endblock %}

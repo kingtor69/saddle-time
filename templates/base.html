@@ -55,33 +55,25 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <!-- <li class="nav-item mx-2"><a href="#">Top</a></li> -->
           <li><a href="/routes/new" class="px-2">New Route</a></li>
-          <!-- <li><a href="/routes" class="px-2">Show Routes</a></li>
-          <li><a href="/users" class="px-2">Users</a></li> -->
-          <!-- below for possible future development -->
-          <!-- probably better to make those anchors into forms that send GET requests to /routes and /checkpoints with userID in the query string -->
-          <!-- {% if ('user' in g or not g.user.username == "guest") %}
-          <li><a href="/users/{{ g.user.id }}/routes">my routes</a></li>
-          <li><a href="/users/{{ g.user.id }}/checkpoints"></a>my checkpoints</li>
-          {% endif %} -->
           {% block nav_items %}{% endblock %}
         </ul>
         <ul class="navbar-nav navbar-right">
-          {% if (not 'user' in g or g.user.username == "guest") %}
-          <li><a href="/login" class="px-2">Log in</a></li>
-          <li class="nav-item"><a href="/users/signup" class="px-2">Sign up</a></li>
+          {% if (not 'user' in g) %}
+            <li><a href="/login" class="px-2">Log in</a></li>
+            <li class="nav-item"><a href="/users/signup" class="px-2">Sign up</a></li>
           {% else %}
-          <li class="nav-item">
-            <a href="/users/{{ g.user.id }}" class="px-2">
-              {% if g.user.profile_pic_image_url %}
-              <img src="{{ g.user.profile_pic_image_url }}" class="navbar-img" alt="{{ g.user.username }}">
-              {% else %}
-              {{ g.user.username}}
-              {% endif %}
-            </a>
-          </li>
-          <li><a href="/logout" class="px-2">Log out</a></li>
+          <!-- a user is logged in -->
+            <li class="nav-item">
+              <a href="/users/{{ g.user.id }}" class="px-2">
+                {% if g.user.profile_pic_image_url %}
+                <img src="{{ g.user.profile_pic_image_url }}" class="navbar-img" alt="{{ g.user.username }}">
+                {% else %}
+                {{ g.user.username}}
+                {% endif %}
+              </a>
+            </li>
+            <li><a href="/logout" class="px-2">Log out</a></li>
           {% endif %}
         </ul>
       </div>
@@ -128,7 +120,6 @@
   <!-- Tor's scripts: -->
   {% block scripts_before %}{% endblock %}
   <script src="/static/js/app.js"></script>
-  <!-- <script src="/static/js/tests/app.test.js"></script> -->
   {% block scripts_after %}{% endblock %}
 </body>
 </html>
