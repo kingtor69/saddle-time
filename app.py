@@ -25,23 +25,18 @@ connect_db(app)
 
 @app.before_request
 def add_user_to_g():
-    """If user is logged in, add that user to `g`; 
-    otherwise, add guest user object to `g`."""
+    """If user is logged in, add that user to `g`."""
 
     if CURR_USER in session:
         g.user = User.query.get(session[CURR_USER])
-    else:
-        g.user = GUEST
 
 @app.before_request
 def add_route_to_g():
-    """If there is a route in progress, add it to `g`;
+    """If there is a route in progress, add it to `g`,
     otherwise, add empty route object to `g`."""
 
     if CURR_ROUTE in session:
         g.route = Route.query.get(session[CURR_ROUTE])
-
-
 
 
 @app.route('/', methods=["GET"])
@@ -155,7 +150,6 @@ def signup_new_user():
 
     return render_template('user-new.html', form=form)
 
-
 @app.route('/users/<int:user_id>')
 def return_user_profile(user_id):
     """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
@@ -183,38 +177,6 @@ def edit_user_profile(user_id):
         return redirect (f'/users/{user.id}')
     
     return render_template('user-edit.html', user=user, form=form)
-
-@app.route('/api/users/<int:user_id>', methods=["GET"])
-def api_return_user_profile(user_id):
-    """Returns user information via API call."""
-    user = User.query.get_or_404(user_id)
-    user_obj = {user_id: {}}
-    user_obj[user_id]['username'] = user.username
-    user_obj[user_id]['email'] = user.email
-    user_obj[user_id]['first_name'] = user.first_name
-    user_obj[user_id]['last_name'] = user.last_name
-    user_obj[user_id]['profile_pic_image_url'] = user.profile_pic_image_url
-    user_obj[user_id]['fav_bike'] = user.fav_bike
-    user_obj[user_id]['bike_image_url'] = user.bike_image_url
-    user_obj[user_id]['default_bike_type'] = user.default_bike_type
-    user_obj[user_id]['default_geocode_lat'] = user.default_geocode_lat
-    user_obj[user_id]['default_geocode_lng'] = user.default_geocode_lng
-    user_obj[user_id]['weather_units'] = user.weather_units
-    return jsonify(user_obj)
-
-@app.route('/api/users/<int:user_id>/edit', methods=["PUT", "PATCH"])
-def api_edit_user_profile():
-    """Edit user profile, including preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
-    # TBH, I don't really see why this path is needed. I think I was going to do this from JS, but since I'm using Flask WTForms for the form, I'm not sure it's worth figuring out how to get that data to JS.
-
-
-@app.route('/api/users/<int:user_id>/delete', methods=["DELETE"])
-def delete_user(user_id):
-    """Permanently deletes a user from the database using HTTP API call."""
-    user = User.query.get_or_404(user_id)
-    # does this need some kind of authorization and data verification logic???
-    db.session.delete(user)
-    db.session.commit()
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -245,86 +207,6 @@ def logout():
 ########################
 ##### route routes #####
 ########################
-@app.route('/api/routes/preview', methods=["GET"])
-def preview_route():
-    """Returns a route or choices of routes. Commented-out code will be for future development, but for now the routes all come from the Mapbox API. 
-    Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
-    Also will accept profile type, defaults to "regular" (which is translated to "cycle" for mapbox)
-    """
-    # profile = ""
-    # if "profile" in requests_dic:
-    #     profile = requests_dic.profile
-
-    try:
-        geostring = parse_geocode(request.args.to_dict())
-    except: 
-        return jsonify({"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}})
-    if type(geostring) == dict:
-        return jsonify({"errors": geostring})
-    
-    errors_object = {}
-
-    try:
-        return jsonify(mapbox_directions(geostring))
-    except:
-        return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
-
-    # for future development using ORS directions
-    # try:
-    #     return {"ORS": jsonify(ORS_directions(geoarray, profile))}
-    # except:
-    #     errors_object['ORS error'] = f'ORS_directions in helpers.py is not responding to these coordinates: {geoarray}'
-    try:
-        return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
-    except:
-        # at the moment, these error messages are written for development
-        errors_object['mapbox error'] = f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'
-    
-    # if we're here, both have failed and errors_object should be returned
-    return {"errors": errors_object}
-
-@app.route('/api/routes/new', methods=["GET","POST"])
-def create_new_route():
-    """Gather route information. 
-    With GET the raw data comes from the query string and is sent to the Mapbox API. 
-    POST saves new route to database. 
-    Will save to a guest user if there's no logged-in user. 
-    For actual production, this would only be availble to logged-in users, but for portfolio it will work for anyone.
-    """
-    if request.method == 'GET':
-        cps = request.args['cps'] or False
-        coordinates = ""
-        success = False
-        errors = False
-        troubleshooting = False
-        try: 
-            for i in range((int(cps)+1)):
-                lng = request.args[f'{int(i)}-lng'] or i
-                lat = request.args[f'{int(i)}-lat'] or i
-                if i > 0:
-                    coordinates = coordinates + ';'
-                coordinates = coordinates + f'{lng},{lat}'
-            # error is happening in mapbox_directions, 'sfar as I can tell
-            
-            success = mapbox_directions(coordinates)
-        except: 
-            errors = {"api error": "route API failed"}
-            troubleshooting = {"troubleshooting": {"cps": cps, "coordinates": coordinates}}
-        if success:
-            ret_dic = success
-        else: 
-            ret_dic = {}
-            if errors:
-                ret_dic["errors"] = errors
-            if troubleshooting:
-                ret_dic["troubleshooting"] = troubleshooting
-        
-        return ret_dic
-        
-    else:
-        return "POST"
-
-
 @app.route('/routes/new')
 def process_new_route_form():
     """render the RouteForm, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
@@ -366,61 +248,144 @@ def process_new_route_form():
     locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
 
     route_form = RouteForm()
-    # start_form = NewCheckpointForm(prefix="cp-0")
-    # end_form = NewCheckpointForm(prefix="cp-999")
-    # additional_forms = []
-    # for i in range(cps):
-    #     additional_forms.append(NewCheckpointForm(prefix=f"cp-{i}"))
-    
-    # start_form=start_form, end_form=end_form, additional_forms=additional_forms, 
     return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
+
+
+###########################
+##### user API routes #####
+###########################
+@app.route('/api/users/<int:user_id>', methods=["GET"])
+def api_return_user_profile(user_id):
+    """Returns user information via API call."""
+    user = User.query.get_or_404(user_id)
+    user_obj = {user_id: {}}
+    user_obj[user_id]['username'] = user.username
+    user_obj[user_id]['email'] = user.email
+    user_obj[user_id]['first_name'] = user.first_name
+    user_obj[user_id]['last_name'] = user.last_name
+    user_obj[user_id]['profile_pic_image_url'] = user.profile_pic_image_url
+    user_obj[user_id]['fav_bike'] = user.fav_bike
+    user_obj[user_id]['bike_image_url'] = user.bike_image_url
+    user_obj[user_id]['default_bike_type'] = user.default_bike_type
+    user_obj[user_id]['default_geocode_lat'] = user.default_geocode_lat
+    user_obj[user_id]['default_geocode_lng'] = user.default_geocode_lng
+    user_obj[user_id]['weather_units'] = user.weather_units
+    return jsonify(user_obj)
+
+@app.route('/api/users/<int:user_id>/edit', methods=["PUT", "PATCH"])
+def api_edit_user_profile():
+    """Edit user profile, including preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
+    # TBH, I don't really see why this path is needed. I think I was going to do this from JS, but since I'm using Flask WTForms for the form, I'm not sure it's worth figuring out how to get that data to JS.
+
+
+@app.route('/api/users/<int:user_id>/delete', methods=["DELETE"])
+def delete_user(user_id):
+    """Permanently deletes a user from the database using HTTP API call."""
+    user = User.query.get_or_404(user_id)
+    # does this need some kind of authorization and data verification logic???
+    db.session.delete(user)
+    db.session.commit()
+
+############################
+##### route API routes #####
+############################
+@app.route('/api/routes/preview', methods=["GET"])
+def preview_route():
+    """Returns a route or choices of routes. Commented-out code will be for future development, but for now the routes all come from the Mapbox API. 
+    Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
+    Also will accept profile type, defaults to "regular" (which is translated to "cycle" for mapbox)
+    """
+    try:
+        geostring = parse_geocode(request.args.to_dict())
+    except: 
+        return jsonify({"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}})
+    if type(geostring) == dict:
+        return jsonify({"errors": geostring})
+    
+    errors_object = {}
+
+    try:
+        return jsonify(mapbox_directions(geostring))
+    except:
+        return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
+
+    try:
+        return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
+    except:
+        # these error messages are written for development and will be rewritten for user's in the event of API failure beyond our control
+        errors_object['mapbox error'] = f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'
+    
+    # if we're here, both have failed and errors_object should be returned
+    return {"errors": errors_object}
+
+@app.route('/api/routes/new', methods=["GET","POST"])
+def create_new_route():
+    """Gather route information. 
+    With GET the raw data comes from the query string and is sent to the Mapbox API. 
+    POST saves new route to database. 
+    Requires authentication of logged-in user for POST. 
+    """
+    if request.method == 'GET':
+        cps = request.args['cps'] or False
+        coordinates = ""
+        success = False
+        errors = False
+        troubleshooting = False
+        try: 
+            for i in range((int(cps)+1)):
+                lng = request.args[f'{int(i)}-lng'] or i
+                lat = request.args[f'{int(i)}-lat'] or i
+                if i > 0:
+                    coordinates = coordinates + ';'
+                coordinates = coordinates + f'{lng},{lat}'
+            
+            success = mapbox_directions(coordinates)
+        except: 
+            errors = {"api error": "route API failed"}
+            troubleshooting = {"troubleshooting": {"cps": cps, "coordinates": coordinates}}
+        if success:
+            ret_dic = success
+        else: 
+            ret_dic = {}
+            if errors:
+                ret_dic["errors"] = errors
+            if troubleshooting:
+                ret_dic["troubleshooting"] = troubleshooting
+        
+        return ret_dic
+        
+    else:
+        return "POST"
 
 @app.route('/api/routes')
 def display_available_routes():
     """Return a list of available routes sorted from most to least recent update. Guest users see one list of all publicly-available routes. Logged in users see their own routes in one list followed by all other public routes in a second list."""
 
-# @app.route('/api/routes')
-# def display_users_routes():
-#     """Show route on map and with step-by-step directions, and weather information for the route. This uses the GET method to store all route information in the query string."""
-
-@app.route('/api/routes/<id>')
+@app.route('/api/routes/<int:route_id>')
 def display_saved_route():
     """Build the query string from a saved route and redirect to '/route'. This can be accessed by any user, or by a guest who is not logged in."""
 
-@app.route('/api/routes/<id>/edit')
+@app.route('/api/routes/<int:route_id>/edit')
 def edit_saved_route():
-    """The user who created a route can edit their route here. Any other user (or guest) can create a new route using this one as a strating point."""
+    """The user who created a route can edit their route here. Requires authentication."""
 
 #############################
 ##### checkpoint routes #####
 #############################
-@app.route('/checkpoint/new', methods=["GET", "POST"])
-def create_new_checkpoint():
-    """Creates a new checkpoint places it within a route"""
+# for further development
+# @app.route('/api/checkpoints')
+# def display_users_checkpoints():
+#     """Returns list of logged-in user's checkpoints."""
 
-@app.route('/api/geocode')
-def get_geocode_for_location():
-    """returns geocode for an input location as a list of [latitude, longitude]"""
-    # if 
-    # location = request.args['location']
+# @app.route('/api/checkpoints/<int:checkpoint_id>')
+# def display_specific_checkpoint():
+#     """Returns geocode for a checkpoint selected by ID."""
 
-    # return lat, lng
-    
-
-###### might need following code for checkpoint routes
-        # end_geoloc=geocode_from_location_mq(form.end_location.data)
-        # if not start_geoloc or not end_geoloc:
-        #     if start_geoloc:
-        #         flash('The ending location could not be located. Please try again.', 'warning')
-        #     elif end_geoloc:
-        #         flash('The starting location could not be located. Please try again.', 'warning')
-        #     else:
-        #         flash('Neither of those locations could be located. Please try again')
-        #     return render('route-ors.html', form=form)
+# @app.route('/api/checkpoints/<int:checkpoint_id>/edit')
+# def edit_checkpoint():
+#     """Allows logged in user to edit their checkpoints."""
 
 
-        # if len(start_geoloc) > 1 or len(end_geoloc) > 1:
-        #     flash("Hey, Tor. There's more than one valid response and you haven't written the code to chose which one is right.")
 
 ########################
 ##### error routes #####
@@ -433,6 +398,3 @@ def display_404_message(err):
     if request.path.startswith('/routes/'):
         return render_template('routes/404.html'), 404
     return render_template('404.html'), 404
-
-
-

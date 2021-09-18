@@ -5,7 +5,7 @@ db.drop_all()
 db.create_all()
 
 # seed users
-guest = User(id=0, username="guest", email="no_reply@nothing.com", password="guest123")
+# guest = User(id=0, username="guest", email="no_reply@nothing.com", password="guest123")
 u1 = User.hashpass('kingtor', 'roadiemutha')
 u1.email='tor@hearkitty.com'
 u1.fav_bike='"Lafayette" (Canondale Crit)'
@@ -34,7 +34,7 @@ u5.default_geocode_lng=-106.580526
 u5.favorite_bike_image_url="/static/images/Ridley_dream.jpg"
 
 
-db.session.add_all([guest, u1, u2, u3, u4])
+db.session.add_all([u1, u2, u3, u4, u5])
 db.session.commit()
 
 # seed routes
