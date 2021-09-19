@@ -143,8 +143,6 @@ def parse_geocode(arguments):
     return geostring
 
 
-
-
 # def ORS_directions(geoarray, profile="regular"):
 #     """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
 #     """

@@ -43,18 +43,23 @@ def add_route_to_g():
 def load_home_page():
     """Loads home page.
     If there is a logged in user, page shows weather from user's default location and most recently created route.
-    If no one is logged in, page shows weather from default location (Albuquerque, NM because that's my joint) in metric units (because cycling). Offer the user option to change the location (including to their browser's location) and the units. (Location change handled in app.js; units change handled hear)
+    If no one is logged in, page shows weather from default location (Coffee Shop in The Mission, San Francisco) in imperial units. Offer the user option to change the location and the units. (Location change handled in app.js; units change handled here.)
     """
     # default values: 
     location = DEFAULT_LOCATION
     loc_lat = DEFAULT_LOC_LAT
     loc_lng = DEFAULT_LOC_LNG
     units = DEFAULT_UNITS
-    if 'location' in request.args:
-        location = request.args['location']
-    else:
+    try:
+        if request and 'location' in request.args:
+           location = request.args['location']
+        import pdb
+        pdb.set_trace()
+    except:
         try:
-            location = g.user.location
+            loc_lat = g.user.default_location_lat
+            loc_lng = g.user.default_location_lng
+            location = location_from_geocode_mb(loc_lat, loc_lng)
         except:
             flash(f'using default location ({DEFAULT_LOCATION_LOGICAL_NAME})', 'info')
     if 'latitude' in request.args and 'longitute' in request.args:
@@ -142,10 +147,13 @@ def signup_new_user():
         new_user.bike_image_url = form.bike_image_url.data
         # new_user.default_bike_type = form.default_bike_type.data
         new_user.weather_units = form.weather_units.data
-        new_user.default_geocode = geocode_from_location_mq(form.default_location.data)
+        # hard coded default geocode while I work out the autocomplete which I'm taking a break from....
+        new_user.default_geocode_lat = 42.266157
+        new_user.default_geocode_lng = -83.728444
         db.session.add(new_user)
         db.session.commit()
         login_session(new_user)
+        # flash new user created and logged in
         return redirect('/')
 
     return render_template('user-new.html', form=form)
@@ -156,8 +164,7 @@ def return_user_profile(user_id):
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     weather = current_weather_from_geocode((user.default_geocode_lat, user.default_geocode_lng))
-    import pdb
-    pdb.set_trace()
+
     return render_template ('user.html', user=user, weather=weather)
 
 @app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])

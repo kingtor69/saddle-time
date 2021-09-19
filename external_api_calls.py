@@ -78,6 +78,12 @@ def geocode_from_location_mb(location):
     resp = requests.get(query_url)
     return resp.json()["features"][0]['center']
 
+def location_from_geocode_mb(lat, lng):
+    """uses mapbox for a reverse geocode lookup"""
+    resp = requests.get(f'{MB_GEOCODE_BASE_URL}/{lng},{lat}.json?access_token={MB_API_KEY}')
+    import pdb
+    pdb.set_trace()
+
 
 def current_weather_from_geocode(geocode, units="metric"):
     """Returns current weather data from OpenWeather API for a geocode, entered as a tuple (lat, lng). Defaults to metric units because cycling, but imperical can be specified by guest and/or saved with registered user profile. In case of error, returns False."""
