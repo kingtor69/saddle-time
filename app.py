@@ -26,15 +26,12 @@ connect_db(app)
 @app.before_request
 def add_user_to_g():
     """If user is logged in, add that user to `g`."""
-
     if CURR_USER in session:
         g.user = User.query.get(session[CURR_USER])
 
 @app.before_request
 def add_route_to_g():
-    """If there is a route in progress, add it to `g`,
-    otherwise, add empty route object to `g`."""
-
+    """If there is a route in progress, add it to `g`."""
     if CURR_ROUTE in session:
         g.route = Route.query.get(session[CURR_ROUTE])
 
@@ -51,30 +48,37 @@ def load_home_page():
     loc_lng = DEFAULT_LOC_LNG
     units = DEFAULT_UNITS
     try:
-        if request and 'location' in request.args:
-           location = request.args['location']
-        import pdb
-        pdb.set_trace()
-    except:
-        try:
-            loc_lat = g.user.default_location_lat
-            loc_lng = g.user.default_location_lng
+        # or query string values
+        if 'latitude' in request.args and 'longitute' in request.args:
+            loc_lat = request.args['latitude']
+            loc_lng = request.args['longitute']
+        # maybe formatted this way...
+        elif 'lat' in request.args and 'lng' in request.args:
+            loc_lat = request.args['lat']
+            loc_lng = request.args['lng']
+        # or like this
+        elif 'location' in request.args:
+            location = request.args['location']
+            [loc_lng, loc_lat] = geocode_from_location_mb(location)
+        # or user default values
+        elif g.user:
+            loc_lat = g.user.default_geocode_lat
+            loc_lng = g.user.default_geocode_lng
             location = location_from_geocode_mb(loc_lat, loc_lng)
-        except:
-            flash(f'using default location ({DEFAULT_LOCATION_LOGICAL_NAME})', 'info')
-    if 'latitude' in request.args and 'longitute' in request.args:
-        loc_lat = request.args['latitude']
-        loc_lng = request.args['longitute']
-    else:
-        [loc_lng, loc_lat] = geocode_from_location_mb(location)
-    
-    if 'units' in request.args:
-        units = request.args['units']
-    else:
-        try:
-            units = g.user.units
-        except:
-            flash('using default temperature and distance units (imperial)', 'info')
+    # tell user that defaults are being used
+    except:
+        flash(f'using default location ({DEFAULT_LOCATION_LOGICAL_NAME})', 'info')
+
+    try: 
+        # now see if units are in query string
+        if 'units' in request.args:
+            units = request.args['units']
+        # or look in the logged-in user defaults
+        elif g.user:
+            units = g.user.weather_units
+    # tell user that default units being used
+    except:
+        flash('using default temperature and distance units (imperial)', 'info')
 
     weather = current_weather_from_geocode([loc_lat, loc_lng], units)
 
