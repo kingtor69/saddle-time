@@ -310,13 +310,13 @@ def preview_route():
         geostring = parse_geocode(request.args.to_dict())
     except: 
         return jsonify({"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}})
+
     if type(geostring) == dict:
         return jsonify({"errors": geostring})
     
-    errors_object = {}
-
     try:
-        return jsonify(mapbox_directions(geostring))
+        directions = mapbox_directions(geostring)
+        return jsonify(directions)
     except:
         return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
 

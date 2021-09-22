@@ -137,6 +137,7 @@ def mapbox_directions(coordinates):
     profile = "cycling"
     url_directions = f'{MB_DIRECTIONS_BASE_URL}{profile}/{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
 
+
     resp_directions = requests.get(url_directions)
     resp_directions_json = resp_directions.json()
     # an idea ahead of it's time to use mapbox' 'matching' feature to snap directions to street grid

@@ -222,12 +222,37 @@ function displayRoutes(routes, checkpoints) {
     };
     for (let route of routes) {
         if (route.preferred) {
-            showDirections(route)
-        }
-    }
+            kmsOrMiles(route);
+            showDirections(route);
+        };
+    };
+};
+
+function kmsOrMiles(route) {
+    let units = "imperial";
+    const qString = parseCurrentQueryString();
+    if ("units" in qString) {
+        units = qString.units;
+    };
+    route.distance = convertDistance(route.distance, units);
+    route['distance_units'] = units === "metric" ? "kms" : "miles";
+    for (let leg of route.legs) {
+        leg.distance = convertDistance(leg.distance, units);
+    };
+};
+
+function convertDistance(meters, targetUnits) {
+    if (targetUnits === "metric") {
+        return (meters/1000).toFixed(2);
+    }; 
+    return (meters/1609).toFixed(2);
 };
 
 function showDirections(route) {
+    const summaryDiv = document.querySelector('#summary');
+    const summaryP = document.createElement('p');
+    summaryP.innerText = `Total distance: ${route.distance} ${route.distance_units}`
+    summaryDiv.appendChild(summaryP);
     const directionsDiv = document.querySelector('#directions');
     const directionsOl = document.createElement('ol');
     directionsOl.classList.add('pl-0', 'leg-list');
