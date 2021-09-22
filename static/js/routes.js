@@ -224,8 +224,8 @@ function displayRoutes(routes, checkpoints) {
         if (route.preferred) {
             units = parseUnits();
             kmsOrMiles(route);
-            // processElevationChange(route);
-            // metersOrFeet(route);
+            processElevationChange(route);
+            metersOrFeet(route);
             showDirections(route);
         };
     };

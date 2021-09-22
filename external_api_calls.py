@@ -9,9 +9,9 @@ CURR_ROUTE = "route_in_progress"
 CURR_CHECKPOINT_LIST = "checkpoints_in_use"
 GUEST = User(username="guest", password="fakepassword")
 
-MQ_API_BASE_URL = "http://www.mapquestapi.com/"
-MQ_GEOCODE_BASE_URL =f"{MQ_API_BASE_URL}geocoding/v1/"
-MQ_ELEVATION_BASE_URL = f"{MQ_API_BASE_URL}elevation/v1/profile"
+# MQ_API_BASE_URL = "http://www.mapquestapi.com/"
+MQ_GEOCODE_BASE_URL =f"http://www.mapquestapi.com/geocoding/v1/"
+MQ_ELEVATION_BASE_URL = f"http://open.mapquestapi.com/elevation/v1/profile"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
 WEATHER_ICON_SUFFIX = "@2x.png"
@@ -155,15 +155,13 @@ def mapbox_directions(coordinates):
 #                                           [-106.582467, 35.192595],
 # &c.
 
-    # elevation (rabbithole which didn't succeed (yet))
-    # lat_lng_collection = ""
-    # for route in directions_data_json['routes']:
-    #     lat_lng_collection = stringify_mb_coordinates_for_mq(route['geometry']['coordinates'])
-    #     url_elevation = f"{MQ_ELEVATION_BASE_URL}?key={MQ_API_KEY}&shapeFormat=raw&latLngCollection={lat_lng_collection}"
-    #     import pdb
-    #     pdb.set_trace()
-    #     resp_elevation = requests.get(url_elevation)
-    #     route['geometry']['elevation'] = resp_elevation.json()
+    # elevation (rabbithole)
+    lat_lng_collection = ""
+    for route in directions_data_json['routes']:
+        lat_lng_collection = stringify_mb_coordinates_for_mq(route['geometry']['coordinates'])
+        url_elevation = f"{MQ_ELEVATION_BASE_URL}?key={MQ_API_KEY}&shapeFormat=raw&latLngCollection={lat_lng_collection}"
+        resp_elevation = requests.get(url_elevation)
+        route['geometry']['elevation'] = resp_elevation.json()
 
     return directions_data_json
 
