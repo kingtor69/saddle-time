@@ -150,3 +150,12 @@ def parse_geocode(arguments):
 
 #     resp = requests.post()
 
+def stringify_mb_coordinates_for_mq(geoarray): 
+    geostring = ""
+    for geocode in geoarray:
+        geostring += f"{geocode[1]},{geocode[0]},"
+
+    # remove trailing comma
+    geostring = geostring[:-1]
+    
+    return geostring

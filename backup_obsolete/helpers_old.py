@@ -267,8 +267,6 @@ def parse_geocode(arguments):
         value = arguments[key]
         key_split = key.split('-')
         id_int = None
-        import pdb
-        pdb.set_trace()
         try: 
             id_int = int(key_split[0])
             if not id_int in id_list:

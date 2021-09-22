@@ -222,23 +222,35 @@ function displayRoutes(routes, checkpoints) {
     };
     for (let route of routes) {
         if (route.preferred) {
+            units = parseUnits();
             kmsOrMiles(route);
+            // processElevationChange(route);
+            // metersOrFeet(route);
             showDirections(route);
         };
     };
 };
 
-function kmsOrMiles(route) {
+function parseUnits() {
     let units = "imperial";
     const qString = parseCurrentQueryString();
     if ("units" in qString) {
         units = qString.units;
     };
+    return units;
+};
+
+function kmsOrMiles(route, units) {
     route.distance = convertDistance(route.distance, units);
-    route['distance_units'] = units === "metric" ? "kms" : "miles";
+    route['distanceUnits'] = units === "metric" ? "kms" : "miles";
     for (let leg of route.legs) {
         leg.distance = convertDistance(leg.distance, units);
     };
+};
+
+function metersOrFeet(route, units) {
+    route.geometry.elevation.totalElevationChange = convertDistance(route.geometry.elevation.totalElevationChange, units);
+    route.geometry.elevation.totalElevationChange['elevationUnits'] = units === "metric" ? "meters" : "feet";
 };
 
 function convertDistance(meters, targetUnits) {
@@ -248,10 +260,38 @@ function convertDistance(meters, targetUnits) {
     return (meters/1609).toFixed(2);
 };
 
+function processElevationChange(route) {
+    // changes route object to include total elevation change
+    // also converts meters to feet if user is using imperial units
+    const elevationObject = route.geometry.elevation;
+    const elevationProfile = elevationObject.elevationProfile
+    let elevationStart = elevationProfile[0].height;
+    let elevationChange = 0;
+    let totalClimbs = 0;
+    let totalDescents = 0;
+    for (let i = 1; i < elevationProfile.length; i++) {
+        let thisStepsChange = elevationProfile[i].height - elevationStart;
+        elevationChange = elevationChange + thisStepsChange;
+        if (thisStepsChange > 0) {
+            totalClimbs += thisStepsChange;
+        } else if (thisStepsChange < 0) {
+            totalDescents += thisStepsChange * -1;
+        }
+        elevationStart = elevationProfile[i].height
+    };
+    route.geometry.elevation['totalElevationChange'] = elevationChange;
+    route.geometry.elevation['totalClimbs'] = totalClimbs;
+    route.geometry.elevation['totalDescents'] = totalDescents;
+
+};
+
 function showDirections(route) {
     const summaryDiv = document.querySelector('#summary');
     const summaryP = document.createElement('p');
-    summaryP.innerText = `Total distance: ${route.distance} ${route.distance_units}`
+    summaryP.innerText = `Total distance: ${route.distance} ${route.distanceUnits}`
+    const br = document.createElement('br');
+    summaryP.appendChild(br);
+    summaryP.innerText += `Elevation change: +${route.elevation.totalClimbs} ${route.elevation.elevationUnits}, -${route.elevation.totalDescents} ${route.elevation.elevationUnits}`;
     summaryDiv.appendChild(summaryP);
     const directionsDiv = document.querySelector('#directions');
     const directionsOl = document.createElement('ol');

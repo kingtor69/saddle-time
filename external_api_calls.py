@@ -9,14 +9,16 @@ CURR_ROUTE = "route_in_progress"
 CURR_CHECKPOINT_LIST = "checkpoints_in_use"
 GUEST = User(username="guest", password="fakepassword")
 
-MQ_API_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/"
+MQ_API_BASE_URL = "http://www.mapquestapi.com/"
+MQ_GEOCODE_BASE_URL =f"{MQ_API_BASE_URL}geocoding/v1/"
+MQ_ELEVATION_BASE_URL = f"{MQ_API_BASE_URL}elevation/v1/profile"
 OW_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
 WEATHER_ICON_BASE_URL = "http://openweathermap.org/img/wn/"
 WEATHER_ICON_SUFFIX = "@2x.png"
 MB_API_BASE_URL = "https://api.mapbox.com/"
 MB_GEOCODE_BASE_URL = f"{MB_API_BASE_URL}geocoding/v5/mapbox.places/"
 MB_DIRECTIONS_BASE_URL = f"{MB_API_BASE_URL}directions/v5/mapbox/"
-MB_MATCHING_BASE_URL = F"{MB_API_BASE_URL}matching/v5/mapbox/"
+MB_MATCHING_BASE_URL = f"{MB_API_BASE_URL}matching/v5/mapbox/"
 
 MQ_API_KEY = os.environ['MQ_API_KEY']
 OW_API_KEY = os.environ['OW_API_KEY']
@@ -81,8 +83,7 @@ def geocode_from_location_mb(location):
 def location_from_geocode_mb(lat, lng):
     """uses mapbox for a reverse geocode lookup"""
     resp = requests.get(f'{MB_GEOCODE_BASE_URL}/{lng},{lat}.json?access_token={MB_API_KEY}')
-    import pdb
-    pdb.set_trace()
+
 
 
 def current_weather_from_geocode(geocode, units="metric"):
@@ -139,14 +140,32 @@ def mapbox_directions(coordinates):
 
 
     resp_directions = requests.get(url_directions)
-    resp_directions_json = resp_directions.json()
+    directions_data_json = resp_directions.json()
     # an idea ahead of it's time to use mapbox' 'matching' feature to snap directions to street grid
-    # routes = resp_directions_json['routes']
+    # routes = directions_data_json['routes']
     # for route in routes:
     #     geometry = route['geometry']
     #     geometry['matching'] = mapbox_matching(geometry['coordinates'])
 
-    return resp_directions_json
+# directions_data_json:
+# {'code': 'Ok',
+#  'routes': [{'distance': 11224.4,
+#              'duration': 2881.8,
+#              'geometry': {'coordinates': [[-106.583199, 35.191573],
+#                                           [-106.582467, 35.192595],
+# &c.
+
+    # elevation (rabbithole which didn't succeed (yet))
+    # lat_lng_collection = ""
+    # for route in directions_data_json['routes']:
+    #     lat_lng_collection = stringify_mb_coordinates_for_mq(route['geometry']['coordinates'])
+    #     url_elevation = f"{MQ_ELEVATION_BASE_URL}?key={MQ_API_KEY}&shapeFormat=raw&latLngCollection={lat_lng_collection}"
+    #     import pdb
+    #     pdb.set_trace()
+    #     resp_elevation = requests.get(url_elevation)
+    #     route['geometry']['elevation'] = resp_elevation.json()
+
+    return directions_data_json
 
 def mapbox_matching(route_geometry):
     """receives route geometry data as an ordered list and returns route data matched to mapbox's street grid"""
