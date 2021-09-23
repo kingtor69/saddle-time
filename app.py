@@ -316,7 +316,8 @@ def preview_route():
     
     try:
         directions = mapbox_directions(geostring)
-        return jsonify(directions)
+        directions_plus_elevations = mapquest_elevation(directions)
+        return jsonify(directions_plus_elevations)
     except:
         return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
 

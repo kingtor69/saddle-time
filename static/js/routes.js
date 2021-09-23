@@ -223,9 +223,10 @@ function displayRoutes(routes, checkpoints) {
     for (let route of routes) {
         if (route.preferred) {
             units = parseUnits();
-            kmsOrMiles(route);
-            processElevationChange(route);
-            metersOrFeet(route);
+            // kmsOrMiles(route, units);
+            processDistance(route, units);
+            processElevationChange(route, units);
+            // metersOrFeet(route, units);
             showDirections(route);
         };
     };
@@ -241,6 +242,7 @@ function parseUnits() {
 };
 
 function kmsOrMiles(route, units) {
+    // I think this is obsolete, logic repeated and better in processDistance
     route.distance = convertDistance(route.distance, units);
     route['distanceUnits'] = units === "metric" ? "kms" : "miles";
     for (let leg of route.legs) {
@@ -249,20 +251,36 @@ function kmsOrMiles(route, units) {
 };
 
 function metersOrFeet(route, units) {
+    // I think this is obsolete, logic repeated and better in processElevationChange
     route.geometry.elevation.totalElevationChange = convertDistance(route.geometry.elevation.totalElevationChange, units);
-    route.geometry.elevation.totalElevationChange['elevationUnits'] = units === "metric" ? "meters" : "feet";
+    route.geometry.elevation['elevationUnits'] = units === "metric" ? "meters" : "feet";
 };
 
 function convertDistance(meters, targetUnits) {
-    if (targetUnits === "metric") {
+    // both of our APIs return distance and elevation data in meters
+    // this function converts meters to km, feet or miles
+    if (targetUnits === "kms") {
         return (meters/1000).toFixed(2);
-    }; 
-    return (meters/1609).toFixed(2);
+    };
+    if (targetUnits === "miles") {
+        return (meters/1609).toFixed(1);
+    };
+    if (targetUnits === "feet") {
+        return (meters*3.28).toFixed(0);
+    }
+    // if it's not one of those, just return the meters
+    return meters;
 };
 
-function processElevationChange(route) {
+function processDistance(route, units) {
+    distanceUnits = units === "metric" ? "kms" : "miles";
+    route['distanceUnits'] = distanceUnits;
+    route.distance = convertDistance(route.distance, distanceUnits);
+};
+
+function processElevationChange(route, units) {
     // changes route object to include total elevation change
-    // also converts meters to feet if user is using imperial units
+    // first does the calculations in meters
     const elevationObject = route.geometry.elevation;
     const elevationProfile = elevationObject.elevationProfile
     let elevationStart = elevationProfile[0].height;
@@ -279,19 +297,26 @@ function processElevationChange(route) {
         }
         elevationStart = elevationProfile[i].height
     };
+    // now converts if needed
+    let elevationUnits = "meters";
+    if (units !== "metric") {
+        elevationUnits = "feet";
+        elevationChange = convertDistance(elevationChange, elevationUnits);
+        totalClimbs = convertDistance(totalClimbs, elevationUnits);
+        totalDescents = convertDistance(totalDescents, elevationUnits);
+    };
+
+    // and writes calculated parameters to route object
     route.geometry.elevation['totalElevationChange'] = elevationChange;
     route.geometry.elevation['totalClimbs'] = totalClimbs;
     route.geometry.elevation['totalDescents'] = totalDescents;
-
+    route.geometry.elevation['elevationUnits'] = elevationUnits;
 };
 
 function showDirections(route) {
     const summaryDiv = document.querySelector('#summary');
     const summaryP = document.createElement('p');
-    summaryP.innerText = `Total distance: ${route.distance} ${route.distanceUnits}`
-    const br = document.createElement('br');
-    summaryP.appendChild(br);
-    summaryP.innerText += `Elevation change: +${route.elevation.totalClimbs} ${route.elevation.elevationUnits}, -${route.elevation.totalDescents} ${route.elevation.elevationUnits}`;
+    summaryP.innerHTML = `Total distance: ${route.distance} ${route.distanceUnits}<br>Elevation change: +${route.geometry.elevation.totalClimbs} ${route.geometry.elevation.elevationUnits}, -${route.geometry.elevation.totalDescents} ${route.geometry.elevation.elevationUnits}`;
     summaryDiv.appendChild(summaryP);
     const directionsDiv = document.querySelector('#directions');
     const directionsOl = document.createElement('ol');

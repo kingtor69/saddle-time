@@ -159,3 +159,8 @@ def stringify_mb_coordinates_for_mq(geoarray):
     geostring = geostring[:-1]
     
     return geostring
+
+def parse_elevation_data(directions):
+    """convert raw elevation data from Mapquest into something that will show useful information for the end user"""
+    # This is currently happening in JavaScript (routes.js processElevationChange())
+    return directions

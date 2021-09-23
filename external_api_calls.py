@@ -141,12 +141,17 @@ def mapbox_directions(coordinates):
 
     resp_directions = requests.get(url_directions)
     directions_data_json = resp_directions.json()
-    # an idea ahead of it's time to use mapbox' 'matching' feature to snap directions to street grid
+        # an idea ahead of it's time to use mapbox' 'matching' feature to snap directions to street grid
     # routes = directions_data_json['routes']
     # for route in routes:
     #     geometry = route['geometry']
     #     geometry['matching'] = mapbox_matching(geometry['coordinates'])
 
+    return directions_data_json
+
+def mapquest_elevation(directions_data):
+    """gets elevation information from Mapquest given data from the routes acquired from Mapbox
+    """
 # directions_data_json:
 # {'code': 'Ok',
 #  'routes': [{'distance': 11224.4,
@@ -155,15 +160,14 @@ def mapbox_directions(coordinates):
 #                                           [-106.582467, 35.192595],
 # &c.
 
-    # elevation (rabbithole)
     lat_lng_collection = ""
-    for route in directions_data_json['routes']:
+    for route in directions_data['routes']:
         lat_lng_collection = stringify_mb_coordinates_for_mq(route['geometry']['coordinates'])
         url_elevation = f"{MQ_ELEVATION_BASE_URL}?key={MQ_API_KEY}&shapeFormat=raw&latLngCollection={lat_lng_collection}"
         resp_elevation = requests.get(url_elevation)
         route['geometry']['elevation'] = resp_elevation.json()
 
-    return directions_data_json
+    return parse_elevation_data(directions_data)
 
 def mapbox_matching(route_geometry):
     """receives route geometry data as an ordered list and returns route data matched to mapbox's street grid"""
