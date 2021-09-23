@@ -55,8 +55,6 @@ def autocomplete_options_from_mapbox(term):
     resp = requests.get(query_url)
     features = resp.json()["features"]
     choices = []
-    # TODO: something went wrong in here. e.g. html_id for "Detroit, Michigan, United States" is -83.056742.3487 and *should be* -83.0567c_42.3487
-    # I have a redundant workaround to "fix" this, so I'm ignoring it for the moment
     mapbox_geocode = []
     for feature in features:
         mapbox_geocode.append(feature['center'])
@@ -115,13 +113,6 @@ def current_weather_from_geocode(geocode, units="metric"):
     except: 
         return False
 
-# def ORS_directions(geoarray, profile="regular"):
-#     """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
-#     """
-#     url = f'{ORS_DIRECTIONS_BASE_URL}{profile}'
-
-#     resp = requests.post()
-
 def mapbox_directions(coordinates):
     """receives coordinates in mapbox format ({lng},{lat};{lng},{lat},&c.) and returns route data"""
 
@@ -142,14 +133,6 @@ def mapbox_directions(coordinates):
 def mapquest_elevation(directions_data):
     """gets elevation information from Mapquest given data from the routes acquired from Mapbox
     """
-# directions_data_json:
-# {'code': 'Ok',
-#  'routes': [{'distance': 11224.4,
-#              'duration': 2881.8,
-#              'geometry': {'coordinates': [[-106.583199, 35.191573],
-#                                           [-106.582467, 35.192595],
-# &c.
-
     lat_lng_collection = ""
     for route in directions_data['routes']:
         lat_lng_collection = stringify_mb_coordinates_for_mq(route['geometry']['coordinates'])
@@ -157,7 +140,7 @@ def mapquest_elevation(directions_data):
         resp_elevation = requests.get(url_elevation)
         route['geometry']['elevation'] = resp_elevation.json()
 
-    return parse_elevation_data(directions_data)
+    return (directions_data)
 
 def mapbox_matching(route_geometry):
     """receives route geometry data as an ordered list and returns route data matched to mapbox's street grid"""
@@ -276,14 +259,6 @@ def parse_geocode(arguments):
         
     return geostring
 
-
-# def ORS_directions(geoarray, profile="regular"):
-#     """receives coordinates in ORS format([{lng},{lat}],[{lng},{lat}],[&c.]])
-#     """
-#     url = f'{ORS_DIRECTIONS_BASE_URL}{profile}'
-
-#     resp = requests.post()
-
 def stringify_mb_coordinates_for_mq(geoarray): 
     geostring = ""
     for geocode in geoarray:
@@ -293,8 +268,3 @@ def stringify_mb_coordinates_for_mq(geoarray):
     geostring = geostring[:-1]
     
     return geostring
-
-def parse_elevation_data(directions):
-    """convert raw elevation data from Mapquest into something that will show useful information for the end user"""
-    # This is currently happening in JavaScript (routes.js processElevationChange())
-    return directions

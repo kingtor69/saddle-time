@@ -7,7 +7,6 @@ import requests
 from models import db, connect_db, User, Route, Checkpoint
 from forms import UserNewForm, LoginForm, NewCheckpointForm, LocationForm
 from helpers import *
-from external_api_calls import *
 
 app=Flask(__name__)
 
@@ -22,7 +21,6 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
-
 @app.before_request
 def add_user_to_g():
     """If user is logged in, add that user to `g`."""
@@ -34,7 +32,6 @@ def add_route_to_g():
     """If there is a route in progress, add it to `g`."""
     if CURR_ROUTE in session:
         g.route = Route.query.get(session[CURR_ROUTE])
-
 
 @app.route('/', methods=["GET"])
 def load_home_page():

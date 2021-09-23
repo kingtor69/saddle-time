@@ -1,14 +1,11 @@
 # from models import Route, User, Checkpoint
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, PasswordField
-# might need for checkboxes: 
-# , BooleanField
 from wtforms.validators import InputRequired, Optional, Email, URL, Length
 
 #################################
 ########## user forms ###########
 #################################
-
 class UserNewForm(FlaskForm):
     """Form for creating a new user account."""
 
@@ -20,9 +17,6 @@ class UserNewForm(FlaskForm):
     profile_pic_image_url = StringField("profile pic link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
     fav_bike = StringField("your favorite bike", validators=[Length(max=40, message="Wow, your bike has a long name. Please abbreviate that to 40 characters or fewer."), Optional()])
     bike_image_url = StringField("bike picture link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
-    # default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
-    # TODO: default_location should be a mapbox selector, but for now I'm leaving it out
-    # default_location = StringField('your default route starting point')
     weather_units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
 
 class UserEditForm(FlaskForm):
@@ -34,7 +28,6 @@ class UserEditForm(FlaskForm):
     profile_pic_image_url = StringField("profile pic link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
     fav_bike = StringField("your favorite bike", validators=[Length(max=40, message="Wow, your bike has a long name. Please abbreviate that to 40 characters or fewer."), Optional()])
     bike_image_url = StringField("bike picture link", validators=[URL(message="That doesn't look like a valid URL."), Optional()])
-    # default_bike_type = SelectField("default bike route type", choices=[('regular', "it's just a bike, man"), ('road', "roadie"), ('electric', 'electric'), ('mountain', 'mountain')])
     default_location = StringField('your default route starting point')
     weather_units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
 
@@ -48,13 +41,6 @@ class LoginForm(FlaskForm):
 #################################
 ######### route forms ###########
 #################################
-
-class RouteForm(FlaskForm):
-    """Form for creating a new route."""
-    
-    route_name = StringField("Name Your Route")
-    bike_type = SelectField("Route Type (type of bike)", choices=[('regular', "It's Just a Bike"), ('road', 'Road Bike'), ('mountain', 'Mountain Bike'), ('electric', 'Electric Bike')])
-
 class NewCheckpointForm(FlaskForm):
     """Form for creating a new checkpoint."""
     cp_name = StringField(render_kw={"placeholder": "checkpoint name (optional)"})
@@ -62,10 +48,3 @@ class NewCheckpointForm(FlaskForm):
 
 class LocationForm(FlaskForm):
     location = SelectField("Location", validators=[InputRequired(message="you must have a location")])
-
-################ not currently using this form, but not ready to delete it just yet
-# class WeatherPrefsForm(FlaskForm):
-#     """Simple form for user's location and favorite weather units."""
-# 
-#     location = StringField("Location")
-#     units = SelectField("Units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
