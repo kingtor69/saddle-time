@@ -24,12 +24,3 @@ defaultLocationSelector.change((evt) => {
         handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
     }
 });
-
-// defaultLocationSelector.change((e) => {
-//     const [units, mapLat, mapLng] = processAutocomplete(e, defaultLocationSelector, 'default-location');
-//     updateWeather(units, mapLat, mapLng);
-//     centerMap(mapLat, mapLng);
-//     // console.log('remove bluePointer?');
-//     // if (map.hasImage(`bluePointer`)) { map.removeImage(`bluePointer`) };
-//     placeMarker('blue', 'urhere', mapLat, mapLng);
-// });

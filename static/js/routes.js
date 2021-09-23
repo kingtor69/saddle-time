@@ -1,5 +1,4 @@
 console.log('routes.js');
-// get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
@@ -53,7 +52,6 @@ for (let newCheckpointButt of newCheckpointButts) {
         };
         let qString = parseCurrentQueryString();
         qString['new-id']=id;
-        // following makes another checkpoint, but doesn't specify where so it always ends up just before the end of the route
         if (qString.cps) {
             // increase cps by 1 in qString if it's already there
             qString.cps ++;
@@ -61,7 +59,6 @@ for (let newCheckpointButt of newCheckpointButts) {
             // add cps=1 to qString if it isn't
             qString.cps = 1;
         };
-        console.log(qString);
         updateUrl(qString, false);
         location.reload();
     });
@@ -73,7 +70,6 @@ for (let deleteCheckpointButt of deleteCheckpointButts) {
     })
 }
 
-// routeForm.addEventListener('submit', (e) => {
 routePreviewButt.addEventListener('click', (e) => {
     e.preventDefault();
     if (goodRouteData()) {
@@ -143,26 +139,8 @@ function parseCpId (selectorId) {
     return false;
 };
 
-// function addObjToLocalStorage(key, valueObj) {
-//     if (key in localStorage) {
-//         let currentValue = JSON.parse(localStorage[key]);
-//         // U R HERE: untested
-//         if (typeof currentValue === "object") {
-//             for (let key in valueObj) {
-//                 currentValue[key] = valueObj[key]
-//             };
-//             return;
-//         }
-//         throw new Error;
-//     } else {
-//         localStorage.setItem(key, JSON.stringify(valueObj))
-//         return;
-//     };
-// };
-
 function goodRouteData() {
     // Check that query string has lat and lng for 2 or more checkpoints. Returns boolean.
-    // needs to ignore non-geocode string data
     let data = parseCurrentQueryString();
     const dataKeys = Object.keys(data);
     // there must be at least 4 keys in a valid route
@@ -186,7 +164,6 @@ function goodRouteData() {
     // ...and that are either "lat" or "lng" after a "-"
     cpKeysSplit = dataKeysSplit.filter(splitKey => (splitKey[1] === "lat" || splitKey[1] === "lng"));
     
-    // now we have a sorted array of arrays (I'd use tuples if I were in Python) like this [[cp#, latOrLng], &c]
     // there should be exactly two of each checkpoint number (dataKeysSplit[i][0]), one "lat" and one "lng" (dataKeysSplit[i][1]);
     for (let i=0; i<dataKeysSplit.length; i+=2) {
         let thisKey = dataKeysSplit[i];
@@ -202,11 +179,8 @@ function goodRouteData() {
 };
 
 function displayRoutes(routes, checkpoints) {
-    // TODO: make these markers work
-    // add markers for start and end
     placeMarker("green", 0, checkpoints[0].location);
     placeMarker("red", 999, checkpoints[checkpoints.length-1].location);
-    // add markers for intermediate checkpoints
     for (let i=1; i<checkpoints.length - 1; i++) {
         let color = checkpointColors[i % checkpointColors.length]
         placeMarker(color, i, checkpoints[i][1], checkpoints[i][0])
@@ -223,10 +197,8 @@ function displayRoutes(routes, checkpoints) {
     for (let route of routes) {
         if (route.preferred) {
             units = parseUnits();
-            // kmsOrMiles(route, units);
             processDistance(route, units);
             processElevationChange(route, units);
-            // metersOrFeet(route, units);
             showDirections(route);
         };
     };
@@ -241,23 +213,8 @@ function parseUnits() {
     return units;
 };
 
-function kmsOrMiles(route, units) {
-    // I think this is obsolete, logic repeated and better in processDistance
-    route.distance = convertDistance(route.distance, units);
-    route['distanceUnits'] = units === "metric" ? "kms" : "miles";
-    for (let leg of route.legs) {
-        leg.distance = convertDistance(leg.distance, units);
-    };
-};
-
-function metersOrFeet(route, units) {
-    // I think this is obsolete, logic repeated and better in processElevationChange
-    route.geometry.elevation.totalElevationChange = convertDistance(route.geometry.elevation.totalElevationChange, units);
-    route.geometry.elevation['elevationUnits'] = units === "metric" ? "meters" : "feet";
-};
-
 function convertDistance(meters, targetUnits) {
-    // both of our APIs return distance and elevation data in meters
+    // our APIs return distance and elevation data in meters
     // this function converts meters to km, feet or miles
     if (targetUnits === "kms") {
         return (meters/1000).toFixed(2);
@@ -268,7 +225,6 @@ function convertDistance(meters, targetUnits) {
     if (targetUnits === "feet") {
         return (meters*3.28).toFixed(0);
     }
-    // if it's not one of those, just return the meters
     return meters;
 };
 
@@ -306,7 +262,7 @@ function processElevationChange(route, units) {
         totalDescents = convertDistance(totalDescents, elevationUnits);
     };
 
-    // and writes calculated parameters to route object
+    // and writes calculated values to route object
     route.geometry.elevation['totalElevationChange'] = elevationChange;
     route.geometry.elevation['totalClimbs'] = totalClimbs;
     route.geometry.elevation['totalDescents'] = totalDescents;
