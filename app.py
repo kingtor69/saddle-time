@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
 from models import db, connect_db, User, Route, Checkpoint
-from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
+from forms import UserNewForm, LoginForm, NewCheckpointForm, LocationForm
 from helpers import *
 from external_api_calls import *
 
@@ -219,8 +219,8 @@ def logout():
 ##### route routes #####
 ########################
 @app.route('/routes/new')
-def process_new_route_form():
-    """render the RouteForm, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
+def prepare_new_route():
+    """prepare for new route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
     new_cp_id = int(request.args['new-id']) if request.args.get('new-id') else -1
@@ -258,8 +258,7 @@ def process_new_route_form():
     locations.append(location_from_geocode_mb(lats[cps+1], lngs[cps+1]))
     locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
 
-    route_form = RouteForm()
-    return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
+    return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 
 
 ###########################

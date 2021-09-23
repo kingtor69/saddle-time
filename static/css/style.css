@@ -74,7 +74,6 @@ input.weather-city {
 	width: 100%;
 }
 
-/* "info buttons" in this bootstrap theme are more legible with dark color */
 button.btn-info {
 	color: #111;
 }

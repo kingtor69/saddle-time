@@ -11,10 +11,8 @@
     <div class="col col-12 col-md-7" id="checkpoint-forms">
       <!-- start checkpoint -->
       {{ checkpoint_form(0, locations[0])}}
-
       <!-- insert checkpoint button -->
       {{ new_checkpoint(1) }}
- 
       <!-- intermediate checkpoints (with new checkpoint button between) -->
       {% for i in range(1, cps+1) %}
         {% if i == new_cp_id %}
@@ -24,26 +22,10 @@
         {% endif %}
         {{ new_checkpoint(i+1) }}
       {% endfor %}
-
       <!-- end checkpoint -->
       {{ checkpoint_form(999, locations[cps+1])}}
     </div>
     <div class="col col-12 col-md-5">
-      <!-- form logic may return in future development -->
-      <!-- <form action="" id="route-form">
-        {% for field in route_form 
-          if field.widget.input_type != 'hidden' %}
-          <div class="form-group">
-            {{ field.label }}
-            {{ field (class_="rounded bg-dark text-light form-field form-control") }}</td>
-            {% for err in field.errors %}
-            {{ err }}
-            {% endfor %}
-          </div>
-          {% endfor %}
-          {{ route_form.hidden_tag() }}
-        <button type="submit" class="btn btn-info rounded m-2 px-2">preview route</button>
-      </form> -->
       <div class="row justify-content-center mt-5">
         <div class="col col-3 d-none d-md-block"></div>
         <div class="col col-md-6">
