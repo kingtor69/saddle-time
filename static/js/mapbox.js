@@ -66,13 +66,12 @@ map.on('load', function() {
             }
         });
             
-        // Add a layer to use the image to represent the data.
         map.addLayer({
             'id': 'points',
             'type': 'symbol',
-            'source': 'point', // reference the data source
+            'source': 'point',
             'layout': {
-                'icon-image': `${color}Pointer`, // reference the image
+                'icon-image': `${color}Pointer`,
                 'icon-size': 1
             }
         });

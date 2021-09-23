@@ -29,22 +29,9 @@ DEFAULT_LOC_LAT = 37.746998
 DEFAULT_LOC_LNG = -122.418653
 DEFAULT_UNITS = "imperial"
 
-def unit_markers(units):
-    """show unit markers for different unit bases (degrees Celsius vs Farrenheit, etc)"""
-    if units=="imperial":
-        return ("℉", "mph")
-    elif units=="metric":
-        return ("℃", "km/h")
-    return ("°K", "km/h")
-
-def login_session(user):
-    """Log in a registered user to session."""
-    session[CURR_USER] = user.id
-
-def logout_session():
-    """Remove user who is logging out from session."""
-    del session[CURR_USER]
-
+########################
+## external API calls ##
+########################
 def geocode_from_location_mq(loc):
     """Uses mapquest API.
     Returns lattitude and longitute for given location. 
@@ -52,12 +39,14 @@ def geocode_from_location_mq(loc):
     Returns a list of choices, could be one item long, could be many depending on the search parameters (e.g. searching for 'Albuquerque' yields 2 results: one in NM, USA and one in Brazil).
     """
     resp = requests.get(f'{MQ_API_BASE_URL}address', params={'key': MQ_API_KEY, 'location': loc})
+    # return resp
     try: 
         locations = resp.json()["results"][0]["locations"]
         codes_list = []
         for i in range(len(locations)):
             codes_list.append((locations[i]["latLng"]["lat"], locations[i]["latLng"]["lng"]))
         return codes_list
+
     except:
         return False
 
@@ -96,10 +85,12 @@ def location_from_geocode_mb(lat, lng):
     
 def current_weather_from_geocode(geocode, units="metric"):
     """Returns current weather data from OpenWeather API for a geocode, entered as a tuple (lat, lng). Defaults to metric units because cycling, but imperical can be specified by guest and/or saved with registered user profile. In case of error, returns False."""
+
     try:
         (deg, vel) = unit_markers(units)
         response = requests.get(f'{OW_API_BASE_URL}weather?appid={OW_API_KEY}&lon={geocode[1]}&lat={geocode[0]}&units={units}')
         resp = response.json()
+
         city = resp["name"]
         conditions = resp["weather"][0]["description"].title()
         weather_icon_url = f'{WEATHER_ICON_BASE_URL}{resp["weather"][0]["icon"]}{WEATHER_ICON_SUFFIX}'
@@ -112,6 +103,7 @@ def current_weather_from_geocode(geocode, units="metric"):
             "Wind Speed": f'{round (resp["wind"]["speed"], 1)} {vel}',
             "Wind Direction": f'{resp["wind"]["deg"]}° {wind_direction_logical(resp["wind"]["deg"])}'
         }
+
         return {
             'city': city, 
             'conditions': conditions, 
@@ -124,11 +116,18 @@ def current_weather_from_geocode(geocode, units="metric"):
 
 def mapbox_directions(coordinates):
     """receives coordinates in mapbox format ({lng},{lat};{lng},{lat},&c.) and returns route data"""
+
     profile = "cycling"
     url_directions = f'{MB_DIRECTIONS_BASE_URL}{profile}/{coordinates}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}'
 
+
     resp_directions = requests.get(url_directions)
     directions_data_json = resp_directions.json()
+        # an idea ahead of it's time to use mapbox' 'matching' feature to snap directions to street grid
+    # routes = directions_data_json['routes']
+    # for route in routes:
+    #     geometry = route['geometry']
+    #     geometry['matching'] = mapbox_matching(geometry['coordinates'])
 
     return directions_data_json
 
@@ -142,20 +141,41 @@ def mapquest_elevation(directions_data):
         resp_elevation = requests.get(url_elevation)
         route['geometry']['elevation'] = resp_elevation.json()
 
-    return parse_elevation_data(directions_data)
+    return (directions_data)
 
 def mapbox_matching(route_geometry):
     """receives route geometry data as an ordered list and returns route data matched to mapbox's street grid"""
+
     profile = "cycling"
     coordinates = ""
     for waypoint in route_geometry:
         coordinates += f'{waypoint[0]},{waypoint[1]};'
+    # remove trailing semi-colon from finished string:
     coordinates = coordinates[:-1]
 
     url_matching = f'{MB_MATCHING_BASE_URL}{profile}/{coordinates}?access_token={MB_API_KEY}'
     resp_matching = requests.get(url_matching)
 
     return resp_matching.json()
+
+##################
+## misc helpers ##
+##################
+def unit_markers(units):
+    """show unit markers for different unit bases (degrees Celsius vs Farrenheit, etc)"""
+    if units=="imperial":
+        return ("℉", "mph")
+    elif units=="metric":
+        return ("℃", "km/h")
+    return ("°K", "km/h")
+
+def login_session(user):
+    """Log in a registered user to session."""
+    session[CURR_USER] = user.id
+
+def logout_session():
+    """Remove user who is logging out from session."""
+    del session[CURR_USER]
 
 def wind_direction_logical(degrees):
     """Give wind direction a logical name adapted from degrees.
@@ -170,6 +190,7 @@ def wind_direction_logical(degrees):
 
     index = int(biased_degrees / 45)
     indices = ["Northerly", "Northeasterly", "Easterly", "Southeasterly", "Southerly", "Southwesterly", "Westerly", "Northwesterly"]
+
     return indices[index]
     
 def string_from_geocode(geocode):
@@ -203,13 +224,11 @@ def parse_geocode(arguments):
             999-lat: "42.3487",
             999-lng: "-83.0567"
         }
-        returns string mapbox expects for the route parameters
-        i.e. '-85.5872,42.2917;-83.0567,42.3487'
-        """
+    returns string mapbox expects for the route parameters
+    i.e. '-85.5872,42.2917;-83.0567,42.3487'
+    """
 
     geostring = ""
-
-    # termp variables used to sort everything properly
     id_list = []
     sortable_args = {}
     lat = False
@@ -232,10 +251,8 @@ def parse_geocode(arguments):
             except:
                 errors["garbage in garbage out error"] = f"{key} can't be parsed to an id"
 
-    # now build the string
     for i in sorted(id_list):
         geostring+=f"{sortable_args[i]['lng']},{sortable_args[i]['lat']};"
-
     geostring = geostring[:-1]
     
     if errors:

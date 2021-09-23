@@ -1,5 +1,4 @@
 console.log('routes.js');
-// get current queryString data (app.js)
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
@@ -53,7 +52,6 @@ for (let newCheckpointButt of newCheckpointButts) {
         };
         let qString = parseCurrentQueryString();
         qString['new-id']=id;
-        // following makes another checkpoint, but doesn't specify where so it always ends up just before the end of the route
         if (qString.cps) {
             // increase cps by 1 in qString if it's already there
             qString.cps ++;
@@ -61,7 +59,6 @@ for (let newCheckpointButt of newCheckpointButts) {
             // add cps=1 to qString if it isn't
             qString.cps = 1;
         };
-        console.log(qString);
         updateUrl(qString, false);
         location.reload();
     });
@@ -182,11 +179,8 @@ function goodRouteData() {
 };
 
 function displayRoutes(routes, checkpoints) {
-    // TODO: make these markers work
-    // add markers for start and end
     placeMarker("green", 0, checkpoints[0].location);
     placeMarker("red", 999, checkpoints[checkpoints.length-1].location);
-    // add markers for intermediate checkpoints
     for (let i=1; i<checkpoints.length - 1; i++) {
         let color = checkpointColors[i % checkpointColors.length]
         placeMarker(color, i, checkpoints[i][1], checkpoints[i][0])
@@ -220,7 +214,7 @@ function parseUnits() {
 };
 
 function convertDistance(meters, targetUnits) {
-    // both of our APIs return distance and elevation data in meters
+    // our APIs return distance and elevation data in meters
     // this function converts meters to km, feet or miles
     if (targetUnits === "kms") {
         return (meters/1000).toFixed(2);
@@ -231,7 +225,6 @@ function convertDistance(meters, targetUnits) {
     if (targetUnits === "feet") {
         return (meters*3.28).toFixed(0);
     }
-    // if it's not one of those, just return the meters
     return meters;
 };
 
@@ -269,7 +262,7 @@ function processElevationChange(route, units) {
         totalDescents = convertDistance(totalDescents, elevationUnits);
     };
 
-    // and writes calculated parameters to route object
+    // and writes calculated values to route object
     route.geometry.elevation['totalElevationChange'] = elevationChange;
     route.geometry.elevation['totalClimbs'] = totalClimbs;
     route.geometry.elevation['totalDescents'] = totalDescents;

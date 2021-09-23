@@ -41,7 +41,6 @@ function selectTwo(jQueryElement) {
     });
 };
 
-
 function updateUrl(queryAdditions, keepCurrent) {
     let queryString = "?";
     let query;
@@ -99,7 +98,8 @@ function processAutocomplete(e, selector, id) {
             } else if (char === "c") {
                 // comma means the number is done
                 floatStringDone = true;
-            } else if (isInteger(char)) {
+            } else if ( isInteger(char) || char === "-" ) {
+                // numbers and negative indication are important
                 floatString += char;
             };
             // any other character is skipped
@@ -176,7 +176,7 @@ function handleErrors(errs) {
             flashDiv.appendChild(document.createElement('br'))
         }
     } else {
-        console.log(errs)
+        console.error(errs)
         handleErrors({"thrown error": "not sure what.... better check into it"})
     }
 };

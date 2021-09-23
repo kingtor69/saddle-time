@@ -11,10 +11,8 @@
     <div class="col col-12 col-md-7" id="checkpoint-forms">
       <!-- start checkpoint -->
       {{ checkpoint_form(0, locations[0])}}
-
       <!-- insert checkpoint button -->
       {{ new_checkpoint(1) }}
- 
       <!-- intermediate checkpoints (with new checkpoint button between) -->
       {% for i in range(1, cps+1) %}
         {% if i == new_cp_id %}
@@ -24,7 +22,6 @@
         {% endif %}
         {{ new_checkpoint(i+1) }}
       {% endfor %}
-
       <!-- end checkpoint -->
       {{ checkpoint_form(999, locations[cps+1])}}
     </div>

@@ -1,8 +1,6 @@
 # from models import Route, User, Checkpoint
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, PasswordField
-# might need for checkboxes: 
-# , BooleanField
 from wtforms.validators import InputRequired, Optional, Email, URL, Length
 
 #################################

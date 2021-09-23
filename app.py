@@ -6,7 +6,6 @@ import requests
 
 from models import db, connect_db, User, Route, Checkpoint
 from forms import UserNewForm, LoginForm, NewCheckpointForm, LocationForm
-# RouteForm, 
 from helpers import *
 
 app=Flask(__name__)
@@ -243,9 +242,10 @@ def prepare_new_route():
         lngs.append(float(request.args.get('999-lng')))
     else:
         lngs.append(False)
-    if len(lats) >= (cps + 2) and len(lngs) >= (cps + 2):
-        locations.append(location_from_geocode_mb(lats[cps+1], lngs[cps+1]))
-        locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
+    locations.append(location_from_geocode_mb(lats[cps+1], lngs[cps+1]))
+    locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
+
+    return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 
     return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
 

@@ -1,5 +1,5 @@
 console.log('weather.js');
-// mapLat and mapLng are generated in mapbox.js, which has already run when this does.
+// mapLat and mapLng are declared in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
 const unitsOptionMetric = document.querySelector('option.metric-option');
 const unitsOptionImperial = document.querySelector('option.imperial-option');
@@ -73,7 +73,7 @@ function updateWeatherDOM(weather, lat, lng) {
     weatherIcon.innerHTML = `<img src="${weather.weather_icon_url}">`
     weatherConditionsHeader.appendChild(weatherConditions)
     weatherConditionsHeader.appendChild(weatherIcon)
-
+    
     // gather DOM and data for details
     weatherDetailKeysTds = document.querySelectorAll('td.weather-detail-key')
     weatherDetailValueTds = document.querySelectorAll('td.weather-detail-value')
@@ -113,7 +113,5 @@ weatherLocationSelector.change((e) => {
     const [units, mapLat, mapLng] = processAutocomplete(e, weatherLocationSelector, 'weather');
     updateWeather(units, mapLat, mapLng);
     centerMap(mapLat, mapLng);
-    // console.log('remove bluePointer?');
-    // if (map.hasImage(`bluePointer`)) { map.removeImage(`bluePointer`) };
     placeMarker('blue', 'urhere', mapLat, mapLng);
 });
