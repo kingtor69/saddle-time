@@ -1,6 +1,22 @@
 # SaddleTime
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
+## Implementing on your computer (directions for linux computer, things that can be skipped for other OSes are *noted as such*):
+ git clone https://github.com/kingtor69/saddle-time.git
+ python -u venv venv
+ pip install -r requirements.txt
+ *sudo su postgres*
+ psql
+ CREATE DATABASE saddle_time_db;
+ \q
+ psql < seed.py
+ exit
+ source venv/bin/activate
+ flask run
+
+## deployed on Heroku: https://saddle-time.herokuapp.com/
+
+
 ## Schema & API information:
 Schema can be found in schema.sql
 APIs to be used can be found in api.py
