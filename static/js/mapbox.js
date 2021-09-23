@@ -32,13 +32,6 @@ map.addControl(new mapboxgl.NavigationControl());
 map.on('load', function() {
     markerImg = "";
     color = "";
-    // possible future development: 
-    // use integers for marker
-    // 1000 = blue (urhere)
-    // 0 = green
-    // 999 = red
-    // odd = yellow
-    // even = orange
     const markerType = $('#marker').text();
     if (markerType === "urhere") {
         color = 'blue';
@@ -73,13 +66,12 @@ map.on('load', function() {
             }
         });
             
-        // Add a layer to use the image to represent the data.
         map.addLayer({
             'id': 'points',
             'type': 'symbol',
-            'source': 'point', // reference the data source
+            'source': 'point',
             'layout': {
-                'icon-image': `${color}Pointer`, // reference the image
+                'icon-image': `${color}Pointer`,
                 'icon-size': 1
             }
         });
@@ -87,7 +79,6 @@ map.on('load', function() {
 })
 
 const weatherLocationSelector = $('#weather-selector');
-// const checkpointLocations = $('select.mapbox-location-selector');
 
 const cpls = $('select.mapbox-location-selector');
 const checkpointLocations = [];
@@ -114,10 +105,6 @@ function placeMarker(color, id, lngLat) {
             console.log(`no pointer with id ${id} exists... yet`)
         }
         map.addImage(`${id}Pointer`, image);
-        // Error: An image with this name already exists.
-        // got that error before adding if map.hasImage
-        // getting this one now:
-        // Uncaught (in promise) Error: Could not load image because of There is already a source with this ID. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.
         map.addSource('point', {
             'type': 'geojson',
             'data': {
@@ -160,11 +147,6 @@ function drawRoute(routeData, index) {
         color = '#0080ff';
     };
     const routeCoordinates = routeData.geometry.coordinates
-    // const routeMatchingCoordinates = routeData.geometry.matching
-    // const coordinates = [];
-    // for (let leg=0; leg<routeCoordinates.length; leg++) {
-    //     coordinates.append(routeCoordinates[leg]);
-    // };
 
     map.addSource(`route${index}`, {
         'type': 'geojson',
@@ -176,17 +158,6 @@ function drawRoute(routeData, index) {
             }
         }
     });
-
-    // map.addLayer({
-    //     'id': `route${index}`,
-    //     'type': 'fill',
-    //     'source': `route${index}`, // reference the data source
-    //     'layout': {}
-    //     'paint': {
-    //         'fill-color': '#0080ff', // blue color fill
-    //         'fill-opacity': 0.5
-    //     }
-    // });
 
     map.addLayer({
         'id': `line${index}`,
@@ -200,8 +171,7 @@ function drawRoute(routeData, index) {
     });
 }
 
-function reCenterMap(location) {
-    // recenters map to geocode passed in as [ lng, lat ]
-    map.setCenter(location);
+function reCenterMap(lngLat) {
+    map.setCenter(lngLat);
     map.setZoom(16);
 };
