@@ -22,26 +22,22 @@ function displayErrors(errorObj) {
 
 function selectTwo(jQueryElement) {
     jQueryElement.select2({
-        // dropdownParent: $('#weather-table'),
         minimumInputLength: 3,
         ajax: {
             url: '/api/location',
             datatype: JSON,
             processResults: function (data) {
-                // console.log(data);
                 const formattedData = data.results.map(element => {
                     return {
                         id: element.id,
                         text: element.text
                     };
                 });
-                // Transforms the top-level key of the response object from 'items' to 'results'
                 return {
                   results:formattedData
                 };
               }
         },
-        // allowClear: true
     });
 };
 
@@ -75,7 +71,6 @@ function parseCurrentQueryString() {
 };
 
 function processAutocomplete(e, selector, id) {
-    // variable definitions with autocomplete anddefault values
     let prefix = id;
     let location = selector.select2('data')[0].text;
     let htmlId = selector.select2('data')[0].id;
@@ -85,10 +80,6 @@ function processAutocomplete(e, selector, id) {
     let floatStringDone = false;
     let lng = NaN;
     let lat = NaN;
-
-    // if (!prefix.startsWith('loc-cp')) {
-    //     localStorage.setItem(`${prefix}Location`, location);
-    // }
 
     for (let char of htmlId) {
         if (floatStringDone) {
@@ -102,20 +93,19 @@ function processAutocomplete(e, selector, id) {
                 lat = parseFloat(floatString);
             }
         } else {
-            if (char === "_") {
-                // skip underscores
-            } else if (char === "p") {
+            if (char === "p") {
                 // turn "p" into decimal place
                 floatString += ".";
             } else if (char === "c") {
                 // comma means the number is done
                 floatStringDone = true;
-            } else {
-                // any other character is assumed to be a number
+            } else if (isInteger(char)) {
                 floatString += char;
             };
+            // any other character is skipped
         };
     };
+
     localStorage.setItem('mapLng', lng);
     localStorage.setItem('mapLat', lat);
     localStorage.setItem('mapGeocode', [lat, lng]);
@@ -123,7 +113,6 @@ function processAutocomplete(e, selector, id) {
         units = localStorage['units']
     };
     const queryAdditions = {};
-    // if id is a number, it's a checkpoint ID
     if (typeof id === "number") {
         localStorage.setItem(`${prefix}Location`, location);
         prefix = (parseInt)`loc-${id}`
@@ -133,7 +122,6 @@ function processAutocomplete(e, selector, id) {
         return [false, lat, lng];
     };
 
-    // if it's not a number, it was passed as a prefix variable:
     if (prefix === "weather") {
         queryAdditions.location = location;
         queryAdditions.latitude = lat;
@@ -142,15 +130,6 @@ function processAutocomplete(e, selector, id) {
         updateUrl(queryAdditions, false);
         return [units, lat, lng];
     };
-    // if (prefix.startsWith("loc-cp")) {
-    //     debugger;
-    //     const cpId = parseCpId(prefix);
-    //     console.log(`parsed to ${cpId}`);
-    //     queryAdditions[`${cpId}Lat`] = lat;
-    //     queryAdditions[`${cpId}Lng`] = lng;
-    //     updateUrl(queryAdditions, true);
-    //     return [false, lat, lng];
-    // };
     return [false, false, false];
 };
 
@@ -178,7 +157,6 @@ function parseCpId(elementId) {
     return false;
 };
 
-// started rabbitholing on this.... it can wait
 function handleErrors(errs) {
     flashDiv.innerHTML = "";
     if (typeof errs === "object") {

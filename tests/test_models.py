@@ -10,11 +10,8 @@ from app import app
 db.drop_all()
 db.create_all()
 
-# TODO: this fails when I run the whole file, but if I do one test at a time, they all pass. I suspect this has something to do with setUp (and maybe should be doing something else on tearDown?)
-
 class UserModelTestCase(TestCase):
     """Test User model."""
-
     def setUp(self):
         """Clear any leftover data,
         add testing data,
@@ -54,7 +51,6 @@ class UserModelTestCase(TestCase):
 
 class RouteModelTestCase(TestCase):
     """test basic Route model"""
-    
     def setUp(self):
         """Clear any leftover data,
         add testing data,
@@ -100,8 +96,6 @@ class RouteModelTestCase(TestCase):
         
 class CheckpointModelTestCase(TestCase):
     """test Checkpoint model"""
-    
-
     def setUp(self):
         """Clear any leftover data,
         add testing data,
@@ -140,8 +134,6 @@ class CheckpointModelTestCase(TestCase):
             else:
                 self.assertEqual(cps[i].user_id, u2.id)
 
-
-
 class RouteCheckpointTestCase(TestCase):
     """test route-checkpoints model"""
     def setUp(self):
@@ -171,72 +163,9 @@ class RouteCheckpointTestCase(TestCase):
         (u1, u2) = user_setups_for_tests()
         (r1, r2, r3) = route_setups_for_tests(ts, u1, u2)
         
-# TODO: test the cascades
-# class CascadeTestCase(TestCase):
-#     """test all cascades"""
-
-#     def setUp(self):
-#         """Clear any leftover data,
-#         add testing data,
-#         create test client.
-#         """
-
-#         Checkpoint.query.delete()
-#         Route.query.delete()
-#         User.query.delete()
-
-#         self.client = app.test_client()
-
-#     def tearDown(self):
-#         """clear away any mess left by failed tests"""
-#         db.session.rollback()
-
-#     def test_cascades(self):
-#         """test cascade behavior for all models
-#             - when a user is deleted, all routes associated with that user should be deleted
-#             - when a route is deleted, all checkpoints associated with that route should be deleted
-#             - when a checkpoint is deleted, the route should stay intact
-#         """
-#         ts = datetime.utcnow()
-#         (u1, u2) = user_setups_for_tests()
-#         (r1, r2, r3) = route_setups_for_tests(ts, u1, u2)
-#         cp1 = Checkpoint(user_id=u1.id, x=1, point_x_lat=35.174078, point_x_lng=-106.55891)
-#         cp2 = Checkpoint(user_id=u1.id, x=2, point_x_lat=35.132659, point_x_lng=-106.49771)
-#         cp3 = Checkpoint(user_id=u2.id, x=1, point_x_lat=35.174078, point_x_lng=-106.55891)
-#         db.session.add_all([cp1, cp2, cp3])
-#         db.session.commit()
-#         u1_id = u1.id
-#         # u2_id = u2.id
-#         r1_id = r1.id
-#         r2_id = r2.id
-#         r3_id = r3.id
-#         # cp1_pk = (cp1.route_id, cp1.x)
-#         # cp2_pk = (cp2.route_id, cp2.x)
-#         cp3_pk = (cp3.route_id, cp3.x)
-#         test_r3 = Route.query.filter_by(id=r3_id).first()
-#         test_cp3 = make_test_checkpoint(cp3_pk, r2_id)
-#         # nothing deleted yet, so tests cases should correspond to input
-#         self.assertEqual(test_r3.id, r3_id)
-#         self.assertEqual((test_cp3.route_id, test_cp3.x), cp3_pk)
-#         db.session.delete(u1)
-#         db.session.delete(r3)
-#         db.session.delete(cp2)
-#         db.session.commit()
-#         test_cascade_r3 = Route.query.filter_by(id=r3_id).first()
-#         test_cascade_cp3 = make_test_checkpoint(cp3_pk, r2_id)
-#         test_cascade_r2 = Route.query.filter_by(id=r2_id).first()
-#         # inputs to test cases have been deleted, so test cases should NOT correspond to input 
-#         self.assertNotEqual(test_cascade_r3.id, r3_id)
-#         self.assertNotEqual((test_cascade_cp3.route_id, test_cascade_cp3.x), cp3_pk)
-#         # but route corresponding to deleted checkpoint should still correspond to input
-#         self.assertEqual(test_cascade_r2.id, r2_id)
-
-
-
 
 ####################################3
 # methods to set up test data
-
 def user_setups_for_tests():
     """Set up testing data:
     2 users

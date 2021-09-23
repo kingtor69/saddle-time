@@ -73,7 +73,6 @@ for (let deleteCheckpointButt of deleteCheckpointButts) {
     })
 }
 
-// routeForm.addEventListener('submit', (e) => {
 routePreviewButt.addEventListener('click', (e) => {
     e.preventDefault();
     if (goodRouteData()) {
@@ -143,26 +142,8 @@ function parseCpId (selectorId) {
     return false;
 };
 
-// function addObjToLocalStorage(key, valueObj) {
-//     if (key in localStorage) {
-//         let currentValue = JSON.parse(localStorage[key]);
-//         // U R HERE: untested
-//         if (typeof currentValue === "object") {
-//             for (let key in valueObj) {
-//                 currentValue[key] = valueObj[key]
-//             };
-//             return;
-//         }
-//         throw new Error;
-//     } else {
-//         localStorage.setItem(key, JSON.stringify(valueObj))
-//         return;
-//     };
-// };
-
 function goodRouteData() {
-    // Check that query string has lat and lng for 2 or more checkpoints. Returns boolean.
-    // needs to ignore non-geocode string data
+    // Check that query string has enough data to complete a route. Returns boolean.
     let data = parseCurrentQueryString();
     const dataKeys = Object.keys(data);
     // there must be at least 4 keys in a valid route
@@ -186,7 +167,6 @@ function goodRouteData() {
     // ...and that are either "lat" or "lng" after a "-"
     cpKeysSplit = dataKeysSplit.filter(splitKey => (splitKey[1] === "lat" || splitKey[1] === "lng"));
     
-    // now we have a sorted array of arrays (I'd use tuples if I were in Python) like this [[cp#, latOrLng], &c]
     // there should be exactly two of each checkpoint number (dataKeysSplit[i][0]), one "lat" and one "lng" (dataKeysSplit[i][1]);
     for (let i=0; i<dataKeysSplit.length; i+=2) {
         let thisKey = dataKeysSplit[i];
@@ -223,10 +203,8 @@ function displayRoutes(routes, checkpoints) {
     for (let route of routes) {
         if (route.preferred) {
             units = parseUnits();
-            // kmsOrMiles(route, units);
             processDistance(route, units);
             processElevationChange(route, units);
-            // metersOrFeet(route, units);
             showDirections(route);
         };
     };
@@ -239,21 +217,6 @@ function parseUnits() {
         units = qString.units;
     };
     return units;
-};
-
-function kmsOrMiles(route, units) {
-    // I think this is obsolete, logic repeated and better in processDistance
-    route.distance = convertDistance(route.distance, units);
-    route['distanceUnits'] = units === "metric" ? "kms" : "miles";
-    for (let leg of route.legs) {
-        leg.distance = convertDistance(leg.distance, units);
-    };
-};
-
-function metersOrFeet(route, units) {
-    // I think this is obsolete, logic repeated and better in processElevationChange
-    route.geometry.elevation.totalElevationChange = convertDistance(route.geometry.elevation.totalElevationChange, units);
-    route.geometry.elevation['elevationUnits'] = units === "metric" ? "meters" : "feet";
 };
 
 function convertDistance(meters, targetUnits) {

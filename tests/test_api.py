@@ -6,6 +6,7 @@ import requests
 
 from app import app
 
+
 ##############################
 ##### external API calls #####
 ##############################
@@ -58,19 +59,6 @@ class GeocodeAPITestCase(TestCase):
             mult_choice1_code
         )            
 
-class WeatherAPITestCase (TestCase):
-    """test that weather API calls are returning valid data"""
-    # this test isn't working, but the function is, so I'll come back to it
-    # def test_weather_from_geocode(self):
-    #     """test weather API call to OWS"""
-    #     good_geocode = "[35.191097, -106.582998]"
-    #     name = "North Valley"
-    #     weather = current_weather_from_geocode(good_arguments)
-
-    #     self.assertIn("current_weather_details", weather)
-
-
-
 class RouteAPITestCase(TestCase):
     """test route data API calls"""
     def test_mapbox_api(self):
@@ -78,9 +66,7 @@ class RouteAPITestCase(TestCase):
         good_geostring = "-106.582998,35.191097;-106.540495,35.12415"
         success_resp = requests.get(f'{MB_DIRECTIONS_BASE_URL}cycling/{good_geostring}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}')
 
-
         self.assertEqual(success_resp.status_code, 200)
-
 
 
 ###################################
@@ -105,4 +91,3 @@ class FlaskRouteAPITestCase (TestCase):
         self.assertIn("Errors", bad_resp.json())
         self.assertEqual(bad_url_resp.status_code, 500)
         self.assertEqual(very_bad_url_resp.status_code, 404)
-

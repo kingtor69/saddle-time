@@ -29,21 +29,6 @@
       {{ checkpoint_form(999, locations[cps+1])}}
     </div>
     <div class="col col-12 col-md-5">
-      <!-- form logic may return in future development -->
-      <!-- <form action="" id="route-form">
-        {% for field in route_form 
-          if field.widget.input_type != 'hidden' %}
-          <div class="form-group">
-            {{ field.label }}
-            {{ field (class_="rounded bg-dark text-light form-field form-control") }}</td>
-            {% for err in field.errors %}
-            {{ err }}
-            {% endfor %}
-          </div>
-          {% endfor %}
-          {{ route_form.hidden_tag() }}
-        <button type="submit" class="btn btn-info rounded m-2 px-2">preview route</button>
-      </form> -->
       <div class="row justify-content-center mt-5">
         <div class="col col-3 d-none d-md-block"></div>
         <div class="col col-md-6">
@@ -54,21 +39,10 @@
       <div class="row">
         <div class="col col-3 d-none d-md-block"></div>
         <div class="col col-md-6">
-          <!-- {% if not "user" in g %}
-          <p class="text-info">
-            you can save a route if you: 
-            <button id="go-login" class="btn btn-block btn-outline-info rounded mx-2 my-1 pt-0 pb-1">login</button>
-            or
-            <button id="go-signup" class="btn btn-block btn-outline-success rounded mx-2 my-1 pt-0 pb-1">sign up</button>
-          </p>
-          {% else %}
-          <button id="save-route" class="btn btn-block btn-primary rounded m-2" disabled>save route</button>
-          {% endif %} -->
         </div>
         <div class="col col-3 d-none d-md-block"></div>
       </div>
     </div>
-
   </div>
   <div class="row justify-content-center">
     <div class="col col-12 col-lg-8">
@@ -81,13 +55,9 @@
           <div id="directions"></div>
         </div>
       </div>
-      <!-- <div class="row"><div class="col">
-        <button id="save-route" class="btn btn-block btn-primary">save route</button>
-      </div></div> -->
     </div>
   </div>
 {% endblock %}
 {% block scripts_after %}
-<!-- <script src="/static/js/weather.js"></script> -->
 <script src="/static/js/routes.js"></script>
 {% endblock %}

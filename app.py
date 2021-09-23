@@ -5,9 +5,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
 from models import db, connect_db, User, Route, Checkpoint
-from forms import RouteForm, UserNewForm, LoginForm, NewCheckpointForm, LocationForm
+from forms import UserNewForm, LoginForm, NewCheckpointForm, LocationForm
+# RouteForm, 
 from helpers import *
-from external_api_calls import *
 
 app=Flask(__name__)
 
@@ -22,19 +22,11 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
-
 @app.before_request
 def add_user_to_g():
     """If user is logged in, add that user to `g`."""
     if CURR_USER in session:
         g.user = User.query.get(session[CURR_USER])
-
-@app.before_request
-def add_route_to_g():
-    """If there is a route in progress, add it to `g`."""
-    if CURR_ROUTE in session:
-        g.route = Route.query.get(session[CURR_ROUTE])
-
 
 @app.route('/', methods=["GET"])
 def load_home_page():
@@ -52,11 +44,9 @@ def load_home_page():
         if 'latitude' in request.args and 'longitute' in request.args:
             loc_lat = request.args['latitude']
             loc_lng = request.args['longitute']
-        # maybe formatted this way...
         elif 'lat' in request.args and 'lng' in request.args:
             loc_lat = request.args['lat']
             loc_lng = request.args['lng']
-        # or like this
         elif 'location' in request.args:
             location = request.args['location']
             [loc_lng, loc_lat] = geocode_from_location_mb(location)
@@ -113,7 +103,6 @@ def location_autocomplete():
 
     return jsonify(results)
 
-
 @app.route('/api/geocode', methods=["GET"])
 def geocode_location():
     try: 
@@ -126,7 +115,6 @@ def geocode_location():
 def retrieve_weather_data_from_geocode():
     """gather weather data from units & geocode input
     NOTE: the geocode used by the weather API is lat-lng whereas mapbox uses lng-lat, and that's one reason this accepts latitude and longitude as separate arguments."""
-    # TODO: needs error managing
 
     units = request.args['units']
     geocode = (request.args['lat'], request.args['lng'])
@@ -251,16 +239,17 @@ def process_new_route_form():
         lats.append(float(request.args.get('999-lat')))
     else:
         lats.append(False)
-    if request.args.get('999-lat'):
+    if request.args.get('999-lng'):
         lngs.append(float(request.args.get('999-lng')))
     else:
         lngs.append(False)
-    locations.append(location_from_geocode_mb(lats[cps+1], lngs[cps+1]))
-    locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
+    if len(lats) >= (cps + 2) and len(lngs) >= (cps + 2):
+        locations.append(location_from_geocode_mb(lats[cps+1], lngs[cps+1]))
+        locations_values.append(string_from_geocode([lats[cps+1], lngs[cps+1]]))
 
-    route_form = RouteForm()
-    return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, route_form=route_form, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
-
+    # route_form = RouteForm()
+    return render_template ('route.html', cps=cps, new_cp_id=new_cp_id, lats=lats, lngs=lngs, locations=locations, locations_values=locations_values)
+    # route_form=route_form, 
 
 ###########################
 ##### user API routes #####
@@ -283,17 +272,11 @@ def api_return_user_profile(user_id):
     user_obj[user_id]['weather_units'] = user.weather_units
     return jsonify(user_obj)
 
-@app.route('/api/users/<int:user_id>/edit', methods=["PUT", "PATCH"])
-def api_edit_user_profile():
-    """Edit user profile, including preferences such as default route type, metric or imperial units, &c. Will also edit other aspects of a user profile such as bio, favorite bike, &c."""
-    # TBH, I don't really see why this path is needed. I think I was going to do this from JS, but since I'm using Flask WTForms for the form, I'm not sure it's worth figuring out how to get that data to JS.
-
 
 @app.route('/api/users/<int:user_id>/delete', methods=["DELETE"])
 def delete_user(user_id):
     """Permanently deletes a user from the database using HTTP API call."""
     user = User.query.get_or_404(user_id)
-    # does this need some kind of authorization and data verification logic???
     db.session.delete(user)
     db.session.commit()
 
@@ -324,10 +307,8 @@ def preview_route():
     try:
         return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
     except:
-        # these error messages are written for development and will be rewritten for user's in the event of API failure beyond our control
-        errors_object['mapbox error'] = f'mapbox_directions in helpers.py is not responding to these coordinates: {geostring}'
+        errors_object['API error'] = f'API is not responding to these coordinates: {geostring}'
     
-    # if we're here, both have failed and errors_object should be returned
     return {"errors": errors_object}
 
 @app.route('/api/routes/new', methods=["GET","POST"])
@@ -384,18 +365,17 @@ def edit_saved_route():
 #############################
 ##### checkpoint routes #####
 #############################
-# for further development
-# @app.route('/api/checkpoints')
-# def display_users_checkpoints():
-#     """Returns list of logged-in user's checkpoints."""
+@app.route('/api/checkpoints')
+def display_users_checkpoints():
+    """Returns list of logged-in user's checkpoints."""
 
-# @app.route('/api/checkpoints/<int:checkpoint_id>')
-# def display_specific_checkpoint():
-#     """Returns geocode for a checkpoint selected by ID."""
+@app.route('/api/checkpoints/<int:checkpoint_id>')
+def display_specific_checkpoint():
+    """Returns geocode for a checkpoint selected by ID."""
 
-# @app.route('/api/checkpoints/<int:checkpoint_id>/edit')
-# def edit_checkpoint():
-#     """Allows logged in user to edit their checkpoints."""
+@app.route('/api/checkpoints/<int:checkpoint_id>/edit')
+def edit_checkpoint():
+    """Allows logged in user to edit their checkpoints."""
 
 
 

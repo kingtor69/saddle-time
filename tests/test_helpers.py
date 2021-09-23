@@ -44,18 +44,6 @@ class GeocodeParsingTestCase(TestCase):
             not_enough_data_args 
         )
 
-        # this error handling is in JS, so I don't think I need to (or can) test it here
-        # self.assertRaises(
-        #     Error,
-        #     parse_geocode,
-        #     bad_data
-        # )
-
-
-# orderly_route_qString = "0-lng=-102.9248&0-lat=31.2593&3-lng=-103.0001&3-lat=31.1948&999-lng=-103.1123&999-lat=30.8374"
-
-# semi_orderly_route_qString = "0-lng=-102.9248&0-lat=31.2593&999-lng=-103.1123&999-lat=30.8374&3-lng=-103.0001&3-lat=31.1948"
-
 class ParseGeocodeTestCase(TestCase):
     """tests formatting of geocode route data being parsed for mapbox API's formatting
     arguments from Flask requests are passed in to the function and a string should be returned"""
@@ -65,7 +53,5 @@ class ParseGeocodeTestCase(TestCase):
 
         self.assertEqual(parse_geocode(good_args), good_geostring)
 
-
 class MapboxRoutesTestCase(TestCase):
     """test the functioning of mapbox routes API calling coming from Flask route (see test_api.py for that functionality)"""
-
