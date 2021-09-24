@@ -64,14 +64,14 @@ def load_home_page():
             units = request.args['units']
         # or look in the logged-in user defaults
         elif g.user:
-            units = g.user.weather_units
+            units = g.user.units
     # tell user that default units being used
     except:
         flash('using default temperature and distance units (imperial)', 'info')
 
     weather = current_weather_from_geocode([loc_lat, loc_lng], units)
 
-    return render_template('home.html', weather=weather, lng=loc_lng, lat=loc_lat, location=location, weather_units=units)
+    return render_template('home.html', weather=weather, lng=loc_lng, lat=loc_lat, location=location, units=units)
 
 #####################################
 ##### location & weather routes #####
@@ -137,7 +137,7 @@ def signup_new_user():
         new_user.fav_bike = form.fav_bike.data
         new_user.bike_image_url = form.bike_image_url.data
         # new_user.default_bike_type = form.default_bike_type.data
-        new_user.weather_units = form.weather_units.data
+        new_user.units = form.units.data
         # hard coded default geocode while I work out the autocomplete which I'm taking a break from....
         new_user.default_geocode_lat = 42.266157
         new_user.default_geocode_lng = -83.728444
@@ -154,9 +154,28 @@ def return_user_profile(user_id):
     """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
-    weather = current_weather_from_geocode((user.default_geocode_lat, user.default_geocode_lng))
+    loc_lat = user.default_geocode_lat
+    loc_lng = user.default_geocode_lng
+    weather = current_weather_from_geocode((loc_lat, loc_lng))
+    location = location_from_geocode_mb(loc_lat, loc_lng)
+    try:
+        # or query string values
+        if 'latitude' in request.args and 'longitute' in request.args:
+            loc_lat = request.args['latitude']
+            loc_lng = request.args['longitute']
+        elif 'lat' in request.args and 'lng' in request.args:
+            loc_lat = request.args['lat']
+            loc_lng = request.args['lng']
+        elif 'location' in request.args:
+            location = request.args['location']
+            [loc_lng, loc_lat] = geocode_from_location_mb(location)
+    # tell user that defaults are being used
+    except:
+        flash(f'using default location ({location})', 'info')
 
-    return render_template ('user.html', user=user, weather=weather)
+    user_routes = Route.query.filter_by(user_id=user.id).all()
+
+    return render_template ('user.html', user=user, weather=weather, lng=loc_lng, lat=loc_lat, location=location, units=user.units, routes=user_routes)
 
 @app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])
 def edit_user_profile(user_id):
@@ -267,7 +286,7 @@ def api_return_user_profile(user_id):
     user_obj[user_id]['default_bike_type'] = user.default_bike_type
     user_obj[user_id]['default_geocode_lat'] = user.default_geocode_lat
     user_obj[user_id]['default_geocode_lng'] = user.default_geocode_lng
-    user_obj[user_id]['weather_units'] = user.weather_units
+    user_obj[user_id]['units'] = user.units
     return jsonify(user_obj)
 
 

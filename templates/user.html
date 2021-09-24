@@ -34,7 +34,6 @@
             {% if user.bio %}
               <p class="card-text px-2">{{ user.bio }}</p>
             {% endif %}
-            <p class="card-text px-2">default route type: &nbsp;{{ user.default_bike_type }}</p>
           </div>
         </div>
       </div>
@@ -44,18 +43,21 @@
     <div class="row justify-content-center">
       <div class="col"></div>
       <div class="col">
-        <a href="/users/{{ user.id }}/edit" class="d-block btn btn-primary btn-block">edit profile</a>
+        <a href="/users/{{ user.id }}/edit" class="d-block btn btn-info btn-block my-2">edit profile</a>
+        <a href="/routes/new" class="d-block btn btn-primary btn-block my-2">create new route</a>
       </div>
       <div class="col"></div>
     </div>
   {% endif %}
   <div class="row justify-content-center">
-    <div class="col">
-      {% if weather %}
-        {{ weather_info(weather) }}
-        {{ mapbox(user.geocode_lat, user.geocode_lng, 10, large) }}
-      {% endif %}
-    </div>
+    {% if weather %}
+      <div class="col">
+        {{ weather_info(weather, location, units) }}
+      </div>
+      <div class="col">
+        {{ mapbox(user.geocode_lat, user.geocode_lng, 10, medium) }}
+      </div>
+    {% endif %}
     {% if latest_route %}
       <div class="col">
         <h3>Most recently updated route:</h3>
@@ -63,6 +65,20 @@
       </div>
     {% endif %}  
   </div>
+  {% if routes %}
+  <div class="row justify-content-center">
+    <div class="container">
+      <div class="col">
+          <h3>Saved routes:</h3>
+          <ul class="h4">
+            {% for route in routes %}
+            <li><a href="/routes/{{ route.id }}" class="btn btn-outline-info rounded my-2">{{ route.id }}: {{ route.route_name }}</a></li>
+            {% endfor %}
+          </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 {% endblock %}
 {% block scripts_after %}
   <script src="/static/js/weather.js"></script>

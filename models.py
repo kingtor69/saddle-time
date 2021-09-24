@@ -35,7 +35,7 @@ class User(db.Model):
                                   default="regular")
     default_geocode_lat = db.Column(db.Float)
     default_geocode_lng = db.Column(db.Float)
-    weather_units = db.Column(db.String(8), default="metric")
+    units = db.Column(db.String(8), default="imperial")
 
     route = db.relationship("Route", backref="user_route", cascade="all, delete")
     checkpoint = db.relationship("Checkpoint", backref="user_checkpoint", cascade="all, delete")

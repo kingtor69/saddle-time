@@ -6,13 +6,13 @@
  git clone https://github.com/kingtor69/saddle-time.git
  python -u venv venv
  pip install -r requirements.txt
- *sudo su postgres*
+ *sudo su* postgres
  psql
  CREATE DATABASE saddle_time_db;
  \q
- psql < seed.py
  exit
  source venv/bin/activate
+ python -m seed.py
  flask run
 ```
 
