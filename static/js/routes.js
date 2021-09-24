@@ -13,8 +13,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
     if ('routeInProgress' in localStorage) {
         const routeJSON = localStorage.getItem('routeInProgress');
         const routeInProgress = JSON.parse(routeJSON);
-        // restore the queryString from routeInProgress
-        localStorage.clearItem('routeInProgress');
+        updateUrl(routeInProgress, false);
+        localStorage.removeItem('routeInProgress');
     };
     if (goodRouteData()) {
         routePreviewButt.hidden = false;
@@ -24,14 +24,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 loginFromRoute.addEventListener('click', (e) => {
-    e.prevent_default();
+    e.preventDefault();
     const queryStringObject = parseCurrentQueryString();
     localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
     location.href="/login?return=/routes/new"
 });
 
 signupFromRoute.addEventListener('click', (e) => {
-    e.prevent_default();
+    e.preventDefault();
     const queryStringObject = parseCurrentQueryString();
     localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
     location.href="/users/signup?return=/routes/new"
@@ -171,7 +171,6 @@ function goodRouteData() {
             dataKeysSplit.push(numLatOrLng);
         };
     };
-
     let cpKeysSplitIntTest;
     // only keep keys that start with an integer
     cpKeysSplitIntTest = dataKeysSplit.filter(splitKeyIntTest => isInteger(splitKeyIntTest[0]))
@@ -325,8 +324,3 @@ function showDirections(route) {
     };
 };
 
-function restoreSavedRoute() {
-    for (let key in routeInProgress) {
-
-    }
-}

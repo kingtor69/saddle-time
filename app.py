@@ -144,7 +144,9 @@ def signup_new_user():
         db.session.add(new_user)
         db.session.commit()
         login_session(new_user)
-        alt_destination = request.form['alt_destation']
+        alt_destination = request.form.get('alt_destation')
+        if alt_destination:
+            return redirect(alt_destination)
         return redirect(f'/users/{new_user.id}')
 
     return render_template('user-new.html', form=form)
@@ -204,7 +206,7 @@ def login():
         username = form.username.data
         password = form.password.data
         user = User.authenticate(username, password)
-        alt_destination = request.form['alt_destination']
+        alt_destination = request.form.get('alt_destination')
         try:
             login_session(user)
             if alt_destination:
