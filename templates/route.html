@@ -26,18 +26,16 @@
       {{ checkpoint_form(999, locations[cps+1])}}
     </div>
     <div class="col col-12 col-md-5">
-      <div class="row justify-content-center mt-5">
-        <div class="col col-3 d-none d-md-block"></div>
-        <div class="col col-md-6">
-          <button id="preview-route" class="btn btn-block btn-info rounded m-2" disabled>preview route</button>
-        </div>
-        <div class="col col-3 d-none d-md-block"></div>
-      </div>
-      <div class="row">
-        <div class="col col-3 d-none d-md-block"></div>
-        <div class="col col-md-6">
-        </div>
-        <div class="col col-3 d-none d-md-block"></div>
+      <button id="preview-route" class="btn btn-block btn-info rounded m-2" hidden>refresh route</button>
+      <div class="container" id="save-div" hidden>
+        {% if 'user' in g %}
+          <button id="save-route" class="btn btn-block btn-primary rounded m-2">save route</button>
+        {% else %}
+          <p class="text-info">if you'd like to save this route, you need to:</p>
+          <button id="login-from-route" class="btn d-inline btn-outline-primary rounded m-2">login</button>
+          <span class="d-inline text-info"> or </span>
+          <button id="signup-from-route" class="btn d-inline btn-outline-secondary rounded m-2">sign up</button>
+        {% endif %}
       </div>
     </div>
   </div>

@@ -2,16 +2,39 @@ console.log('routes.js');
 const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
+const routeSaveDiv = document.querySelector('#save-div')
 const routeSaveButt = document.querySelector('#save-route');
 const routePreviewButt = document.querySelector('#preview-route');
 const deleteCheckpointButts = $('.checkpoint-delete');
+const loginFromRoute = document.querySelector('#login-from-route');
+const signupFromRoute = document.querySelector('#signup-from-route');
 
 window.addEventListener('DOMContentLoaded', (event) => {
+    if ('routeInProgress' in localStorage) {
+        const routeJSON = localStorage.getItem('routeInProgress');
+        const routeInProgress = JSON.parse(routeJSON);
+        // restore the queryString from routeInProgress
+        localStorage.clearItem('routeInProgress');
+    };
     if (goodRouteData()) {
-        routePreviewButt.disabled = false;
-        if (routeSaveButt) routeSaveButt.disabled = false;
+        routePreviewButt.hidden = false;
+        routeSaveDiv.hidden = false;
         previewRoute();
     };
+});
+
+loginFromRoute.addEventListener('click', (e) => {
+    e.prevent_default();
+    const queryStringObject = parseCurrentQueryString();
+    localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
+    location.href="/login?return=/routes/new"
+});
+
+signupFromRoute.addEventListener('click', (e) => {
+    e.prevent_default();
+    const queryStringObject = parseCurrentQueryString();
+    localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
+    location.href="/users/signup?return=/routes/new"
 });
 
 for (let checkpointLocation of checkpointLocations) {
@@ -20,19 +43,12 @@ for (let checkpointLocation of checkpointLocations) {
         evt.preventDefault();
         console.log('elementid: ', checkpointLocation[0].id);
         cpId = parseCpId(checkpointLocation[0].id);
-        // if (!cpId) {
-        // this alert was popping up when it didn't seem there was anything wrong, so I just ditched it
-        //     alert ('something went wrong with that location, please try again');
-        // };
         cpLatLng = processAutocomplete(evt, checkpointLocation, cpId);
-        // this is not using the boolean part of the return, so ditch it:
         cpLatLng.shift();
         const routeDataLatLng = {};
         routeDataLatLng[`${cpId}LatLng`] = cpLatLng;
         if (goodRouteData()) {
-            // reloading page is refreshing map more efficiently than erasing old routes/checkpoints/&c.
             location.reload();
-            // previewRoute();
         } else {
             handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
         }
@@ -43,12 +59,11 @@ for (let newCheckpointButt of newCheckpointButts) {
     newCheckpointButt.addEventListener('click', (e) => {
         console.log('clicked on a button');
         console.log(newCheckpointButt);
-        // get checkpoint button ID# (id[2])
         let buttId = newCheckpointButt.id;
         let splitId = buttId.split('-');
         let id = parseInt(splitId[2]);
         if (!(id >= 0)) {
-            handleErrors({danger: "checkpoint button has no id number"});
+            handleErrors({danger: "Something went wrong with that checkpoing button. Please refresh the page and try again. If that doesn't work, please rebuild your route. Sorry about that. We're working on it."});
         };
         let qString = parseCurrentQueryString();
         qString['new-id']=id;
@@ -309,3 +324,9 @@ function showDirections(route) {
         });
     };
 };
+
+function restoreSavedRoute() {
+    for (let key in routeInProgress) {
+
+    }
+}

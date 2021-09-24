@@ -126,7 +126,7 @@ def retrieve_weather_data_from_geocode():
 @app.route('/users/signup', methods=["GET", "POST"])
 def signup_new_user():
     """Sign up new users. Enter into database"""
-
+    alt_destintation = request.args.get('route') if request.args.get('route') else False
     form = UserNewForm()
     if form.validate_on_submit():
         new_user = User.hashpass(form.username.data, form.password.data)
@@ -144,8 +144,8 @@ def signup_new_user():
         db.session.add(new_user)
         db.session.commit()
         login_session(new_user)
-        # flash new user created and logged in
-        return redirect('/')
+        alt_destination = request.form['alt_destation']
+        return redirect(f'/users/{new_user.id}')
 
     return render_template('user-new.html', form=form)
 
@@ -198,19 +198,22 @@ def edit_user_profile(user_id):
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """logs a user in"""
+    alt_destination = request.args.get('return') if request.args.get('return') else False
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
         user = User.authenticate(username, password)
-        if user: 
+        alt_destination = request.form['alt_destination']
+        try:
             login_session(user)
+            if alt_destination:
+                return redirect(alt_destination)
             return redirect(f'/users/{user.id}')
-        else:
+        except:
             flash('those credentials did not match any known user', 'warning')
             return redirect ('/login')
-
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, alt_destination=alt_destination)
 
 @app.route('/logout')
 def logout():
