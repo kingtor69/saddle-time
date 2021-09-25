@@ -10,6 +10,7 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+
 class User(db.Model):
     """User model. user.id is used in Route and Checkpoint models as those will both be stored within the user. 
     """
@@ -30,7 +31,7 @@ class User(db.Model):
     last_name = db.Column(db.String)                         
     profile_pic_image_url = db.Column(db.String)
     fav_bike = db.Column(db.String(40))
-    bike_image_url = db.Column(db.String, default="/static/images/saddletime-default-bike.png")
+    bike_image_url = db.Column(db.String)
     default_bike_type = db.Column(db.String(8),
                                   default="regular")
     default_geocode_lat = db.Column(db.Float)

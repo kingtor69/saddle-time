@@ -5,8 +5,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
 from models import db, connect_db, User, Route, Checkpoint
-from forms import UserNewForm, LoginForm, NewCheckpointForm, LocationForm
+from forms import UserNewForm, UserEditForm, LoginForm
 from helpers import *
+from random import randrange
 
 app=Flask(__name__)
 
@@ -133,14 +134,12 @@ def signup_new_user():
         new_user.email = form.email.data
         new_user.first_name = form.first_name.data
         new_user.last_name = form.last_name.data
-        new_user.profile_pic_image_url = form.profile_pic_image_url.data
+        new_user.profile_pic_image_url = form.profile_pic_image_url.data if form.profile_pic_image_url.data else f"/static/images/{STOCK_PROFILE_PICS[randrange(0,(len(STOCK_PROFILE_PICS)-1))]}"
         new_user.fav_bike = form.fav_bike.data
-        new_user.bike_image_url = form.bike_image_url.data
-        # new_user.default_bike_type = form.default_bike_type.data
+        new_user.bike_image_url = form.bike_image_url.data if form.bike_image_url.data else f"/static/images/{STOCK_BIKE_PICS[randrange(0,(len(STOCK_BIKE_PICS)-1))]}"
         new_user.units = form.units.data
-        # hard coded default geocode while I work out the autocomplete which I'm taking a break from....
-        new_user.default_geocode_lat = 42.266157
-        new_user.default_geocode_lng = -83.728444
+        new_user.default_geocode_lat = DEFAULT_LOC_LAT
+        new_user.default_geocode_lng = DEFAULT_LOC_LNG
         db.session.add(new_user)
         db.session.commit()
         login_session(new_user)
@@ -154,30 +153,14 @@ def signup_new_user():
 @app.route('/users/<int:user_id>')
 def return_user_profile(user_id):
     """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
+    if not "user" in g:
+        flash("danger", "You must be logged in to view a specific user.")
+        return redirect('/login')
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
-    loc_lat = user.default_geocode_lat
-    loc_lng = user.default_geocode_lng
-    weather = current_weather_from_geocode((loc_lat, loc_lng))
-    location = location_from_geocode_mb(loc_lat, loc_lng)
-    try:
-        # or query string values
-        if 'latitude' in request.args and 'longitute' in request.args:
-            loc_lat = request.args['latitude']
-            loc_lng = request.args['longitute']
-        elif 'lat' in request.args and 'lng' in request.args:
-            loc_lat = request.args['lat']
-            loc_lng = request.args['lng']
-        elif 'location' in request.args:
-            location = request.args['location']
-            [loc_lng, loc_lat] = geocode_from_location_mb(location)
-    # tell user that defaults are being used
-    except:
-        flash(f'using default location ({location})', 'info')
-
     user_routes = Route.query.filter_by(user_id=user.id).all()
 
-    return render_template ('user.html', user=user, weather=weather, lng=loc_lng, lat=loc_lat, location=location, units=user.units, routes=user_routes)
+    return render_template ('user.html', user=user, routes=user_routes)
 
 @app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])
 def edit_user_profile(user_id):
@@ -185,12 +168,14 @@ def edit_user_profile(user_id):
     if not g.user.id == user_id:
         flash('You can only edit your own profile.', 'danger')
         return redirect('/users')
-    
     user = User.query.get_or_404(user_id)
     form = UserEditForm(obj=user)
 
     if form.validate_on_submit():
         form.populate_obj(user)
+        user.profile_pic_image_url = form.profile_pic_image_url.data if form.profile_pic_image_url.data else f"/static/images/{STOCK_PROFILE_PICS[randrange(0,(len(STOCK_PROFILE_PICS)-1))]}"
+        user.profile_pic_image_url = form.profile_pic_image_url.data if form.profile_pic_image_url.data else f"/static/images/{STOCK_PROFILE_PICS[randrange(0,(len(STOCK_PROFILE_PICS)-1))]}"
+
         db.session.add(user)
         db.session.commit()
         return redirect (f'/users/{user.id}')

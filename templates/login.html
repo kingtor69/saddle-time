@@ -1,10 +1,4 @@
 {% extends 'base.html' %}
-<!-- {% block page_sytle %}{% endblock %}
-{% block static_path %}{% endblock %}
-{% block bootstrap_static_route %}{% endblock %}
-{% block home_path %}{% endblock %}
-{% block nav_image_static_route %}{% endblock %}
-{% block scripts_path %}{% endblock %} -->
 {% block header %}SaddleTime Login{% endblock %}
 {% block content %}
   <div class="container">
@@ -35,7 +29,8 @@
                     </tr>
                 </table>
                 <input type="hidden" id="alt_destination" value={{ alt_destination }}>
-                <button class="btn btn-primary">log in</button>
+                <button class="btn btn-primary d-inline m-2">log in</button>
+                <span>or <a href="/users/signup" class="d-inline btn btn-outline-secondary rounded m-2 pb-2">sign up</a> as new user</span>
             </form>
         </div>
     </div>

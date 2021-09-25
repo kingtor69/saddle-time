@@ -49,22 +49,6 @@
       <div class="col"></div>
     </div>
   {% endif %}
-  <div class="row justify-content-center">
-    {% if weather %}
-      <div class="col">
-        {{ weather_info(weather, location, units) }}
-      </div>
-      <div class="col">
-        {{ mapbox(user.geocode_lat, user.geocode_lng, 10, medium) }}
-      </div>
-    {% endif %}
-    {% if latest_route %}
-      <div class="col">
-        <h3>Most recently updated route:</h3>
-        {{ display_route(latest_route) }}
-      </div>
-    {% endif %}  
-  </div>
   {% if routes %}
   <div class="row justify-content-center">
     <div class="container">

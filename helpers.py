@@ -4,6 +4,9 @@ from flask import session
 from models import RouteCheckpoint, User, Route, Checkpoint, RouteCheckpoint
 from helpers import *
 
+#######################
+## helpful variables ##
+#######################
 CURR_USER = "logged_in_user"
 CURR_ROUTE = "route_in_progress"
 CURR_CHECKPOINT_LIST = "checkpoints_in_use"
@@ -28,6 +31,9 @@ DEFAULT_LOCATION = "3139 Mission St, San Francisco, CA 94110"
 DEFAULT_LOC_LAT = 37.746998
 DEFAULT_LOC_LNG = -122.418653
 DEFAULT_UNITS = "imperial"
+
+STOCK_PROFILE_PICS = ["quino-al-kZgjAT6bbIA-unsplash.jpg", "greg-trowman-o_bdxmF6n24-unsplash.jpg", "viktor-bystrov-8WGscMKJ6bU-unsplash.jpg"]
+STOCK_BIKE_PICS = ["aditya-wardhana-LFv9vVBLmwM-unsplash.jpg", "ridley_dream.jpg", "saddletime-default-bike.png", "jacek-dylag-fZglO1JkwoM-unsplash.jpg", "patrick-hendry-qDBbM9Erwo4-unsplash.jpg", "dmitrii-vaccinium-9qsK2QHidmg-unsplash.jpg"]
 
 #############################
 ## login/logout of session ##
