@@ -63,7 +63,37 @@
     </div>
   </div>
   {% endif %}
+  {% if "user" in g %}
+  <div id="delete-unconfirmed" class="row justify-content-center">
+    <div class="col d-none d-md-block col-4"></div>
+    <div class="col col-12 col-md-4">
+      <a id="user-delete" class="btn btn-sm btn-danger text-warning rounded m-4">delete user permanently</a>
+    </div>
+    <div class="col d-none d-md-block col-4"></div>
+  </div>
+  <div id="delete-confirmation" class="row justify-content-center" hidden>
+    <div class="col d-none d-md-block col-1 col-lg-2"></div>
+    <div class="col col-12 col-md-10 col-lg-8">
+      <h3 id="delete-warning" class="text-warning bg-danger">Are you SURE you want to do this? We're not kidding, it'll delete this user permanently.</h3>
+      <form id="user-delete-form" action="/api/users/{{ user.id }}/delete">
+        <div class="form-group">
+          <div class="form-control">
+            <label for="delete-confirmation">if you're absolutely sure you want to go through with it, type your user name here and click the delete button</label>
+            <input type="text" id="delete-confirmation" required>
+          </div>
+          <input type="hidden" name="username" value="{{ user.username }}">
+          <input type="hidden" name="user-id" value="{{ user.id }}">
+          <button type="submit" class="btn btn-sm btn-danger text-warning rounded m-4 d-inline">yes, really delete</button>
+          <button id="delete-cancel" class="btn btn-success rounded m-4 d-inline">cancel delete</button>
+        </div>
+      </form>
+    </div>
+    <div class="col d-none d-md-block col-1 col-lg-2"></div>
+  </div>
+
+  {% endif %}
+
 {% endblock %}
 {% block scripts_after %}
-  <script src="/static/js/weather.js"></script>
+  <script src="/static/js/users.js"></script>
 {% endblock %}

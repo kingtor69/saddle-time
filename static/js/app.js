@@ -212,3 +212,18 @@ function isCheckpointKey(key) {
     };
     return true;
 };
+
+async function deleteOrDont(evt, table) {
+    const enteredName = evt.target[0].value;
+    const username = evt.target[1].value;
+    const userId = evt.target[2].value;
+    if (enteredName === username) {
+        const resp = await axios.delete(`/api/${table}/${userId}/delete`);
+        if ("delete" in resp && resp.delete === "confirmed") {
+            return true;
+        } else {
+            handleErrors({danger: "That delete failed on the API side. WTF?"});
+        }
+    };
+    return false;
+};
