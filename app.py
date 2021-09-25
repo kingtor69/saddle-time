@@ -150,12 +150,16 @@ def signup_new_user():
 
     return render_template('user-new.html', form=form)
 
+@app.route('/users')
+def list_all_users():
+    users = User.query.all()
+    for user in users:
+        user.full_name = user.make_full_name()
+    return render_template('user-list.html', users=users)
+
 @app.route('/users/<int:user_id>')
 def return_user_profile(user_id):
     """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
-    if not "user" in g:
-        flash("danger", "You must be logged in to view a specific user.")
-        return redirect('/login')
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     user_routes = Route.query.filter_by(user_id=user.id).all()
@@ -205,8 +209,9 @@ def login():
 @app.route('/logout')
 def logout():
     """logs a user out"""
-    if CURR_USER in session:
+    if not request.args.get('deleted'):
         flash (f'you have logged out', 'success')
+    if CURR_USER in session:
         logout_session()
         
     return redirect('/')

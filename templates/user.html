@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-  {% if g.user.username == user.username %}
+  {% if ('user' in g and g.user.username == user.username) %}
     <div class="row justify-content-center">
       <div class="col"></div>
       <div class="col">
@@ -51,7 +51,7 @@
   {% endif %}
   {% if routes %}
   <div class="row justify-content-center">
-    <div class="container">
+    <div class="col col-4">
       <div class="col">
           <h3>Saved routes:</h3>
           <ul class="h4">

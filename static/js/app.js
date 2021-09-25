@@ -1,10 +1,14 @@
 console.log('app.js');
 const flashDiv = document.querySelector('#flashes');
-flashDiv.innerHTML = '';
+if (document.querySelector('#error-table')) {
+    const deleteMe = document.querySelector('#error-table');
+    deleteMe.remove()
+};
 
 function displayErrors(errorObj) {
     const errorTable = document.createElement('table');
     errorTable.classList.add("table","error-table","table-striped")
+    errorTable.id="error-table"
     for (let error in errorObj) {
         const errorTr = document.createElement('tr');
         const errorTds = [document.createElement('td'), document.createElement('td')];
@@ -217,13 +221,15 @@ async function deleteOrDont(evt, table) {
     const enteredName = evt.target[0].value;
     const username = evt.target[1].value;
     const userId = evt.target[2].value;
-    if (enteredName === username) {
-        const resp = await axios.delete(`/api/${table}/${userId}/delete`);
-        if ("delete" in resp && resp.delete === "confirmed") {
+    try {
+        if (enteredName === username) {
+            const resp = await axios.delete(`/api/${table}/${userId}/delete`);
             return true;
         } else {
-            handleErrors({danger: "That delete failed on the API side. WTF?"});
-        }
+            return false;
+        };
+    } catch (e) {
+        handleErrors(e);
+        return false;
     };
-    return false;
 };

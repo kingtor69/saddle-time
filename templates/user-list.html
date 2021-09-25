@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block header %}Saddle-Time Users{% endblock %}
+
+{% block page_sytle %}
+  <link rel="stylesheet" href="/static/css/user.css">
+{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    {% if users|length == 0 %}
+      <h2>There are no registered users in our database. Would you like to <a href="/users/signup?alt_destination=/users">sign up</a>?</h2>
+    {% else %}
+      <div class="col d-none d-md-block col-1 col-lg-2"></div>
+      <div class="col col-12 col-md-10 col-lg-8">
+        <table class="table table-dark table-striped">
+          <thead>
+            <th>username</th>
+            <th>name</th>
+            <th>favorite bike</th>
+          </thead>
+          {% for user in users %}
+            <tr>
+              <td><a href="/users/{{user.id}}">{{user.username}}</a></td>
+              <td>{% if user.full_name %}{{user.full_name}}{% endif %}</td>
+              <td>{% if user.fav_bike %}{{user.fav_bike}}{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col d-none d-md-block col-1 col-lg-2"></div>
+      {% endif %}
+    </div>
+{% endblock %}
+{% block scripts_after %}
+<script src="/static/js/hideMysteryTables.js"></script>
+{% endblock %}

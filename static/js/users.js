@@ -22,7 +22,7 @@ deleteCancelButt.addEventListener('click', (e) => {
 userDeleteForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (deleteOrDont(e, 'users')) {
-        location.href='/';
+        location.href='/logout?deleted=true';
     } else {
         const deleteWarning = document.querySelector('#delete-warning');
         deleteWarning.innerText = "That was not correct. Please try entering your username again or cancel.";
