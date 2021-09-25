@@ -75,7 +75,7 @@ class User(db.Model):
         return False
 
 class Route(db.Model):
-    """Route model for basic routes. Routes are linked to user_id of the user who created or claims the route. If another user sees a route they like and wants to make it their own, it will be copied to a new entry so that user can change or adapt the route without changing anything for the original user. Timestamp is updated whenever a new API call is made for the route, which will be done when anyone is viewing a route with a timestamp more than a fortnight in the past.
+    """Route model for basic routes. Routes are linked to user_id of the user who created or claims the route. If another user sees a route they like and wants to make it their own, it will be copied to a new entry so that user can change or adapt the route without changing anything for the original user. 
     """
 
     __tablename__ = "routes"

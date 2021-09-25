@@ -1,4 +1,7 @@
 console.log('app.js');
+
+const loggedInUserId = $('#g-user') ? $('#g-user').value : false;
+
 const flashDiv = document.querySelector('#flashes');
 if (document.querySelector('#error-table')) {
     const deleteMe = document.querySelector('#error-table');
@@ -138,6 +141,8 @@ function processAutocomplete(e, selector, id) {
 };
 
 function parseCpId(elementId) {
+    // returns parsed checkpoint ID if passed elementId is a valid geocode html ID
+    // returns false if not
     let parsedId = "";
     let goTime = "wait"
     for (let char of elementId) {

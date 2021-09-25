@@ -47,6 +47,9 @@
   <script src="/static/js/defaults.js"></script>
 </head>
 <body>
+  {% if 'user' in g %}
+    <input type="hidden" readonly id="g-user" value=${g.user.id}>
+  {% endif %}
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mx-2 px-3 justify-content-between">
       <a class="navbar-brand" href="/"><img src="/static/images/saddletime-full-logo.png" alt="" id="navbar-logo" class="navbar-img"> SaddleTime</a>

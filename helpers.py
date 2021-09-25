@@ -164,8 +164,8 @@ def unit_markers(units):
     if units=="imperial":
         return ("℉", "mph")
     elif units=="metric":
-        return ("℃", "km/h")
-    return ("°K", "km/h")
+        return ("℃", "m/s")
+    return ("°K", "m/s")
 
 def wind_direction_logical(degrees):
     """Give wind direction a logical name adapted from degrees.

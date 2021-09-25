@@ -29,7 +29,13 @@
       <button id="preview-route" class="btn btn-block btn-info rounded m-2" hidden>refresh route</button>
       <div class="container" id="save-div" hidden>
         {% if 'user' in g %}
-          <button id="save-route" class="btn btn-block btn-primary rounded m-2">save route</button>
+          <br>
+          <form action="" id="route-save-form">
+            <div class="form-group">
+              <input type="text" id="route-name" class="bg-dark text-light rounded" placeholder="name this route (optional)">
+            </div>
+            <button type="submit" id="save-route" class="btn btn-block btn-primary rounded m-2">save route</button>
+          </form>
         {% else %}
           <p class="text-info">if you'd like to save this route, you need to:</p>
           <button id="login-from-route" class="btn d-inline btn-outline-primary rounded m-2">login</button>

@@ -3,11 +3,11 @@ const routeData = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
 const routeSaveDiv = document.querySelector('#save-div')
-const routeSaveButt = document.querySelector('#save-route');
 const routePreviewButt = document.querySelector('#preview-route');
 const deleteCheckpointButts = $('.checkpoint-delete');
 const loginFromRoute = document.querySelector('#login-from-route');
 const signupFromRoute = document.querySelector('#signup-from-route');
+const routeNameForm = document.querySelector('#route-name-form');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if ('routeInProgress' in localStorage) {
@@ -23,19 +23,37 @@ window.addEventListener('DOMContentLoaded', (event) => {
     };
 });
 
-loginFromRoute.addEventListener('click', (e) => {
-    e.preventDefault();
-    const queryStringObject = parseCurrentQueryString();
-    localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
-    location.href="/login?return=/routes/new"
-});
+if (loginFromRoute) {
+    loginFromRoute.addEventListener('click', (e) => {
+        e.preventDefault();
+        const queryStringObject = parseCurrentQueryString();
+        localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
+        location.href="/login?return=/routes/new"
+    });
+};
 
-signupFromRoute.addEventListener('click', (e) => {
-    e.preventDefault();
-    const queryStringObject = parseCurrentQueryString();
-    localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
-    location.href="/users/signup?return=/routes/new"
-});
+if (signupFromRoute) {
+    signupFromRoute.addEventListener('click', (e) => {
+        e.preventDefault();
+        const queryStringObject = parseCurrentQueryString();
+        localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
+        location.href="/users/signup?return=/routes/new"
+    });
+};
+
+if (routeNameForm) {
+    routeNameForm.addEventListener('click', (e) => {
+        e.preventDefault();
+        let routeName = $('#route-name').value
+        if (routeName.length > 0 && routeName.length <= 40) {
+            route['name'] = routeName;            
+        } else if (routeName.length > 0) {
+            handleErrors({info: "Route name can only be a maximum of 40 characters long. Please try a shorter name"})
+        };
+        const routeAndCheckpointData = organizeRouteData(route);
+        saveRoute(routeAndCheckpointData);
+    });
+};
 
 for (let checkpointLocation of checkpointLocations) {
     selectTwo(checkpointLocation);
@@ -51,7 +69,7 @@ for (let checkpointLocation of checkpointLocations) {
             location.reload();
         } else {
             handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
-        }
+        };
     });
 };
 
@@ -213,7 +231,7 @@ function displayRoutes(routes, checkpoints) {
             units = parseUnits();
             processDistance(route, units);
             processElevationChange(route, units);
-            showDirections(route);
+            showDirections(routeData);
         };
     };
 };
@@ -324,3 +342,29 @@ function showDirections(route) {
     };
 };
 
+function organizeRouteData(routeRawData) {
+    // validate data
+    const organizedRouteData = {user_id: loggedInUserId,
+                                route_name: routeRawData.routeName};
+    const organizedCheckpointArray = [];
+    const checkpointKeys = [];
+    for (let key in routeData) {
+        if (isCheckpointKey(key)) {
+            checkpointKeys.append(key);
+        };
+    };
+    checkpointKeys.sort();
+    for (let i=0; i<checkpointKeys.length; i = i+2) {
+        organizedCheckpointArray.push({
+            lat: routeRawData[checkpointKeys[i]],
+            lng: checkpointKeys[i+1]
+        });
+    };
+    return {route: organizedRouteData,
+            checkpoints: organizedCheckpointArray};
+};
+
+async function saveRoute (routeAndCheckpointData) {
+    let resp = axios.post('/api/routes', body=JSON.stringify(routeAndCheckpointData));
+    // validate response
+};
