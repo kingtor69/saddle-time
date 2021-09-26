@@ -7,7 +7,7 @@ const routePreviewButt = document.querySelector('#preview-route');
 const deleteCheckpointButts = $('.checkpoint-delete');
 const loginFromRoute = document.querySelector('#login-from-route');
 const signupFromRoute = document.querySelector('#signup-from-route');
-const routeNameForm = document.querySelector('#route-name-form');
+const routeSaveForm = document.querySelector('#route-save-form');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if ('routeInProgress' in localStorage) {
@@ -41,16 +41,17 @@ if (signupFromRoute) {
     });
 };
 
-if (routeNameForm) {
-    routeNameForm.addEventListener('click', (e) => {
+if (routeSaveForm) {
+    routeSaveForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        let routeName = $('#route-name').value
+        let routeName = e.target[0].value
         if (routeName.length > 0 && routeName.length <= 40) {
-            route['name'] = routeName;            
+            routeData['name'] = routeName;            
         } else if (routeName.length > 0) {
             handleErrors({info: "Route name can only be a maximum of 40 characters long. Please try a shorter name"})
         };
-        const routeAndCheckpointData = organizeRouteData(route);
+        const routeAndCheckpointData = organizeRouteData(routeData);
+        debugger;
         saveRoute(routeAndCheckpointData);
     });
 };
@@ -146,7 +147,7 @@ async function previewRoute() {
     } catch {
         handleErrors({"info": "Please enter at least two valid checkpoints."})
     }
-}
+};
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints
 const checkpointMarkers = [`%{checkpointFilename}green.png`]
@@ -345,12 +346,12 @@ function showDirections(route) {
 function organizeRouteData(routeRawData) {
     // validate data
     const organizedRouteData = {user_id: loggedInUserId,
-                                route_name: routeRawData.routeName};
+                                route_name: routeRawData.name};
     const organizedCheckpointArray = [];
     const checkpointKeys = [];
     for (let key in routeData) {
         if (isCheckpointKey(key)) {
-            checkpointKeys.append(key);
+            checkpointKeys.push(key);
         };
     };
     checkpointKeys.sort();
