@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
+from flask import jsonify
 from helpers import *
-from external_api_calls import *
 import requests
 
 from app import app
@@ -73,9 +73,9 @@ class RouteAPITestCase(TestCase):
 ##### Flask API calls from JS #####
 ###################################
 class FlaskRouteAPITestCase (TestCase):
-    """test Flask API cases"""
-    def test_flask_routes_route(self):
-        """test that data coming from JS to Flask routes '/api/routes' are working properly"""
+    """test Flask Route API cases"""
+    def test_flask_routes_preview(self):
+        """test that previewing routes are being handled correctly at '/api/routes/preview'"""
         good_route_qString = "?0-lat=37.746998&0-lng=-122.418653&999-lat=37.801237&999-lng=-122.40072"
         bad_route_qString = "?0-lng=37.746998&0-lat=-122.418653&999-lng=37.801237&999-lat=-122.40072"
 
@@ -91,3 +91,17 @@ class FlaskRouteAPITestCase (TestCase):
         self.assertIn("Errors", bad_resp.json())
         self.assertEqual(bad_url_resp.status_code, 500)
         self.assertEqual(very_bad_url_resp.status_code, 404)
+
+
+#########################################
+## RESTful API calls from JS via Flask ##
+#########################################
+# class RESTfulRoutesTestCase (TestCase):
+#     """test RESTful API calls for 'routes' table"""
+#     def test_routes_create(self):
+#         """testing POST to '/api/routes'"""
+#         good_route_post = jsonify({
+#             'route': {
+#                 'user_id': 1
+#             }
+#         })

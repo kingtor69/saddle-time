@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, redirect, render_template, flash, jsonify, session, g
+from flask import Flask, request, redirect, render_template, flash, jsonify, session, g, Response
 from flask_debugtoolbar import DebugToolbarExtension
 import requests
 
@@ -284,7 +284,6 @@ def api_return_user_profile(user_id):
     user_obj[user_id]['units'] = user.units
     return jsonify(user_obj)
 
-
 @app.route('/api/users/<int:user_id>/delete', methods=["DELETE"])
 def delete_user(user_id):
     """Permanently deletes a user from the database using HTTP API call."""
@@ -306,10 +305,8 @@ def preview_route():
         geostring = parse_geocode(request.args.to_dict())
     except: 
         return jsonify({"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}})
-
     if type(geostring) == dict:
         return jsonify({"errors": geostring})
-    
     try:
         directions = mapbox_directions(geostring)
         directions_plus_elevations = mapquest_elevation(directions)
@@ -317,14 +314,8 @@ def preview_route():
     except:
         return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
 
-    try:
-        return {"mapbox": jsonify(mapbox_directions(geostring)), "errors": errors_object}
-    except:
-        errors_object['API error'] = f'API is not responding to these coordinates: {geostring}'
-    
-    return {"errors": errors_object}
 
-@app.route('/api/routes/new', methods=["GET","POST"])
+@app.route('/api/routes/new')
 def create_new_route():
     """Gather route information. 
     With GET the raw data comes from the query string and is sent to the Mapbox API. 
@@ -363,9 +354,81 @@ def create_new_route():
     else:
         return "POST"
 
-@app.route('/api/routes')
+@app.route('/api/routes', methods=["GET","POST"])
 def display_available_routes():
-    """Return a list of available routes sorted from most to least recent update. Guest users see one list of all publicly-available routes. Logged in users see their own routes in one list followed by all other public routes in a second list."""
+    """GET returns a list of available routes sorted from most to least recent update. 
+    POST saves a new route to the database,
+    along with all checkpoints used in that route,
+    and the checkpoints-routes many-to-many table.
+    """
+    if request.method == "GET":
+        routes = Route.query.all()
+        return render_template('routes.html', routes=routes)
+    if request.method == "POST":
+        errors = {'errors': {}}
+        missing_data_errors = []
+        if not request.json:
+            errors['errors']['JSON error'] = 'requests must be of type application/json'
+        # route table
+        if 'route' in request.json:
+            route = request.json['route']
+        else:
+            missing_data_errors.append('request did not contain routing data')
+        try:
+            new_route = Route(user_id = route['user_id'])
+            if 'route_name' in route:
+                new_route.route_name = route['route_name']
+            if 'bike_type' in route:
+                new_route.bike_type = route['bike_type']
+            db.session.add(new_route)
+        except:
+            errors['route error'] = 'route data failed to populate correctly in database'
+        # checkpoint table
+        checkpoints = []
+        new_checkpoints = []
+        if 'checkpoints' in request.data:
+            checkpoints=request.data['checkpoints']
+        else:
+            missing_data_errors.append('request did not include any checkpoint data')
+        if len(checkpoints) < 2:
+            missing_data_errors.append('there must be at least two checkpoints to save a route')
+        try:
+            for checkpoint in checkpoints:
+                new_checkpoints.append(Checkpoint(
+                    checkpoint_lat=checkpoint['lat'],
+                    checkpoint_lng=checkpoint['lng']
+                ))
+            db.session.add_all(checkpoints)
+            db.session.commit()
+        except:
+            errors['checkpoint error'] = 'checkpoint data failed to populate correctly in database'
+
+
+        # checkpoints-routes (cprs) many-to-many table
+        new_cprs = []
+        route_order = 0
+        try:
+            for checkpoint in checkpoints:
+                new_cprs.append(RouteCheckpoint(
+                    route_id=new_route.id, 
+                    checkpoint_id=checkpoint.id, 
+                    route_order=route_order
+                ))
+                route_order += 1
+            db.session.add_all(new_cprs)
+            db.session.commit()
+        except:
+            errors['many-to-many error'] = 'checkpoint and route data failed to make many-to-many connections'
+
+        if len(missing_data_errors) > 0:
+            errors['errors']['missing data errors'] = missing_data_errors
+        if errors['errors']:
+            return Response(errors['errors'], status=401, mimetype='application/json')
+        return Response (jsonify({
+                'route': new_route,
+                'checkpoints': new_checkpoints,
+                'checkpoints-routes': new_cprs
+            }), status=201, mimetype='application/json')
 
 @app.route('/api/routes/<int:route_id>')
 def display_saved_route():
