@@ -51,7 +51,6 @@ if (routeSaveForm) {
             handleErrors({info: "Route name can only be a maximum of 40 characters long. Please try a shorter name"})
         };
         const routeAndCheckpointData = organizeRouteData(routeData);
-        debugger;
         saveRoute(routeAndCheckpointData);
     });
 };
@@ -358,14 +357,15 @@ function organizeRouteData(routeRawData) {
     for (let i=0; i<checkpointKeys.length; i = i+2) {
         organizedCheckpointArray.push({
             lat: routeRawData[checkpointKeys[i]],
-            lng: checkpointKeys[i+1]
+            lng: routeRawData[checkpointKeys[i+1]]
         });
     };
-    return {route: organizedRouteData,
-            checkpoints: organizedCheckpointArray};
+    return {"route": organizedRouteData,
+            "checkpoints": organizedCheckpointArray};
 };
 
 async function saveRoute (routeAndCheckpointData) {
-    let resp = axios.post('/api/routes', body=JSON.stringify(routeAndCheckpointData));
+    console.log(routeAndCheckpointData);
+    let resp = axios.post('/api/routes', routeAndCheckpointData);
     // validate response
 };
