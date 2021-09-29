@@ -369,7 +369,6 @@ def display_available_routes():
         missing_data_errors = []
         if not request.json:
             errors['errors']['JSON error'] = 'requests must be of type application/json'
-
         # route table
         if 'route' in request.json:
             route = request.json['route']
@@ -377,6 +376,7 @@ def display_available_routes():
             missing_data_errors.append('request did not contain routing data')
         try:
             new_route = Route(user_id = route['user_id'])
+            new_route_json = new_route.toJSON()
             if 'route_name' in route:
                 new_route.route_name = route['route_name']
             if 'bike_type' in route:
@@ -387,18 +387,18 @@ def display_available_routes():
         # checkpoint table
         checkpoints = []
         new_checkpoints = []
-        if 'checkpoints' in request.data:
-            checkpoints=request.data['checkpoints']
+        if 'checkpoints' in request.json:
+            checkpoints=request.json['checkpoints']
         else:
             missing_data_errors.append('request did not include any checkpoint data')
         if len(checkpoints) < 2:
             missing_data_errors.append('there must be at least two checkpoints to save a route')
         try:
             for checkpoint in checkpoints:
-                new_checkpoints.append(Checkpoint(
+                new_checkpoints.append(jsonify(Checkpoint(
                     checkpoint_lat=checkpoint['lat'],
                     checkpoint_lng=checkpoint['lng']
-                ))
+                )))
             db.session.add_all(checkpoints)
             db.session.commit()
         except:
@@ -410,11 +410,11 @@ def display_available_routes():
         route_order = 0
         try:
             for checkpoint in checkpoints:
-                new_cprs.append(RouteCheckpoint(
+                new_cprs.append(jsonify(RouteCheckpoint(
                     route_id=new_route.id, 
                     checkpoint_id=checkpoint.id, 
                     route_order=route_order
-                ))
+                )))
                 route_order += 1
             db.session.add_all(new_cprs)
             db.session.commit()
@@ -425,11 +425,12 @@ def display_available_routes():
             errors['errors']['missing data errors'] = missing_data_errors
         if errors['errors']:
             return Response(errors['errors'], status=401, mimetype='application/json')
-        return Response (jsonify({
-                'route': new_route,
-                'checkpoints': new_checkpoints,
-                'checkpoints-routes': new_cprs
-            }), status=201, mimetype='application/json')
+        response_dict = {
+            "route": new_route,
+            "checkpoints": new_checkpoints,
+            "checkpoints-routes": new_cprs
+        }
+        return Response (response_dict, status=201, mimetype='application/json')
 
 @app.route('/api/routes/<int:route_id>')
 def display_saved_route():

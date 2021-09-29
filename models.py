@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+import json
 
 db = SQLAlchemy()
 
@@ -16,6 +17,15 @@ class User(db.Model):
     """
 
     __tablename__ = "users"
+
+    def toJSON(self):
+        """
+        this method adapted from
+        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
+        answer by 
+        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
+        """
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     id = db.Column(db.Integer,
                    primary_key=True,
@@ -80,6 +90,15 @@ class Route(db.Model):
 
     __tablename__ = "routes"
 
+    def toJSON(self):
+        """
+        this method adapted from
+        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
+        answer by 
+        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
+        """
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -100,6 +119,15 @@ class Checkpoint(db.Model):
 
     __tablename__ = "checkpoints"
 
+    def toJSON(self):
+        """
+        this method adapted from
+        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
+        answer by 
+        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
+        """
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -116,6 +144,15 @@ class RouteCheckpoint(db.Model):
     """
 
     __tablename__ = "route_checkpoints"
+
+    def toJSON(self):
+        """
+        this method adapted from
+        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
+        answer by 
+        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
+        """
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     id = db.Column(db.Integer,
                    primary_key=True,
