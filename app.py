@@ -369,6 +369,7 @@ def display_available_routes():
         missing_data_errors = []
         if not request.json:
             errors['errors']['JSON error'] = 'requests must be of type application/json'
+
         # route table
         if 'route' in request.json:
             route = request.json['route']
