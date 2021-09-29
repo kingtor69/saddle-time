@@ -364,8 +364,31 @@ function organizeRouteData(routeRawData) {
             "checkpoints": organizedCheckpointArray};
 };
 
-console.log(routeAndCheckpointData);
-async function saveRoute (routeAndCheckpointData) {
-    let resp = axios.post('/api/routes', routeAndCheckpointData);
+async function saveRoute (routeObject) {
+    let resp = axios.post('/api/routes', JSON.stringify(routeObject));
     // validate response
+    // return routeId
+    // else error message
 };
+
+async function saveCheckpoints(checkpointsArray) {
+    const checkpointIds = []
+    for (let checkpoint of checkpointsArray) {
+        let resp = axios.post('/api/checkpoitns', JSON.stringify(checkpoint));
+        // validate response
+        // push checkpointId to checkpointIds
+    };
+    return checkpointIds;
+    // else error message
+};
+
+async function saveCheckpointsRoutes (cprArray) {
+    for (let cpr of cprArray) {
+        let resp = axios.post('/api/checkpoints-routes', JSON.stringify(cpr));
+        // validate response
+    };
+    // all good, return this:
+    displayMe = "Route successfully saved."
+    return {info: displayMe};
+    // else return error message
+}
