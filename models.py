@@ -117,10 +117,10 @@ class Route(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.id"))
 
-    checkpoint_route = db.relationship("RouteCheckpoint", backref="route_checkpoint", cascade="all, delete")
+    checkpoint_route = db.relationship("CheckpointRoute", backref="route_checkpoint", cascade="all, delete")
 
 class Checkpoint(db.Model):
-    """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. Checkpoints are saved with user who created them and associated with routes in the ORM RouteCheckpoint (below). They can be copied by other users who see a checkpoint they want to use in their own route. 
+    """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. Checkpoints are saved with user who created them and associated with routes in the ORM CheckpointRoute (below). They can be copied by other users who see a checkpoint they want to use in their own route. 
     """
 
     __tablename__ = "checkpoints"
@@ -146,11 +146,11 @@ class Checkpoint(db.Model):
                         nullable=False)
 
 
-class RouteCheckpoint(db.Model):
+class CheckpointRoute(db.Model):
     """Route-checkpoint model shows in what route and in what order checkpoints are used. These are not linked directly to user who created them because both the route and the checkpoint are. 
     """
 
-    __tablename__ = "route_checkpoints"
+    __tablename__ = "checkpoints_routes"
 
     def serialize(self):
         return {

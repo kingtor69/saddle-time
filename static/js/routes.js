@@ -46,13 +46,16 @@ if (routeSaveForm) {
         e.preventDefault();
         let routeName = e.target[0].value;
         const displayMessage = {errors: {}};
-        let routeData;
+        const routeData = {};
+        let routeApiData;
         let checkpointApiData;
         let cprsApiData;
+        let routeId;
         if (routeName.length > 0 && routeName.length <= 40) {
-            routeData['name'] = routeName;
+            routeData['route_name'] = routeName;
             routeApiData = organizeRouteData(routeData);
             route_id = saveRoute(routeApiData);
+            debugger;
             if (route_id) {
                 checkpointApiData = organizeCheckpointData(routeData, route_id);
                 checkpointIds = saveCheckpoints(checkpointApiData);
@@ -363,10 +366,9 @@ function showDirections(route) {
 };
 
 function organizeRouteData(routeRawData) {
-    // validate data
     const organizedRouteData = {user_id: loggedInUserId,
-                                route_name: routeRawData.name};
-    return {"route": organizedRouteData};
+                                route_name: routeRawData.route_name};
+    return organizedRouteData;
 };
 
 function organizeCheckpointData(routeRawData, route_id) {
@@ -386,7 +388,7 @@ function organizeCheckpointData(routeRawData, route_id) {
             user_id: loggedInUserId
         });
     };
-    return {"checkpoints": [organizedCheckpointsData]};
+    return organizedCheckpointArray;
 };
 
 function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds) {
@@ -399,7 +401,7 @@ function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointId
         };
         organizedCheckpointRoutesArray.push(newCpr);
     }
-    return {"checkpointsRoutes": organizedCheckpointsRoutesArray};
+    return organizedCheckpointsRoutesArray;
 };
 
 async function saveRoute (routeObject) {
@@ -418,7 +420,7 @@ async function saveRoute (routeObject) {
         };
     };
     try {
-        return routeData.id
+        return routeData.id;
     } catch (e) {
         flashMessages(e);
         return false;

@@ -1,7 +1,7 @@
 import os
 import requests
 from flask import session
-from models import RouteCheckpoint, User, Route, Checkpoint, RouteCheckpoint
+from models import CheckpointRoute, User, Route, Checkpoint, CheckpointRoute
 from helpers import *
 
 #######################

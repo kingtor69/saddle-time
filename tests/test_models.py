@@ -1,6 +1,6 @@
 import os
 from unittest import TestCase
-from models import db, User, Route, Checkpoint, RouteCheckpoint
+from models import db, User, Route, Checkpoint, CheckpointRoute
 from datetime import datetime
 
 os.environ['DATABASE_URL'] = "postgresql:///saddle_time_test_db"
@@ -134,7 +134,7 @@ class CheckpointModelTestCase(TestCase):
             else:
                 self.assertEqual(cps[i].user_id, u2.id)
 
-class RouteCheckpointTestCase(TestCase):
+class CheckpointRouteTestCase(TestCase):
     """test route-checkpoints model"""
     def setUp(self):
         """Clear any leftover data,
@@ -142,7 +142,7 @@ class RouteCheckpointTestCase(TestCase):
         create test client.
         """
 
-        RouteCheckpoint.query.delete()
+        CheckpointRoute.query.delete()
         Checkpoint.query.delete()
         Route.query.delete()
         User.query.delete()

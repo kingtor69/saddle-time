@@ -354,34 +354,36 @@ def create_new_route():
     else:
         return "POST"
 
-@app.route('/api/routes', methods=["GET","POST"])
+@app.route('/api/routes')
 def display_available_routes():
-    """GET returns a list of available routes sorted from most to least recent update. 
-    POST saves a new route to the database,
+    """GET returns a list of available routes sorted from most to least recent update.
+    """
+    routes = Route.query.all()
+    return render_template('routes.html', routes=routes)
+ 
+@app.route('/api/routes', methods=["POST"])
+def save_new_route():
+    """POST saves a new route to the database,
     along with all checkpoints used in that route,
     and the checkpoints-routes many-to-many table.
     """
-    if request.method == "GET":
-        routes = Route.query.all()
-        return render_template('routes.html', routes=routes)
-    if request.method == "POST":
-        errors = {'errors': {}}
-        if not request.json:
-            errors['errors']['JSON error'] = 'requests must be of type application/json'
-        try:
-            new_route = Route(
-                user_id = request.json['user_id']
-                )
-            if 'route_name' in request.json:
-                new_route.route_name = request.json['route_name']
-            if 'bike_type' in request.json:
-                new_route.bike_type = request.json['bike_type']
-            db.session.add(new_route)
-            db.session.commit()
-        except:
-            errors['errors']['missing data error'] = "User ID is required to create a new route."
-            
-        return (jsonify(route=new_route.serialize()), 201)
+    errors = {'errors': {}}
+    if not request.json:
+        errors['errors']['JSON error'] = 'requests must be of type application/json'
+    try:
+        new_route = Route(
+            user_id = request.json['user_id']
+            )
+        if 'route_name' in request.json:
+            new_route.route_name = request.json['route_name']
+        if 'bike_type' in request.json:
+            new_route.bike_type = request.json['bike_type']
+        db.session.add(new_route)
+        db.session.commit()
+    except:
+        errors['errors']['missing data error'] = "User ID is required to create a new route."
+        
+    return (jsonify(route=new_route.serialize()), 201)
 
 @app.route('/api/routes/<int:route_id>')
 def display_saved_route():
@@ -426,7 +428,7 @@ def edit_checkpoint():
 #######################################
 @app.route('/api/checkpoints-routes', methods=["POST"])
 def create_new_m2m_checkpoint_route():
-    new_checkpoint_route = RouteCheckpoint(
+    new_checkpoint_route = CheckpointRoute(
         route_id=request.json['route_id'],
         checkpoint_id=request.json['checkpoint_id'],
         route_order=request.json['route_order']

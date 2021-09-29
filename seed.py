@@ -1,5 +1,5 @@
 from app import app
-from models import db, User, Route, Checkpoint, RouteCheckpoint
+from models import db, User, Route, Checkpoint, CheckpointRoute
 
 db.drop_all()
 db.create_all()
@@ -69,20 +69,20 @@ cpf = Checkpoint(user_id=u1.id, checkpoint_display_name="Sulphur Canyon", checkp
 db.session.add_all([cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cpa, cpb, cpc, cpd])
 db.session.commit()
 
-# seed route_checkpoints
-rcp1 = RouteCheckpoint(route_id=r1.id, checkpoint_id=cp1.id, route_order=1)
-rcp2 = RouteCheckpoint(route_id=r1.id, checkpoint_id=cp2.id, route_order=4)
-rcp3 = RouteCheckpoint(route_id=r1.id, checkpoint_id=cp3.id, route_order=2)
-rcp4 = RouteCheckpoint(route_id=r1.id, checkpoint_id=cp4.id, route_order=3)
-rcp5 = RouteCheckpoint(route_id=r2.id, checkpoint_id=cp5.id, route_order=1)
-rcp6 = RouteCheckpoint(route_id=r2.id, checkpoint_id=cp6.id, route_order=2)
-rcp7 = RouteCheckpoint(route_id=r2.id, checkpoint_id=cp5.id, route_order=3)
-rcp8 = RouteCheckpoint(route_id=r3.id, checkpoint_id=cp7.id, route_order=2)
-rcp9 = RouteCheckpoint(route_id=r3.id, checkpoint_id=cp8.id, route_order=1)
-rcpa = RouteCheckpoint(route_id=r3.id, checkpoint_id=cp8.id, route_order=3)
-rcpb = RouteCheckpoint(route_id=r4.id, checkpoint_id=cp9.id, route_order=1)
-rcpc = RouteCheckpoint(route_id=r4.id, checkpoint_id=cpa.id, route_order=2)
-rcpd = RouteCheckpoint(route_id=r4.id, checkpoint_id=cp9.id, route_order=3)
+# seed checkpoints_routes
+rcp1 = CheckpointRoute(route_id=r1.id, checkpoint_id=cp1.id, route_order=1)
+rcp2 = CheckpointRoute(route_id=r1.id, checkpoint_id=cp2.id, route_order=4)
+rcp3 = CheckpointRoute(route_id=r1.id, checkpoint_id=cp3.id, route_order=2)
+rcp4 = CheckpointRoute(route_id=r1.id, checkpoint_id=cp4.id, route_order=3)
+rcp5 = CheckpointRoute(route_id=r2.id, checkpoint_id=cp5.id, route_order=1)
+rcp6 = CheckpointRoute(route_id=r2.id, checkpoint_id=cp6.id, route_order=2)
+rcp7 = CheckpointRoute(route_id=r2.id, checkpoint_id=cp5.id, route_order=3)
+rcp8 = CheckpointRoute(route_id=r3.id, checkpoint_id=cp7.id, route_order=2)
+rcp9 = CheckpointRoute(route_id=r3.id, checkpoint_id=cp8.id, route_order=1)
+rcpa = CheckpointRoute(route_id=r3.id, checkpoint_id=cp8.id, route_order=3)
+rcpb = CheckpointRoute(route_id=r4.id, checkpoint_id=cp9.id, route_order=1)
+rcpc = CheckpointRoute(route_id=r4.id, checkpoint_id=cpa.id, route_order=2)
+rcpd = CheckpointRoute(route_id=r4.id, checkpoint_id=cp9.id, route_order=3)
 
 db.session.add_all([rcp1, rcp2, rcp3, rcp4, rcp5, rcp6, rcp7, rcp8, rcp9, rcpa, rcpb, rcpc, rcpd])
 db.session.commit()
