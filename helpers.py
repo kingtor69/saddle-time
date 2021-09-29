@@ -250,42 +250,42 @@ def stringify_mb_coordinates_for_mq(geoarray):
     return geostring
 
 
-def serialize_user(user):
-    return {
-        "id": user.id,
-        "username": user.username,
-        "email": user.email,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "fav_bike": user.fav_bike,
-        "bike_image_url": user.bike_image_url,
-        "default_bike_type": user.default_bike_type,
-        "default_geocode_lat": user.default_geocode_lat,
-        "default_geocode_lng": user.default_geocode_lng,
-        "units": user.units
-    }
+# def serialize_user(user):
+#     return {
+#         "id": user.id,
+#         "username": user.username,
+#         "email": user.email,
+#         "first_name": user.first_name,
+#         "last_name": user.last_name,
+#         "fav_bike": user.fav_bike,
+#         "bike_image_url": user.bike_image_url,
+#         "default_bike_type": user.default_bike_type,
+#         "default_geocode_lat": user.default_geocode_lat,
+#         "default_geocode_lng": user.default_geocode_lng,
+#         "units": user.units
+#     }
     
-def serialize_route(route):
-    return {
-        "id": route.id,
-        "route_name": route.route_name,
-        "timestamp": route.timestamp,
-        "user_id": route.user_id
-    }
+# def serialize_route(route):
+#     return {
+#         "id": route.id,
+#         "route_name": route.route_name,
+#         "timestamp": route.timestamp,
+#         "user_id": route.user_id
+#     }
 
-def serialize_checkpoint(checkpoint):
-    return {
-        "id": checkpoint.id,
-        "user_id": checkpoint.user_id,
-        "checkpoint_display_name": checkpoint.checkpoint_display_name,
-        "checkpoint_lat": checkpoint.checkpoint_lat,
-        "checkpoint_lng": checkpoint.checkpoint_lng
-    }
+# def serialize_checkpoint(checkpoint):
+#     return {
+#         "id": checkpoint.id,
+#         "user_id": checkpoint.user_id,
+#         "checkpoint_display_name": checkpoint.checkpoint_display_name,
+#         "checkpoint_lat": checkpoint.checkpoint_lat,
+#         "checkpoint_lng": checkpoint.checkpoint_lng
+#     }
 
-def serialize_cpr(cpr):
-    return {
-        "id": cpr.id,
-        "route_id": cpr.route_id,
-        "checkpoint_id": cpr.checkpoint_id,
-        "route_order": cpr.route_order
-    }
+# def serialize_cpr(cpr):
+#     return {
+#         "id": cpr.id,
+#         "route_id": cpr.route_id,
+#         "checkpoint_id": cpr.checkpoint_id,
+#         "route_order": cpr.route_order
+#     }

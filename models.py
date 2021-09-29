@@ -18,6 +18,21 @@ class User(db.Model):
 
     __tablename__ = "users"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "fav_bike": self.fav_bike,
+            "bike_image_url": self.bike_image_url,
+            "default_bike_type": self.default_bike_type,
+            "default_geocode_lat": self.default_geocode_lat,
+            "default_geocode_lng": self.default_geocode_lng,
+            "units": self.units
+        }
+    
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -82,6 +97,14 @@ class Route(db.Model):
 
     __tablename__ = "routes"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "route_name": self.route_name,
+            "timestamp": self.timestamp,
+            "user_id": self.user_id
+        }
+
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -102,6 +125,15 @@ class Checkpoint(db.Model):
 
     __tablename__ = "checkpoints"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "checkpoint_display_name": self.checkpoint_display_name,
+            "checkpoint_lat": self.checkpoint_lat,
+            "checkpoint_lng": self.checkpoint_lng
+        }
+
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -120,12 +152,22 @@ class RouteCheckpoint(db.Model):
 
     __tablename__ = "route_checkpoints"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "route_id": self.route_id,
+            "checkpoint_id": self.checkpoint_id,
+            "route_order": self.route_order
+        }
+
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
     route_id = db.Column(db.Integer,
-                         db.ForeignKey("routes.id"))
+                         db.ForeignKey("routes.id"), 
+                         nullable=False)
     checkpoint_id = db.Column(db.Integer,
-                              db.ForeignKey("checkpoints.id"))
+                              db.ForeignKey("checkpoints.id"),
+                              nullable=False)
     route_order = db.Column(db.Integer,
                             nullable=False)

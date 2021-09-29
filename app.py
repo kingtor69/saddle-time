@@ -396,7 +396,8 @@ def display_available_routes():
         for checkpoint in checkpoints:
             new_checkpoint = Checkpoint(
                 checkpoint_lat=checkpoint['lat'],
-                checkpoint_lng=checkpoint['lng']
+                checkpoint_lng=checkpoint['lng'],
+                user_id=route['user_id']
             )
             new_checkpoints.append(new_checkpoint)
         db.session.add_all(new_checkpoints)
@@ -408,10 +409,11 @@ def display_available_routes():
         new_cprs = []
         route_order = 0
         # try:
-        for checkpoint in checkpoints:
+        for checkpoint in new_checkpoints:
             new_cpr = RouteCheckpoint(
                 route_id=new_route.id, 
-                route_order=route_order
+                route_order=route_order,
+                checkpoint_id=checkpoint.id
             )
             new_cprs.append(new_cpr)
             route_order += 1
@@ -425,16 +427,19 @@ def display_available_routes():
         if errors['errors']:
             return Response(errors['errors'], status=401, mimetype='application/json')
 
-        new_route_serialized = serialize_route(new_route)
-        new_checkpoints_serialized = [serialize_checkpoint(c) for c in new_checkpoints]
-        new_cprs_serialized = [serialize_cpr(cpr) for cpr in new_cprs]
+        new_route_serialized = new_route.serialize()
+        new_checkpoints_serialized = [c.serialize for c in new_checkpoints]
+        new_cprs_serialized = [cpr.serialize for cpr in new_cprs]
+        # new_route_serialized = serialize_route(new_route)
+        # new_checkpoints_serialized = [serialize_checkpoint(c) for c in new_checkpoints]
+        # new_cprs_serialized = [serialize_cpr(cpr) for cpr in new_cprs]
         response_dict = {
             "route": new_route_serialized,
             "checkpoints": new_checkpoints_serialized,
             "checkpoints-routes": new_cprs_serialized
         }
 
-        return Response (jsonify(response_dict), status=201, mimetype='application/json')
+        return Response ({"route":new_route_serialized,"checkpoints":new_checkpoints_serialized,"checkpoints-routes":new_cprs_serialized}, status=201, mimetype='application/json')
 
 @app.route('/api/routes/<int:route_id>')
 def display_saved_route():
