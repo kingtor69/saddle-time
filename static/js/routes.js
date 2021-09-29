@@ -44,14 +44,34 @@ if (signupFromRoute) {
 if (routeSaveForm) {
     routeSaveForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        let routeName = e.target[0].value
+        let routeName = e.target[0].value;
+        const displayMessage = {errors: {}};
+        let routeData;
+        let checkpointApiData;
+        let cprsApiData;
         if (routeName.length > 0 && routeName.length <= 40) {
-            routeData['name'] = routeName;            
+            routeData['name'] = routeName;
+            routeApiData = organizeRouteData(routeData);
+            route_id = saveRoute(routeApiData);
+            if (route_id) {
+                checkpointApiData = organizeCheckpointData(routeData, route_id);
+                checkpointIds = saveCheckpoints(checkpointApiData);
+            };
+            if (checkpointIds) {
+                cprsApiData = organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds);
+                successOrError = saveCheckpointsRoutes(cprsApiData);
+            };
         } else if (routeName.length > 0) {
-            handleErrors({info: "Route name can only be a maximum of 40 characters long. Please try a shorter name"})
+            displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
         };
-        const routeAndCheckpointData = organizeRouteData(routeData);
-        saveRoute(routeAndCheckpointData);
+        if ("success" in successOrError) {
+            flashMessages(successOrError.success);
+        } else if ("errors" in successOrError) {
+            flashMessages(successOrError.errors);
+        } else {
+            flashMessages({"error error": "This was neither a success nor a failure. What gives?"});
+        };
+        displayMessage[successOrErrorKey] = successOrError[successOrErrorKey];
     });
 };
 
@@ -68,7 +88,7 @@ for (let checkpointLocation of checkpointLocations) {
         if (goodRouteData()) {
             location.reload();
         } else {
-            handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
+            flashMessages({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
         };
     });
 };
@@ -81,7 +101,7 @@ for (let newCheckpointButt of newCheckpointButts) {
         let splitId = buttId.split('-');
         let id = parseInt(splitId[2]);
         if (!(id >= 0)) {
-            handleErrors({danger: "Something went wrong with that checkpoing button. Please refresh the page and try again. If that doesn't work, please rebuild your route. Sorry about that. We're working on it."});
+            flashMessages({danger: "Something went wrong with that checkpoing button. Please refresh the page and try again. If that doesn't work, please rebuild your route. Sorry about that. We're working on it."});
         };
         let qString = parseCurrentQueryString();
         qString['new-id']=id;
@@ -109,7 +129,7 @@ routePreviewButt.addEventListener('click', (e) => {
         location.reload();
         // previewRoute();
     } else {
-        handleErrors({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"});
+        flashMessages({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"});
     };
 });
 
@@ -130,13 +150,13 @@ async function previewRoute() {
         resp = await axios.get(url);
     } catch (err) {
         console.error(err);
-        handleErrors(err);
+        flashMessages(err);
         return;
     };
     if ("errors" in resp.data) {
-        handleErrors (resp.data.errors);
+        flashMessages (resp.data.errors);
     } else if ("Errors" in resp.data) {
-        handleErrors(resp.data.Errors);
+        flashMessages(resp.data.Errors);
     };
 
     try {
@@ -144,7 +164,7 @@ async function previewRoute() {
         let waypoints = resp.data.waypoints;
         displayRoutes(routes, waypoints);
     } catch {
-        handleErrors({"info": "Please enter at least two valid checkpoints."})
+        flashMessages({"info": "Please enter at least two valid checkpoints."})
     }
 };
 
@@ -346,6 +366,10 @@ function organizeRouteData(routeRawData) {
     // validate data
     const organizedRouteData = {user_id: loggedInUserId,
                                 route_name: routeRawData.name};
+    return {"route": organizedRouteData};
+};
+
+function organizeCheckpointData(routeRawData, route_id) {
     const organizedCheckpointArray = [];
     const checkpointKeys = [];
     for (let key in routeData) {
@@ -357,24 +381,54 @@ function organizeRouteData(routeRawData) {
     for (let i=0; i<checkpointKeys.length; i = i+2) {
         organizedCheckpointArray.push({
             lat: routeRawData[checkpointKeys[i]],
-            lng: routeRawData[checkpointKeys[i+1]]
+            lng: routeRawData[checkpointKeys[i+1]],
+            route_id: route_id,
+            user_id: loggedInUserId
         });
     };
-    return {"route": organizedRouteData,
-            "checkpoints": organizedCheckpointArray};
+    return {"checkpoints": [organizedCheckpointsData]};
+};
+
+function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds) {
+    const organizedCheckpointRoutesArray = [];
+    for (let i=0; i<checkpointIds.length; i++) {
+        const newCpr = {
+            route_id: route_id,
+            checkpoint_id: checkpointIds[i],
+            route_order: i
+        };
+        organizedCheckpointRoutesArray.push(newCpr);
+    }
+    return {"checkpointsRoutes": organizedCheckpointsRoutesArray};
 };
 
 async function saveRoute (routeObject) {
-    let resp = axios.post('/api/routes', JSON.stringify(routeObject));
-    // validate response
-    // return routeId
-    // else error message
+    let resp = await axios.post('/api/routes', JSON.stringify(routeObject));
+    let routeData;
+    if (!resp.data) {
+        flashMessages({"danger": "the server sent no data back"});
+    } else if (resp.data.errors) {
+        flashMessages(resp.data.errors);
+    } else {
+        try {
+            routeData=resp.data.route;
+        } catch (e) {
+            flashMessages(e);
+            return false;
+        };
+    };
+    try {
+        return routeData.id
+    } catch (e) {
+        flashMessages(e);
+        return false;
+    }
 };
 
-async function saveCheckpoints(checkpointsArray) {
+async function saveCheckpoints (checkpointsArray) {
     const checkpointIds = []
     for (let checkpoint of checkpointsArray) {
-        let resp = axios.post('/api/checkpoitns', JSON.stringify(checkpoint));
+        let resp = await axios.post('/api/checkpoitns', JSON.stringify(checkpoint));
         // validate response
         // push checkpointId to checkpointIds
     };
@@ -384,11 +438,12 @@ async function saveCheckpoints(checkpointsArray) {
 
 async function saveCheckpointsRoutes (cprArray) {
     for (let cpr of cprArray) {
-        let resp = axios.post('/api/checkpoints-routes', JSON.stringify(cpr));
+        let resp = await axios.post('/api/checkpoints-routes', JSON.stringify(cpr));
         // validate response
     };
     // all good, return this:
     displayMe = "Route successfully saved."
-    return {info: displayMe};
+    return {success: {info: displayMe}};
     // else return error message
+    return {errors: {apiError: "something went wrong dude"}}
 }

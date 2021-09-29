@@ -1,6 +1,6 @@
 console.log('app.js');
 
-const loggedInUserId = $('#g-user') ? $('#g-user').value : false;
+const loggedInUserId = $('#g-user') ? $('#g-user')[0].value : false;
 
 const flashDiv = document.querySelector('#flashes');
 if (document.querySelector('#error-table')) {
@@ -166,7 +166,7 @@ function parseCpId(elementId) {
     return false;
 };
 
-function handleErrors(errs) {
+function flashMessages(errs) {
     flashDiv.innerHTML = "";
     if (typeof errs === "object") {
         let errsKeys = Object.keys(errs);
@@ -186,7 +186,7 @@ function handleErrors(errs) {
         }
     } else {
         console.error(errs)
-        handleErrors({"thrown error": "not sure what.... better check into it"})
+        flashMessages({"thrown error": "not sure what.... better check into it"})
     }
 };
 
@@ -234,7 +234,7 @@ async function deleteOrDont(evt, table) {
             return false;
         };
     } catch (e) {
-        handleErrors(e);
+        flashMessages(e);
         return false;
     };
 };

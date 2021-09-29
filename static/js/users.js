@@ -42,6 +42,6 @@ defaultLocationSelector.change((evt) => {
         location.reload();
         previewRoute();
     } else {
-        handleErrors({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
+        flashMessages({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
     }
 });

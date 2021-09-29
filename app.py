@@ -372,19 +372,16 @@ def display_available_routes():
             new_route = Route(
                 user_id = request.json['user_id']
                 )
+            if 'route_name' in request.json:
+                new_route.route_name = request.json['route_name']
+            if 'bike_type' in request.json:
+                new_route.bike_type = request.json['bike_type']
+            db.session.add(new_route)
+            db.session.commit()
         except:
             errors['errors']['missing data error'] = "User ID is required to create a new route."
-        if 'route_name' in request.json:
-            new_route.route_name = request.json['route_name']
-        if 'bike_type' in request.json:
-            new_route.bike_type = request.json['bike_type']
-        db.session.add(new_route)
-        db.session.commit()
-
-        if errors['errors']:
-            return Response(errors['errors'], status=401, mimetype='application/json')
-
-        return Response (jsonify({"route":new_route.serialize()}), status=201)
+            
+        return (jsonify(route=new_route.serialize()), 201)
 
 @app.route('/api/routes/<int:route_id>')
 def display_saved_route():
@@ -413,7 +410,7 @@ def create_new_checkpoint():
     db.session.add(new_checkpoint)
     db.session.commit()
 
-    return Response(jsonify({"checkpoint":new_checkpoint.serialize()}), status=201, mimetype='application/json')
+    return (jsonify(checkpoint=new_checkpoint.serialize()), 201)
     
 @app.route('/api/checkpoints/<int:checkpoint_id>')
 def display_specific_checkpoint():
@@ -435,7 +432,7 @@ def create_new_m2m_checkpoint_route():
         route_order=request.json['route_order']
     )
     
-    return Response(jsonify({"checkpoint-route":new_checkpoint_route.serialize()}), status=201, mimetype='application/json')
+    return (jsonify(checkpoint_route=new_checkpoint_route.serialize()), 201)
 
 ########################
 ##### error routes #####
