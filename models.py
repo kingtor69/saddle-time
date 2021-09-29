@@ -18,15 +18,6 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    def toJSON(self):
-        """
-        this method adapted from
-        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
-        answer by 
-        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
-        """
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -61,6 +52,21 @@ class User(db.Model):
         else:
             return self.first_name or self.last_name or None
 
+    def serialize_users(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "fav_bike": self.fav_bike,
+            "bike_image_url": self.bike_image_url,
+            "default_bike_type": self.default_bike_type,
+            "default_geocode_lat": self.default_geocode_lat,
+            "default_geocode_lng": self.default_geocode_lng,
+            "units": self.units
+        }
+
     @classmethod
     def hashpass(cls, username, password):
         """Generate new user with username and hashed password only, other fields still to be populated.
@@ -90,15 +96,6 @@ class Route(db.Model):
 
     __tablename__ = "routes"
 
-    def toJSON(self):
-        """
-        this method adapted from
-        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
-        answer by 
-        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
-        """
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
@@ -113,20 +110,19 @@ class Route(db.Model):
 
     checkpoint_route = db.relationship("RouteCheckpoint", backref="route_checkpoint", cascade="all, delete")
 
+    def serialize_routes(self):
+        return {
+            "id": self.id,
+            "route_name": self.route_name,
+            "timestamp": self.timestamp,
+            "user_id": self.user_id
+        }
+
 class Checkpoint(db.Model):
     """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. Checkpoints are saved with user who created them and associated with routes in the ORM RouteCheckpoint (below). They can be copied by other users who see a checkpoint they want to use in their own route. 
     """
 
     __tablename__ = "checkpoints"
-
-    def toJSON(self):
-        """
-        this method adapted from
-        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
-        answer by 
-        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
-        """
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     id = db.Column(db.Integer,
                    primary_key=True,
@@ -138,21 +134,27 @@ class Checkpoint(db.Model):
                         nullable=False)
     checkpoint_lng = db.Column(db.Float,
                         nullable=False)
-    
+
+    def serialize_checkpoints(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "checkpoint_display_name": self.checkpoint_display_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "fav_bike": self.fav_bike,
+            "bike_image_url": self.bike_image_url,
+            "default_bike_type": self.default_bike_type,
+            "checkpoint_lat": self.checkpoint_lat,
+            "checkpoint_lng": self.checkpoint_lng
+        }
+
+
 class RouteCheckpoint(db.Model):
     """Route-checkpoint model shows in what route and in what order checkpoints are used. These are not linked directly to user who created them because both the route and the checkpoint are. 
     """
 
     __tablename__ = "route_checkpoints"
-
-    def toJSON(self):
-        """
-        this method adapted from
-        https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
-        answer by 
-        https://stackoverflow.com/users/112731/onur-y%c4%b1ld%c4%b1r%c4%b1m
-        """
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     id = db.Column(db.Integer,
                    primary_key=True,
@@ -163,3 +165,11 @@ class RouteCheckpoint(db.Model):
                               db.ForeignKey("checkpoints.id"))
     route_order = db.Column(db.Integer,
                             nullable=False)
+
+    def serialize_cprs(self):
+        return {
+            "id": self.id,
+            "route_id": self.route_id,
+            "checkpoint_id": self.checkpoint_id,
+            "route_order": self.route_order
+        }

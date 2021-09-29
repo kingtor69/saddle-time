@@ -376,7 +376,7 @@ def display_available_routes():
             missing_data_errors.append('request did not contain routing data')
         try:
             new_route = Route(user_id = route['user_id'])
-            new_route_json = new_route.toJSON()
+            new_route_serialized = new_route.serialize_routes()
             if 'route_name' in route:
                 new_route.route_name = route['route_name']
             if 'bike_type' in route:
@@ -395,26 +395,27 @@ def display_available_routes():
             missing_data_errors.append('there must be at least two checkpoints to save a route')
         try:
             for checkpoint in checkpoints:
-                new_checkpoints.append(jsonify(Checkpoint(
+                new_checkpoint = Checkpoint(
                     checkpoint_lat=checkpoint['lat'],
                     checkpoint_lng=checkpoint['lng']
-                )))
+                )
+                new_checkpoints.append(new_checkpoint.serialize_checkpoints())
             db.session.add_all(checkpoints)
             db.session.commit()
         except:
             errors['checkpoint error'] = 'checkpoint data failed to populate correctly in database'
-
 
         # checkpoints-routes (cprs) many-to-many table
         new_cprs = []
         route_order = 0
         try:
             for checkpoint in checkpoints:
-                new_cprs.append(jsonify(RouteCheckpoint(
+                new_cpr = RouteCheckpoint(
                     route_id=new_route.id, 
                     checkpoint_id=checkpoint.id, 
                     route_order=route_order
-                )))
+                )
+                new_cprs.append((new_cpr.serialize_cprs()))
                 route_order += 1
             db.session.add_all(new_cprs)
             db.session.commit()
@@ -426,10 +427,11 @@ def display_available_routes():
         if errors['errors']:
             return Response(errors['errors'], status=401, mimetype='application/json')
         response_dict = {
-            "route": new_route,
+            "route": new_route_serialized,
             "checkpoints": new_checkpoints,
             "checkpoints-routes": new_cprs
         }
+
         return Response (response_dict, status=201, mimetype='application/json')
 
 @app.route('/api/routes/<int:route_id>')
