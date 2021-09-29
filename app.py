@@ -366,80 +366,25 @@ def display_available_routes():
         return render_template('routes.html', routes=routes)
     if request.method == "POST":
         errors = {'errors': {}}
-        missing_data_errors = []
         if not request.json:
             errors['errors']['JSON error'] = 'requests must be of type application/json'
-        # route table
-        if 'route' in request.json:
-            route = request.json['route']
-        else:
-            missing_data_errors.append('request did not contain routing data')
-        # try:
-        new_route = Route(user_id = route['user_id'])
-        if 'route_name' in route:
-            new_route.route_name = route['route_name']
-        if 'bike_type' in route:
-            new_route.bike_type = route['bike_type']
+        try:
+            new_route = Route(
+                user_id = request.json['user_id']
+                )
+        except:
+            errors['errors']['missing data error'] = "User ID is required to create a new route."
+        if 'route_name' in request.json:
+            new_route.route_name = request.json['route_name']
+        if 'bike_type' in request.json:
+            new_route.bike_type = request.json['bike_type']
         db.session.add(new_route)
-        # except:
-        #     errors['route error'] = 'route data failed to populate correctly in database'
-        # checkpoint table
-        checkpoints = []
-        new_checkpoints = []
-        if 'checkpoints' in request.json:
-            checkpoints=request.json['checkpoints']
-        else:
-            missing_data_errors.append('request did not include any checkpoint data')
-        if len(checkpoints) < 2:
-            missing_data_errors.append('there must be at least two checkpoints to save a route')
-        # try:
-        for checkpoint in checkpoints:
-            new_checkpoint = Checkpoint(
-                checkpoint_lat=checkpoint['lat'],
-                checkpoint_lng=checkpoint['lng'],
-                user_id=route['user_id']
-            )
-            new_checkpoints.append(new_checkpoint)
-        db.session.add_all(new_checkpoints)
         db.session.commit()
-        # except:
-        #     errors['checkpoint error'] = 'checkpoint data failed to populate correctly in database'
 
-        # checkpoints-routes (cprs) many-to-many table
-        new_cprs = []
-        route_order = 0
-        # try:
-        for checkpoint in new_checkpoints:
-            new_cpr = RouteCheckpoint(
-                route_id=new_route.id, 
-                route_order=route_order,
-                checkpoint_id=checkpoint.id
-            )
-            new_cprs.append(new_cpr)
-            route_order += 1
-        db.session.add_all(new_cprs)
-        db.session.commit()
-        # except:
-        #     errors['many-to-many error'] = 'checkpoint and route data failed to make many-to-many connections'
-
-        if len(missing_data_errors) > 0:
-            errors['errors']['missing data errors'] = missing_data_errors
         if errors['errors']:
             return Response(errors['errors'], status=401, mimetype='application/json')
 
-        new_route_serialized = new_route.serialize()
-        new_checkpoints_serialized = [c.serialize for c in new_checkpoints]
-        new_cprs_serialized = [cpr.serialize for cpr in new_cprs]
-        # new_route_serialized = serialize_route(new_route)
-        # new_checkpoints_serialized = [serialize_checkpoint(c) for c in new_checkpoints]
-        # new_cprs_serialized = [serialize_cpr(cpr) for cpr in new_cprs]
-        response_dict = {
-            "route": new_route_serialized,
-            "checkpoints": new_checkpoints_serialized,
-            "checkpoints-routes": new_cprs_serialized
-        }
-
-        return Response ({"route":new_route_serialized,"checkpoints":new_checkpoints_serialized,"checkpoints-routes":new_cprs_serialized}, status=201, mimetype='application/json')
+        return Response (jsonify({"route":new_route.serialize()}), status=201)
 
 @app.route('/api/routes/<int:route_id>')
 def display_saved_route():
@@ -456,6 +401,20 @@ def edit_saved_route():
 def display_users_checkpoints():
     """Returns list of logged-in user's checkpoints."""
 
+@app.route('/api/checkpoints', methods=["POST"])
+def create_new_checkpoint():
+    new_checkpoint = Checkpoint(
+        user_id=request.json['user_id'],
+        checkpoint_display_name=request.json['checkpoint_display_name'],
+        checkpoint_lat=request.json['checkpoint_lat'],
+        checkpoint_lng=request.json['checkpoint_lng']
+    )
+
+    db.session.add(new_checkpoint)
+    db.session.commit()
+
+    return Response(jsonify({"checkpoint":new_checkpoint.serialize()}), status=201, mimetype='application/json')
+    
 @app.route('/api/checkpoints/<int:checkpoint_id>')
 def display_specific_checkpoint():
     """Returns geocode for a checkpoint selected by ID."""
@@ -465,6 +424,18 @@ def edit_checkpoint():
     """Allows logged in user to edit their checkpoints."""
 
 
+#######################################
+#### checkpoints-routes m2m routes ####
+#######################################
+@app.route('/api/checkpoints-routes', methods=["POST"])
+def create_new_m2m_checkpoint_route():
+    new_checkpoint_route = RouteCheckpoint(
+        route_id=request.json['route_id'],
+        checkpoint_id=request.json['checkpoint_id'],
+        route_order=request.json['route_order']
+    )
+    
+    return Response(jsonify({"checkpoint-route":new_checkpoint_route.serialize()}), status=201, mimetype='application/json')
 
 ########################
 ##### error routes #####
