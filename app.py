@@ -370,8 +370,6 @@ def display_available_routes():
         if not request.json:
             errors['errors']['JSON error'] = 'requests must be of type application/json'
         # route table
-        import pdb
-        pdb.set_trace()
         if 'route' in request.json:
             route = request.json['route']
         else:

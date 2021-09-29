@@ -364,8 +364,8 @@ function organizeRouteData(routeRawData) {
             "checkpoints": organizedCheckpointArray};
 };
 
+console.log(routeAndCheckpointData);
 async function saveRoute (routeAndCheckpointData) {
-    console.log(routeAndCheckpointData);
     let resp = axios.post('/api/routes', routeAndCheckpointData);
     // validate response
 };
