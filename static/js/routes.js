@@ -46,7 +46,7 @@ if (routeSaveForm) {
         e.preventDefault();
         let routeName = e.target[0].value;
         const displayMessage = {errors: {}};
-        const routeData = {};
+        const routeApiPrep = {};
         let routeApiData;
         let route_id;
         let checkpointApiData;
@@ -55,11 +55,11 @@ if (routeSaveForm) {
         let successOrError;
 
         if (routeName.length > 0 && routeName.length <= 40) {
-            routeData['route_name'] = routeName;
-            routeApiData = organizeRouteData(routeData);
+            routeApiPrep['route_name'] = routeName;
+            routeApiData = organizeRouteData(routeApiPrep);
             route_id = saveRoute(routeApiData);
             if (route_id) {
-                checkpointApiData = organizeCheckpointData(routeData, route_id);
+                checkpointApiData = organizeCheckpointData(routeApiPrep, route_id);
                 checkpointIds = saveCheckpoints(checkpointApiData);
             };
             if (checkpointIds) {
@@ -140,15 +140,15 @@ routePreviewButt.addEventListener('click', (e) => {
 
 async function previewRoute() {
     const queryData = dataFromQueryString();
-    const routeData = {};
+    const routePreviewPrep = {};
     for (let key in queryData) {
         if (isCheckpointKey(key)) {
-            routeData[key] = queryData[key];
+            routePreviewPrep[key] = queryData[key];
         };
     };
     let url = '/api/routes/preview?'
-    for (const key in routeData) {
-        url += `${key}=${routeData[key]}&`
+    for (const key in routePreviewPrep) {
+        url += `${key}=${routePreviewPrep[key]}&`
     };
     url = url.slice(0, -1);
     try {
@@ -256,7 +256,7 @@ function displayRoutes(routes, checkpoints) {
             units = parseUnits();
             processDistance(route, units);
             processElevationChange(route, units);
-            showDirections(routeData);
+            showDirections(routePreviewPrep);
         };
     };
 };
@@ -408,21 +408,21 @@ function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointId
 
 async function saveRoute (routeObject) {
     let resp = await axios.post('/api/routes', routeObject);
-    let routeData;
+    let routeSaveData;
     if (!resp.data) {
         flashMessages({"danger": "the server sent no data back"});
     } else if (resp.data.errors) {
         flashMessages(resp.data.errors);
     } else {
         try {
-            routeData=resp.data.route;
+            routeSaveData=resp.data.route;
         } catch (e) {
             flashMessages(e);
             return false;
         };
     };
     try {
-        return routeData.id;
+        return routeSaveData.id;
     } catch (e) {
         flashMessages(e);
         return false;
