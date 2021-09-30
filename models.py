@@ -54,8 +54,8 @@ class User(db.Model):
     default_geocode_lng = db.Column(db.Float)
     units = db.Column(db.String(8), default="imperial")
 
-    route = db.relationship("Route", backref="user_route", cascade="all, delete")
-    checkpoint = db.relationship("Checkpoint", backref="user_checkpoint", cascade="all, delete")
+    route = db.relationship("Route", cascade="all, delete", backref="user_route")
+    checkpoint = db.relationship("Checkpoint")
 
     def __repr__(self):
         return f'User#{self.id}: {self.username} {self.email} {self.first_name} {self.last_name} Favorite bike: {self.fav_bike} default routes: {self.default_bike_type}'
@@ -117,7 +117,7 @@ class Route(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.id"))
 
-    checkpoint_route = db.relationship("CheckpointRoute", backref="route_checkpoint", cascade="all, delete")
+    checkpoint_route = db.relationship("CheckpointRoute", cascade="all, delete", backref="route_cpr")
 
 class Checkpoint(db.Model):
     """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. Checkpoints are saved with user who created them and associated with routes in the ORM CheckpointRoute (below). They can be copied by other users who see a checkpoint they want to use in their own route. 
@@ -144,6 +144,8 @@ class Checkpoint(db.Model):
                         nullable=False)
     checkpoint_lng = db.Column(db.Float,
                         nullable=False)
+
+    checkpoint_route = db.relationship("CheckpointRoute")
 
 
 class CheckpointRoute(db.Model):

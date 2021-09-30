@@ -48,14 +48,16 @@ if (routeSaveForm) {
         const displayMessage = {errors: {}};
         const routeData = {};
         let routeApiData;
+        let route_id;
         let checkpointApiData;
+        let checkpointIds;
         let cprsApiData;
-        let routeId;
+        let successOrError;
+
         if (routeName.length > 0 && routeName.length <= 40) {
             routeData['route_name'] = routeName;
             routeApiData = organizeRouteData(routeData);
             route_id = saveRoute(routeApiData);
-            debugger;
             if (route_id) {
                 checkpointApiData = organizeCheckpointData(routeData, route_id);
                 checkpointIds = saveCheckpoints(checkpointApiData);
@@ -374,7 +376,7 @@ function organizeRouteData(routeRawData) {
 function organizeCheckpointData(routeRawData, route_id) {
     const organizedCheckpointArray = [];
     const checkpointKeys = [];
-    for (let key in routeData) {
+    for (let key in routeRawData) {
         if (isCheckpointKey(key)) {
             checkpointKeys.push(key);
         };
@@ -405,7 +407,7 @@ function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointId
 };
 
 async function saveRoute (routeObject) {
-    let resp = await axios.post('/api/routes', JSON.stringify(routeObject));
+    let resp = await axios.post('/api/routes', routeObject);
     let routeData;
     if (!resp.data) {
         flashMessages({"danger": "the server sent no data back"});
@@ -430,7 +432,7 @@ async function saveRoute (routeObject) {
 async function saveCheckpoints (checkpointsArray) {
     const checkpointIds = []
     for (let checkpoint of checkpointsArray) {
-        let resp = await axios.post('/api/checkpoitns', JSON.stringify(checkpoint));
+        let resp = await axios.post('/api/checkpoints', checkpoint);
         // validate response
         // push checkpointId to checkpointIds
     };
@@ -440,7 +442,7 @@ async function saveCheckpoints (checkpointsArray) {
 
 async function saveCheckpointsRoutes (cprArray) {
     for (let cpr of cprArray) {
-        let resp = await axios.post('/api/checkpoints-routes', JSON.stringify(cpr));
+        let resp = await axios.post('/api/checkpoints-routes', cpr);
         // validate response
     };
     // all good, return this:
