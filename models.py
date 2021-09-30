@@ -82,7 +82,7 @@ class User(db.Model):
     def authenticate(cls, username, password):
         """Validate correct username and password combination.
         Return user if valid, False if not.
-        """
+            """
 
         user = User.query.filter_by(username=username).first()
 
