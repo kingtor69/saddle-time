@@ -164,13 +164,11 @@ async function previewRoute() {
         flashMessages(resp.data.Errors);
     };
 
-    try {
-        let routes = resp.data.routes;
-        let waypoints = resp.data.waypoints;
-        displayRoutes(routes, waypoints);
-    } catch {
-        flashMessages({"info": "Please enter at least two valid checkpoints."})
-    }
+    // try {
+        displayRoutes(resp.data.routes, resp.data.waypoints);
+    // } catch {
+        // flashMessages({"danger": "displayRoutes is failing to show directions and stuff"})
+    // }
 };
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints
@@ -256,7 +254,7 @@ function displayRoutes(routes, checkpoints) {
             units = parseUnits();
             processDistance(route, units);
             processElevationChange(route, units);
-            showDirections(routePreviewPrep);
+            showDirections(route);
         };
     };
 };
