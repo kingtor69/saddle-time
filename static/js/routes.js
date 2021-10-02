@@ -47,47 +47,20 @@ if (routeSaveForm) {
         let routeName = e.target[0].value;
         const displayMessage = {errors: {}};
         const routeApiPrep = {};
-        let routeData;
         let routeApiData;
-        let route_id;
-        let checkpointApiData;
-        let checkpointData;
-        const checkpointIds=[];
-        let cprsApiData;
-        let successOrError;
 
-        if (routeName.length > 0 && routeName.length <= 40) {
+        if (routeName.length >= 0 && routeName.length <= 40) {
             routeApiPrep['route_name'] = routeName;
             routeApiData = organizeRouteData(routeApiPrep);
-            routeData = saveRoute(routeApiData);
-            debugger;
-            if ('id' in routeData) {
-                checkpointApiData = organizeCheckpointData(routeApiPrep, route_id);
-                checkpointData = saveCheckpoints(checkpointApiData);
-                for (let cp of checkpointData) {
-                    if ('id' in cp) {
-                        checkpointIds.push(cp.id);
-                    };
-                };
-            };
-            if (checkpointIds.length > 1) {
-                cprsApiData = organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds);
-                successOrError = saveCheckpointsRoutes(cprsApiData);
-            } else {
-                handleErrors({"info": "API call returned fewer than 2 checkpoints."});
-            };
+            saveRoute(routeApiData);
         } else if (routeName.length > 0) {
             displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
-        };
-        if ("success" in successOrError) {
-            flashMessages(successOrError.success);
-        } else if ("errors" in successOrError) {
-            flashMessages(successOrError.errors);
         } else {
-            flashMessages({"error error": `This was neither a success nor a failure. What gives?`});
-            // flashMessages(successOrError);
+            displayMessage.errors['warning'] = "I didn't think this error message would ever be seen. My bad."
         };
-        displayMessage[successOrErrorKey] = successOrError[successOrErrorKey];
+        if (displayMessage.errors) {
+            flashMessages(displayMessage.errors)
+        };
     });
 };
 
@@ -416,50 +389,67 @@ function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointId
 };
 
 async function saveRoute (routeObject) {
+    let routeData;
+    let route_id;
+    let checkpointApiData;
+    let checkpointData;
+    const checkpoints = []
+    const checkpointIds=[];
+    let cprsApiData;
+    let successOrError;
+
     let resp = await axios.post('/api/routes', routeObject);
-    let routeSaveData;
     if (!resp.data) {
         flashMessages({"danger": "the server sent no data back"});
+        return;
     } else if (resp.data.errors) {
         flashMessages(resp.data.errors);
+        return;
     } else {
         try {
             routeSaveData=resp.data.route;
         } catch (e) {
             flashMessages(e);
-            return false;
+            return;
         };
     };
-    try {
-        return routeSaveData;
-    } catch (e) {
-        flashMessages(e);
-        return false;
-    }
+    if ('id' in routeData) {
+        checkpointApiData = organizeCheckpointData(routeApiPrep, route_id);
+        for (let checkpoint of checkpointsArray) {
+            let resp = await axios.post('/api/checkpoints', checkpoint);
+            // validate response
+            checkpoints.push(checkpoint);
+            // push checkpointId to checkpointIds
+        };
+    
+        for (let cp of checkpointData) {
+            if ('id' in cp) {
+                checkpointIds.push(cp.id);
+            };
+        };
+    } else {
+        flashMessages({"danger": "something went wrong saving this route"});
+        return;
+    };
+    if (checkpointIds.length > 1) {
+        cprsApiData = organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds);
+        for (let cpr of cprArray) {
+            let resp = await axios.post('/api/checkpoints-routes', cpr);
+            console.log(resp);
+    
+            // validate response
+        };
+        // all good, return this:
+        flashMessages({"success": "Route successfully saved."});
+        return;
+    } else {
+        flashMessages({"info": "API call returned fewer than 2 valid checkpoints."});
+        return;
+    };
 };
 
 async function saveCheckpoints (checkpointsArray) {
-    const checkpoints = []
-    for (let checkpoint of checkpointsArray) {
-        let resp = await axios.post('/api/checkpoints', checkpoint);
-        // validate response
-        checkpoints.push(checkpoint);
-        // push checkpointId to checkpointIds
-    };
-    return checkpoints;
-    // else error message
 };
 
 async function saveCheckpointsRoutes (cprArray) {
-    for (let cpr of cprArray) {
-        let resp = await axios.post('/api/checkpoints-routes', cpr);
-        console.log(resp);
-
-        // validate response
-    };
-    // all good, return this:
-    displayMe = "Route successfully saved."
-    return {success: {info: displayMe}};
-    // else return error message
-    return {errors: {apiError: "something went wrong dude"}}
 }
