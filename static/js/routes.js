@@ -399,12 +399,15 @@ async function saveRoutePlus (routeObject, routeRawData) {
     let routeSaveData;
     let route_id;
     let checkpointApiData;
-    let checkpointData;
-    const checkpoints = [];
-    const checkpointsArray = [];
+    // let checkpointData;
+    // const checkpoints = [];
+    // const checkpointsArray = [];
     const checkpointIds=[];
+    // const cprArray=[];
     let cprsApiData;
-    let successOrError;
+    const checkpointErrors = ['danger'];
+    const cprErrors = ['danger'];
+    // let successOrError;
 
     let respRoute = await axios.post('/api/routes', routeObject);
     if (!respRoute.data) {
@@ -422,47 +425,47 @@ async function saveRoutePlus (routeObject, routeRawData) {
         };
     };
     if ('id' in routeSaveData) {
+        route_id = routeSaveData['id'];
         checkpointApiData = organizeCheckpointData(routeRawData, route_id);
-        let checkpointErrors;
         const checkpoints = [];
         for (let i=0; i<checkpointApiData.length; i++) {
-            debugger;
-            let respCheckpoints = await axios.post('/api/checkpoints', checkpointsArray[i]);
+            let respCheckpoints = await axios.post('/api/checkpoints', checkpointApiData[i]);
             if (!respCheckpoints.data) {
-                flashMessages({"info": "A checkpoint failed to save which scuttled the whole thing. Sorry, seems like something's wrong with the database."});
+                checkpointErrors.push(`Checkpoint #${i} failed to save.`)
             };
-            const checkpoint = respCheckpoints.data;
+            const checkpoint = respCheckpoints.data.checkpoint;
             checkpoints.push(checkpoint);
             if ('id' in checkpoint) {
                 checkpointIds.push(checkpoint.id)
-            }
+            };
         };
-        if (checkpointErrors) {
-            flashMessages({"danger": checkpointErrors})
+        if (checkpointErrors.length > 1) {
+            flashMessages(checkpointErrors)
             return;
         };
-        // for (let cp of checkpointApiData) {
-        //     if ('id' in cp) {
-        //         checkpointIds.push(cp.id);
-        //     };
-        // };
     } else {
         flashMessages({"danger": "something went wrong saving this route"});
         return;
     };
     if (checkpointIds.length > 1) {
         cprsApiData = organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds);
-        for (let cpr of cprArray) {
-            let resp = await axios.post('/api/checkpoints-routes', cpr);
-            console.log(resp);
-    
-            // validate response
+        let i=1;
+        for (let cpr of cprsApiData) {
+            let respCprs = await axios.post('/api/checkpoints-routes', cpr);
+            if (!('checkpoint_route' in respCprs.data)) {
+                cprErrors.push(`checkpoint-route placement #${i} failed to save.`)
+            };
+            i++;
+        };
+        if (cprErrors.length>1) {
+            flashMessages(cprErrors);
+            return;
         };
     } else {
         flashMessages({"info": "API call returned fewer than 2 valid checkpoints."});
         return;
     };
-    // we made it! all is good, so display success message and return:
+
     flashMessages({"success": "Route successfully saved."});
     return;
 };

@@ -166,27 +166,41 @@ function parseCpId(elementId) {
     return false;
 };
 
-function flashMessages(errs) {
+function flashMessages(msg) {
     flashDiv.innerHTML = "";
-    if (typeof errs === "object") {
-        let errsKeys = Object.keys(errs);
-        const errCodes = ['info', 'success', 'danger', 'primary', 'secondary']
-        for (let key of errsKeys) {
-            newError = document.createElement('p');
-            newError.innerHTML = ""
-            if (errCodes.includes(key)) {
-                newError.classList.add(`text-${key}`);
-                newError.innerText = `${errs[key]}`
+    if (typeof msg === "object") {
+        let msgsKeys = Object.keys(msg);
+        const msgsCodes = ['info', 'success', 'danger', 'primary', 'secondary']
+        for (let key of msgsKeys) {
+            newMsg = document.createElement('p');
+            newMsg.innerHTML = ""
+            if (msgsCodes.includes(key)) {
+                newMsg.classList.add(`text-${key}`);
+                newMsg.innerText = `${msg[key]}`
             } else {
-                newError.classList.add('text-warning');
-                newError.innerText = `${key}: ${errs[key]}`
+                newMsg.classList.add('text-warning');
+                newMsg.innerText = `${key}: ${msg[key]}`
             }
-            flashDiv.appendChild(newError)
+            flashDiv.appendChild(newMsg)
+            flashDiv.appendChild(document.createElement('br'))
+        }
+    } else if (typeof msg === "array") {
+        let textColor = "primary";
+        let start = 0;
+        if (msg[0] in msgCodes) {
+            textColor = msg[0];
+            start = 1;
+        };
+        for (let i=start; i<msg.length; i++) {
+            newMsg = document.createElement('p');
+            newMsg.innerHTML = ""
+            newMsg.classList.add(`text-${textColor}`);
+            newMsg.innerText = line
+            flashDiv.appendChild(newMsg)
             flashDiv.appendChild(document.createElement('br'))
         }
     } else {
-        console.error(errs)
-        flashMessages({"thrown error": "not sure what.... better check into it"})
+        flashMessages({"info": msg})
     }
 };
 

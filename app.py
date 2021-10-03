@@ -402,11 +402,14 @@ def display_users_checkpoints():
 
 @app.route('/api/checkpoints', methods=["POST"])
 def create_new_checkpoint():
+    checkpoint_name = ''
+    if 'checkpoint_name' in request.json:
+        checkpoint_name = request.json['checkpoint_display_name']
     new_checkpoint = Checkpoint(
         user_id=request.json['user_id'],
-        checkpoint_display_name=request.json['checkpoint_display_name'],
-        checkpoint_lat=request.json['checkpoint_lat'],
-        checkpoint_lng=request.json['checkpoint_lng']
+        checkpoint_display_name=checkpoint_name,
+        checkpoint_lat=request.json['lat'],
+        checkpoint_lng=request.json['lng']
     )
 
     db.session.add(new_checkpoint)
