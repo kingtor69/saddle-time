@@ -1,5 +1,4 @@
 console.log('routes.js');
-const queryString = parseCurrentQueryString();
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
 const routeSaveDiv = document.querySelector('#save-div')
@@ -20,6 +19,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
         routePreviewButt.hidden = false;
         routeSaveDiv.hidden = false;
         previewRoute();
+    } else if ('id' in queryString) {
+        loadRoute(queryString.id);
     };
 });
 
@@ -128,12 +129,15 @@ routePreviewButt.addEventListener('click', (e) => {
     };
 });
 
-async function previewRoute() {
-    const queryData = dataFromQueryString();
-    const routePreviewPrep = {};
-    for (let key in queryData) {
-        if (isCheckpointKey(key)) {
-            routePreviewPrep[key] = queryData[key];
+async function previewRoute(routePreviewPrep={}) {
+    if (!("route" in routePreviewPrep)) {
+        const queryData = dataFromQueryString();
+        for (let key in queryData) {
+            if (isCheckpointKey(key)) {
+                routePreviewPrep[key] = queryData[key];
+            } else if (key === "routeName") {
+                routePreviewPrep[key] = queryData[key];
+            };
         };
     };
     let url = '/api/routes/preview?'
@@ -468,4 +472,20 @@ async function saveRoutePlus (routeObject, routeRawData) {
 
     flashMessages({"success": "Route successfully saved."});
     return;
+};
+
+async function loadRoute(routeId) {
+    let respRoute = await axios.get(`/api/routes/${routeId}`);
+    const routeObject = {routeName: respRoute.data.route_name};
+    let respCprs = await axios.get(`/api/checkpoints-routes?routeId=${routeId}`);
+    for (let routeOrder in checkpointData) {
+        checkpointID = checkpointData[routeOrder]
+        let respCheckpoints = await axios.get(`/api/checkpoints/${checkpointId}`)
+        routeObject[`${routeOrder}-lat`] = respCheckpoints.data.lat;         
+        routeObject[`${routeOrder}-lng`] = respCheckpoints.data.lng;           
+    }
+    
+    // should create an object like this:
+    // {0-lat: '35.191097', 0-lng: '-106.582998', 999-lat: '35.12415', 999-lng: '-106.540495'}
+    previewRoute(route);
 };

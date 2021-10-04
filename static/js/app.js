@@ -1,4 +1,6 @@
 console.log('app.js');
+const queryString = parseCurrentQueryString();
+
 
 const loggedInUserId = $('#g-user') ? $('#g-user')[0].value : false;
 

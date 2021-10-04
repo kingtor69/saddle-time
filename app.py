@@ -436,7 +436,9 @@ def create_new_m2m_checkpoint_route():
         checkpoint_id=request.json['checkpoint_id'],
         route_order=request.json['route_order']
     )
-    
+    db.session.add(new_checkpoint_route)
+    db.session.commit()
+
     return (jsonify(checkpoint_route=new_checkpoint_route.serialize()), 201)
 
 ########################
