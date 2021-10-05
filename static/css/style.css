@@ -101,3 +101,7 @@ li.single-leg:before {
 button.transparent-bg {
 	border: none;
 }
+
+.unmarked-list {
+	list-style-type: none;
+}
