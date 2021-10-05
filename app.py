@@ -385,13 +385,14 @@ def save_new_route():
         
     return (jsonify(route=new_route.serialize()), 201)
 
-@app.route('/api/routes/<int:route_id>')
-def display_saved_route():
-    """Build the query string from a saved route and redirect to '/route'. This can be accessed by any user, or by a guest who is not logged in."""
-
-@app.route('/api/routes/<int:route_id>/edit')
+@app.route('/api/routes/<int:route_id>', methods=["PATCH"])
 def edit_saved_route():
-    """The user who created a route can edit their route here. Requires authentication."""
+    """Edit an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
+
+@app.route('/api/routes/<int:route_id>', methods=["DELETE"])
+def delete_saved_route():
+    """Delete an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
+    
 
 #############################
 ##### checkpoint routes #####
