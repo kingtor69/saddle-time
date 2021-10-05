@@ -172,7 +172,7 @@ function flashMessages(msg) {
     flashDiv.innerHTML = "";
     if (typeof msg === "object") {
         let msgsKeys = Object.keys(msg);
-        const msgsCodes = ['info', 'success', 'danger', 'primary', 'secondary']
+        const msgsCodes = ['info', 'success', 'danger', 'primary', 'secondary'];
         for (let key of msgsKeys) {
             newMsg = document.createElement('p');
             newMsg.innerHTML = ""
@@ -195,15 +195,15 @@ function flashMessages(msg) {
         };
         for (let i=start; i<msg.length; i++) {
             newMsg = document.createElement('p');
-            newMsg.innerHTML = ""
+            newMsg.innerHTML = "";
             newMsg.classList.add(`text-${textColor}`);
-            newMsg.innerText = line
-            flashDiv.appendChild(newMsg)
-            flashDiv.appendChild(document.createElement('br'))
-        }
+            newMsg.innerText = line;
+            flashDiv.appendChild(newMsg);
+            flashDiv.appendChild(document.createElement('br'));
+        };
     } else {
-        flashMessages({"info": msg})
-    }
+        flashMessages({"info": msg});
+    };
 };
 
 function dataFromQueryString() {
@@ -216,7 +216,7 @@ function dataFromQueryString() {
     for (let i = 0; i < data.length; i++) {
         let datum = data[i].split('=');
         queryObject[decodeURIComponent(datum[0])] = decodeURIComponent(datum[1]);
-    }
+    };
     return queryObject;
 };
 

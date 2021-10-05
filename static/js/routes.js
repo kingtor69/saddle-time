@@ -124,6 +124,8 @@ routePreviewButt.addEventListener('click', (e) => {
     if (goodRouteData()) {
         location.reload();
         // previewRoute();
+    } else if (retrieveRouteData()) {
+        
     } else {
         flashMessages({"feed me more data": "there is not enough valid route data to preview a route (within 'submit' eventListener)"});
     };
