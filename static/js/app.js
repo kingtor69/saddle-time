@@ -1,8 +1,8 @@
 console.log('app.js');
 const queryString = parseCurrentQueryString();
-const routeDeleteButts = document.querySelectorAll('delete-route');
-const routeShowButts = document.querySelectorAll('show-route');
-const routeEditButts = documents.querySelector('edit-routes');
+const routeDeleteButts = document.querySelectorAll('.route-delete');
+const routeShowButts = document.querySelectorAll('.route-show');
+const routeEditButts = document.querySelector('.routes-edit');
 
 const loggedInUserId = $('#g-user') ? $('#g-user')[0].value : false;
 
@@ -257,30 +257,45 @@ async function deleteOrDont(evt, table) {
     };
 };
 
-for (let routeDelete of routeDeleteButts) {
-    routeDeleteButts.addEventListener('click', (e) => {
-        e.preventDefault(e);
-        deleteRoute(routeDelete.id);
+if (routeDeleteButts) {
+    for (let routeDelete of routeDeleteButts) {
+        routeDelete.addEventListener('click', (e) => {
+            e.preventDefault(e);
+            const id = parseInt(routeDelete.id);
+            deleteRoute(id);
+        });
+    };
+};
+    
+if (routeShowButts) {
+    for (let routeShow of routeShowButts) {
+        routeShow.addEventListener('click', (e) => {
+            e.preventDefault(e);
+            const id = parseInt(routeShow.id);
+            loadRoute(id);
+        });
     };
 };
 
-for (let routeShow of routeShowButts) {
-    routeDeleteButts.addEventListener('click', (e) => {
-        e.preventDefault(e);
-        loadRoute(routeShow.id);
+if (routeEditButts) {
+    for (let routeEdit of routeEditButts) {
+        routeEdit.addEventListener('click', (e) => {
+            e.preventDefault(e);
+            const id = parseInt(routeEdit.id);
+            editRoute(id);
+        });
     };
 };
 
-for (let routeEdit of routeEditButts) {
-    routeDeleteButts.addEventListener('click', (e) => {
-        e.preventDefault(e);
-        editRoute(routeEdit.id);
-    };
-};
-
-async function deleteRoute(id) = {
-    let resp = await axios.delete(`/api/routes/${id}`);
-    if ("success" in resp.data) {
+async function deleteRoute(id) {
+    const url = `/api/routes/${id}`
+    console.log(url)
+    let resp = await axios.delete(url);
+    console.log(resp)
+    if ("delete" in resp.data) {
         flashMessages({"success": `You have successfully deleted route #${id}`});
+    } else {
+        flashMessages({"info": `Something went wrong while deleting route #${id}. Odd, that.`})
     };
+
 };

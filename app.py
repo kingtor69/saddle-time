@@ -163,6 +163,10 @@ def return_user_profile(user_id):
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     user_routes = Route.query.filter_by(user_id=user.id).all()
+    for route in user_routes:
+        if not route.route_name:
+            route.route_name=logical_date_time(route.timestamp)
+    user_routes.sort(key=lambda x: x.timestamp, reverse=True)
 
     return render_template ('user.html', user=user, routes=user_routes)
 
@@ -389,9 +393,17 @@ def save_new_route():
 def edit_saved_route():
     """Edit an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
 
-@app.route('/api/routes/<int:route_id>', methods=["DELETE"])
+@app.route('/api/routes/<int:id>', methods=["DELETE"])
 def delete_saved_route():
     """Delete an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
+    route = Route.query.get_or_404(id)
+    cprs = CheckpointRoute.query.filter_by(route_id=id)
+    for cpr in cprs:
+        db.session.delete(cpr)
+    db.session.commit()
+    db.session.delete(route)
+    db.session.commit()
+    return jsonify({"delete": "confirmed"})
     
 
 #############################

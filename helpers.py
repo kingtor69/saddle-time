@@ -2,7 +2,7 @@ import os
 import requests
 from flask import session
 from models import CheckpointRoute, User, Route, Checkpoint, CheckpointRoute
-from helpers import *
+from datetime import datetime
 
 #######################
 ## helpful variables ##
@@ -248,3 +248,16 @@ def stringify_mb_coordinates_for_mq(geoarray):
         geostring += f"{geocode[1]},{geocode[0]},"
     geostring = geostring[:-1]
     return geostring
+
+def logical_date_time(timestamp):
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    hour = timestamp.hour
+    am_or_pm = "AM"
+    if hour >= 12:
+        am_or_pm = "PM"
+    if hour > 12:
+        hour -= 12
+    if hour == 0:
+        hour = 24
+
+    return f'{timestamp.year} {months[timestamp.month]} {timestamp.day}, {hour}:{timestamp.minute}{am_or_pm}'
