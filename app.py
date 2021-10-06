@@ -223,7 +223,7 @@ def logout():
 ########################
 ##### route routes #####
 ########################
-@app.route('/routes/new')
+@app.route('/routes')
 def prepare_new_route():
     """prepare for new route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 

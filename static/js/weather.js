@@ -11,7 +11,6 @@ const weatherDetails = document.querySelector('#weather-details');
 
 selectTwo(weatherLocationSelector);
 
-const queryString = parseCurrentQueryString();
 let weatherLocation = weatherLocationSelector.select2('data')[0].text; defaultLocation; 
 let units = queryString.units; unitsSelector.value;
 

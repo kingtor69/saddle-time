@@ -29,7 +29,7 @@ if (loginFromRoute) {
         e.preventDefault();
         const queryStringObject = parseCurrentQueryString();
         localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
-        location.href="/login?return=/routes/new"
+        location.href="/login?return=/routes"
     });
 };
 
@@ -38,7 +38,7 @@ if (signupFromRoute) {
         e.preventDefault();
         const queryStringObject = parseCurrentQueryString();
         localStorage.setItem('routeInProgress', JSON.stringify(queryStringObject));
-        location.href="/users/signup?return=/routes/new"
+        location.href="/users/signup?return=/routes"
     });
 };
 
