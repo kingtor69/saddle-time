@@ -59,7 +59,6 @@
           <tr>
             <th class="h3">Saved routes:</th>
             <th>delete route</th>
-            <th>edit route</th>
           </tr>
         </thead>
         <tbody>
@@ -68,7 +67,6 @@
             <td><button class="btn btn-outline-primary btn-small route-view" id=
               {{ route.id }}v">{{ route.route_name }}</button></td>
             <td><button class="btn btn-outline-danger btn-small route-delete" id="{{ route.id }}d"><i class="fa fa-trash text-warning fa-sm"></i></button></td>
-            <td><button class="btn btn-outline-info btn-small route-edit" id="{{ route.id }}e"><i class="fas fa-edit fa-sm"></i></button></td>
           </tr>
           {% endfor %}
         </tbody>

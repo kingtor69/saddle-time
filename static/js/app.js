@@ -53,24 +53,28 @@ function selectTwo(jQueryElement) {
 };
 
 function updateUrl(queryAdditions, keepCurrent) {
-    let queryString = "?";
     let query;
     keepCurrent ? query = parseCurrentQueryString() : query = {};
     for (let key of Object.keys(queryAdditions)) {
         query[key] = queryAdditions[key];
     };
-    let i = 0;
-    for (let key of Object.keys(query)) {
-        if (i > 0) {
-            queryString += "&"
-        }
-        queryString += `${key}=${query[key]}`
-        i++;
-    };
+    queryString = queryStringFromObject(query);
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
 };
 
+function queryStringFromObject(qObject) {
+    let qString = "?";
+    let i = 0;
+    for (let key of Object.keys(qObject)) {
+        if (i > 0) {
+            qString += "&"
+        }
+        qString += `${key}=${qObject[key]}`
+        i++;
+    };
+    return qString;
+}
 function parseCurrentQueryString() {
     const queryCurrent = new URLSearchParams(window.location.search);
     const queryObject = {};

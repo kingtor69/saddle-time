@@ -224,8 +224,8 @@ def logout():
 ##### route routes #####
 ########################
 @app.route('/routes')
-def prepare_new_route():
-    """prepare for new route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
+def create_edit_route():
+    """prepare for new route or view and edit an existing route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
     new_cp_id = int(request.args['new-id']) if request.args.get('new-id') else -1
