@@ -82,7 +82,7 @@ class FlaskRouteAPITestCase (TestCase):
         good_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preview{good_route_qString}')
         bad_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preview{bad_route_qString}')
         bad_url_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preveiw{good_route_qString}')
-        very_bad_url_resp = requests.get(f'http://127.0.0.1:5000/aapi/routes/preveiw{good_route_qString}')
+        very_bad_url_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preveiw{good_route_qString}')
         
         self.assertEqual(good_resp.status_code, 200)
         self.assertNotIn("Errors", good_resp.json())

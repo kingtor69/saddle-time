@@ -223,7 +223,7 @@ def logout():
 ########################
 ##### route routes #####
 ########################
-@app.route('/routes')
+@app.route('/route')
 def create_edit_route():
     """prepare for new route or view and edit an existing route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
 
@@ -462,6 +462,6 @@ def display_404_message(err):
     """Display error message for 404."""
     if request.path.startswith('/users/'):
         return render_template('users/404.html'), 404
-    if request.path.startswith('/routes/'):
+    if request.path.startswith('/route/'):
         return render_template('routes/404.html'), 404
     return render_template('404.html'), 404
