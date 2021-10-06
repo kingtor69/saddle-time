@@ -289,11 +289,10 @@ if (routeEditButts) {
 
 async function deleteRoute(id) {
     const url = `/api/routes/${id}`
-    console.log(url)
     let resp = await axios.delete(url);
-    console.log(resp)
     if ("delete" in resp.data) {
         flashMessages({"success": `You have successfully deleted route #${id}`});
+        location.reload();
     } else {
         flashMessages({"info": `Something went wrong while deleting route #${id}. Odd, that.`})
     };

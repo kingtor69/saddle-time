@@ -288,7 +288,7 @@ def api_return_user_profile(user_id):
     user_obj[user_id]['units'] = user.units
     return jsonify(user_obj)
 
-@app.route('/api/users/<int:user_id>/delete', methods=["DELETE"])
+@app.route('/api/users/<int:user_id>', methods=["DELETE"])
 def delete_user(user_id):
     """Permanently deletes a user from the database using HTTP API call."""
     user = User.query.get_or_404(user_id)
@@ -394,7 +394,7 @@ def edit_saved_route():
     """Edit an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
 
 @app.route('/api/routes/<int:id>', methods=["DELETE"])
-def delete_saved_route():
+def delete_saved_route(id):
     """Delete an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
     route = Route.query.get_or_404(id)
     cprs = CheckpointRoute.query.filter_by(route_id=id)

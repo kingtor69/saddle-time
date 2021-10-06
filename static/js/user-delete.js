@@ -17,7 +17,7 @@ async function getUsernameFromId(id) {
 };
 
 async function deleteUser(id) {
-    resp = await axios.delete(`/api/users/${id}/delete`);
+    resp = await axios.delete(`/api/users/${id}`);
     const responseData = resp.data;
     return responseData;
 };
