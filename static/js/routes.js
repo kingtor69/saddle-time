@@ -65,8 +65,8 @@ if (routeSaveForm) {
 
         if (routeName.length >= 0 && routeName.length <= 40) {
             routeApiPrep['route_name'] = routeName;
-            routeApiData = organizeRouteData(routeApiPrep);
-            saveRoutePlus(routeApiData, routeRawData, false);
+            routeApiData = organizeRouteData(routeApiPrep, routeRawData);
+            saveRoutePlus(routeApiData, false);
         } else if (routeName.length > 0) {
             displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
         } else {
@@ -392,14 +392,9 @@ function showDirections(route) {
     };
 };
 
-function organizeRouteData(routeRawData) {
+function organizeRouteData(routeApiData, routeRawData) {
     const organizedRouteData = {user_id: loggedInUserId,
-                                route_name: routeRawData.route_name};
-    
-    return organizedRouteData;
-};
-
-function organizeCheckpointData(routeRawData, route_id) {
+                                route_name: routeApiData.route_name};
     const organizedCheckpointArray = [];
     const checkpointKeys = [];
     for (let key in routeRawData) {
@@ -412,27 +407,16 @@ function organizeCheckpointData(routeRawData, route_id) {
         organizedCheckpointArray.push({
             lat: routeRawData[checkpointKeys[i]],
             lng: routeRawData[checkpointKeys[i+1]],
-            route_id: route_id,
             user_id: loggedInUserId
         });
     };
-    return organizedCheckpointArray;
+
+    return {route: organizedRouteData,
+        checkpoints: organizedCheckpointArray
+    };
 };
 
-function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds) {
-    const organizedCheckpointRoutesArray = [];
-    for (let i=0; i<checkpointIds.length; i++) {
-        const newCpr = {
-            route_id: route_id,
-            checkpoint_id: checkpointIds[i],
-            route_order: i
-        };
-        organizedCheckpointRoutesArray.push(newCpr);
-    }
-    return organizedCheckpointRoutesArray;
-};
-
-async function saveRoutePlus (routeObject, routeRawData, routeId) {
+async function saveRoutePlus (routeObject, routeId=false) {
     let routeSaveData;
     let checkpointApiData;
     const checkpointIds=[];
@@ -448,7 +432,7 @@ async function saveRoutePlus (routeObject, routeRawData, routeId) {
     };
 
     if (!respRoute.data) {
-        flashMessages({"danger": "the server sent no data back"});
+        flashMessages({"danger": "Save failed: the server sent no data back."});
         return;
     } else if (respRoute.data.errors) {
         flashMessages(respRoute.data.errors);
@@ -460,48 +444,6 @@ async function saveRoutePlus (routeObject, routeRawData, routeId) {
             flashMessages(e);
             return;
         };
-    };
-    if ('id' in routeSaveData) {
-        route_id = routeSaveData['id'];
-        checkpointApiData = organizeCheckpointData(routeRawData, route_id);
-        const checkpoints = [];
-        for (let i=0; i<checkpointApiData.length; i++) {
-            let respCheckpoints = await axios.post('/api/checkpoints', checkpointApiData[i]);
-            if (!respCheckpoints.data) {
-                checkpointErrors.push(`Checkpoint #${i} failed to save.`)
-            };
-            const checkpoint = respCheckpoints.data.checkpoint;
-            checkpoints.push(checkpoint);
-            if ('id' in checkpoint) {
-                checkpointIds.push(checkpoint.id)
-            };
-        };
-        if (checkpointErrors.length > 1) {
-            flashMessages(checkpointErrors)
-            return;
-        };
-    } else {
-        flashMessages({"danger": "something went wrong saving this route"});
-        return;
-    };
-    if (checkpointIds.length > 1) {
-        cprsApiData = organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds);
-        
-        let i=1;
-        for (let cpr of cprsApiData) {
-            let respCprs = await axios.post('/api/checkpoints-routes', cpr);
-            if (!('checkpoint_route' in respCprs.data)) {
-                cprErrors.push(`checkpoint-route placement #${i} failed to save.`)
-            };
-            i++;
-        };
-        if (cprErrors.length>1) {
-            flashMessages(cprErrors);
-            return;
-        };
-    } else {
-        flashMessages({"info": "API call returned fewer than 2 valid checkpoints."});
-        return;
     };
 
     flashMessages({"success": "Route successfully saved."});

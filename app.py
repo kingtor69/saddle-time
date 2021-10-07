@@ -373,22 +373,81 @@ def save_new_route():
     and the checkpoints-routes many-to-many table.
     """
     errors = {'errors': {}}
+    missing_data_errors = []
+    route_object = {}
+    checkpoints_array = []
+    new_checkpoints = []
+    new_checkpoints_routes = []
     if not request.json:
         errors['errors']['JSON error'] = 'requests must be of type application/json'
+    elif not 'route' in request.json or not 'checkpoints' in request.json:
+        if not 'route' in request.json:
+            missing_data_errors.append["No route data found."]
+        else:
+            route_object = request.json['route']
+        if not 'checkpoints' in request.json:
+            missing_data_errors.append["No checkpoint data found."]
+        else:
+            checkpoints_array = request.json['checkpoints']
+
+    if not 'user_id' in route_object:
+        missing_data_errors.append("User ID is required to create a new route.")
+    if len(checkpoints_array) < 2:
+        missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
+    if len(missing_data_errors) > 0:
+        errors['errors']['missing data errors'] = missing_data_errors
+    if errors['errors']:
+        return jsonify(errors, 418)
+    
+    route_object = request.json['route']
+    new_route = Route(user_id = route_object['user_id'])
+    if 'route_name' in request.json:
+        new_route.route_name = request.json['route_name']
+    if 'bike_type' in request.json:
+        new_route.bike_type = request.json['bike_type']
+    db.session.add(new_route)
+    db.session.commit()
+
     try:
-        new_route = Route(
-            user_id = request.json['user_id']
+        for cp in checkpoints_array:
+            new_checkpoint = Checkpoint(
+                checkpoint_lat = cp['lat'],
+                checkpoint_lng = cp['lng']
             )
-        if 'route_name' in request.json:
-            new_route.route_name = request.json['route_name']
-        if 'bike_type' in request.json:
-            new_route.bike_type = request.json['bike_type']
-        db.session.add(new_route)
+            if 'checkpoint_name' in cp:
+                new_checkpoint.checkpoint_name = cp['checkpoint_name']
+            new_checkpoints.append(new_checkpoint)
+        db.session.add_all(new_checkpoints)
         db.session.commit()
     except:
-        errors['errors']['missing data error'] = "User ID is required to create a new route."
-        
-    return (jsonify(route=new_route.serialize()), 201)
+        errors['errors']['checkpoint error'] = "One or more checkpoints failed to save. Please check the saved route before you trust it's what you meant to save."
+
+    try: 
+        for i in range(len(new_checkpoints)):
+            new_cpr = CheckpointRoute(
+                route_id = new_route.id,
+                checkpoint_id = new_checkpoints[i].id,
+                route_order = i
+            )
+            new_checkpoints_routes.append(new_cpr)
+        db.session.add_all(new_checkpoints_routes)
+        db.session.commit()
+    except:
+        errors['errors']['checkpoint-routing error'] = "One or more of the checkpoints failed to be saved in the correct order. Please check the saved route before you trust it's what you meant to save."
+    
+    serialized_route = new_route.serialize()
+    serialized_checkpoints = []
+    serialized_cprs = []
+    for cp in new_checkpoints:
+        serialized_checkpoints.append(cp.serialize())
+    for cpr in new_checkpoints_routes:
+        serialized_cprs.append(cpr.serialize())
+
+    return (jsonify({
+        'route': serialized_route,
+        'checkpoints': serialized_checkpoints,
+        'checkpoints-routes': serialized_cprs
+    }), 201)
 
 @app.route('/api/routes/<int:id>', methods=["GET"])
 def retrieve_saved_route(id):
