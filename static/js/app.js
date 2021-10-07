@@ -1,9 +1,5 @@
 console.log('app.js');
 const queryString = parseCurrentQueryString();
-const routeDeleteButts = document.querySelectorAll('.route-delete');
-const routeShowButts = document.querySelectorAll('.route-show');
-const routeEditButts = document.querySelector('.routes-edit');
-
 const loggedInUserId = $('#g-user') ? $('#g-user')[0].value : false;
 const routeDeleteButts = document.querySelectorAll('.route-delete');
 const routeShowButts = document.querySelectorAll('.route-show');
@@ -132,7 +128,7 @@ function processAutocomplete(e, selector, id) {
     const queryAdditions = {};
     if (typeof id === "number") {
         localStorage.setItem(`${prefix}Location`, location);
-        prefix = (parseInt)`loc-${id}`
+        prefix = (parseInt)`loc-${id}`;
         queryAdditions[`${cpId}-lat`] = lat;
         queryAdditions[`${cpId}-lng`] = lng;
         updateUrl(queryAdditions, true);
@@ -244,23 +240,6 @@ function isCheckpointKey(key) {
         return false;
     };
     return true;
-};
-
-async function deleteOrDont(evt, table) {
-    const enteredName = evt.target[0].value;
-    const username = evt.target[1].value;
-    const userId = evt.target[2].value;
-    try {
-        if (enteredName === username) {
-            const resp = await axios.delete(`/api/${table}/${userId}/delete`);
-            return true;
-        } else {
-            return false;
-        };
-    } catch (e) {
-        flashMessages(e);
-        return false;
-    };
 };
 
 if (routeDeleteButts) {
