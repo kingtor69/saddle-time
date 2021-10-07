@@ -393,18 +393,24 @@ def save_new_route():
 @app.route('/api/routes/<int:id>', methods=["GET"])
 def retrieve_saved_route(id):
     """Gather all data for a route (includes checkpoints and checkpoints_routes). This can be accessed by any user, or by a guest who is not logged in."""
-    route = Route.query.get_or_404(id)
+    route_orm = Route.query.get_or_404(id)
+    route = {
+        'id': route_orm.id,
+        'route_name': route_orm.route_name,
+        'user_id': route_orm.user_id
+    }
     try:
-        cprs = CheckpointRoute.query.filter_by(route_id=id)
+        cprs = CheckpointRoute.query.filter_by(route_id=id).all()
         for cpr in cprs:
             cp = Checkpoint.query.get(cpr.checkpoint_id)
-            key = f'{cpr.route_order}-lat'
-            route[key] = cp.checkpoint_lat
+            lat_key = f'{cpr.route_order}-lat'
+            lng_key = f'{cpr.route_order}-lng'
+            route[lat_key] = cp.checkpoint_lat
+            route[lng_key] = cp.checkpoint_lng
     except: 
         return (jsonify({"errors": {"retrieval error": f"Something went wrong retrieving route #{id}"}}), 500)
 
     return (jsonify({"route": route}), 200)
-    
 
 @app.route('/api/routes/<int:id>', methods=["DELETE"])
 def delete_route(id):

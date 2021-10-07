@@ -50,6 +50,7 @@ function selectTwo(jQueryElement) {
     });
 };
 
+// changes to this function are breaking autocomplete
 function updateUrl(queryAdditions, keepCurrent) {
     let queryString = "?";
     let query;
@@ -67,6 +68,23 @@ function updateUrl(queryAdditions, keepCurrent) {
     };
     let newurl = window.location.origin + window.location.pathname + `${queryString}`;
     window.history.pushState({path:newurl},'',newurl);
+};
+
+function newQueryString(queryObj) {
+    let queryStr = "?";
+    let query = {};
+    for (let key of Object.keys(queryObj)) {
+        query[key] = queryObj[key];
+    };
+    let i = 0;
+    for (let key of Object.keys(query)) {
+        if (i > 0) {
+            queryStr += "&"
+        }
+        queryStr += `${key}=${query[key]}`
+        i++;
+    };
+    return queryStr;
 };
 
 function parseCurrentQueryString() {
@@ -253,7 +271,7 @@ if (routeShowButts) {
         routeShow.addEventListener('click', (e) => {
             e.preventDefault(e);
             const id = parseInt(routeShow.id);
-            loadRoute(id);
+            showRoute(id);
         });
     };
 };
@@ -280,5 +298,8 @@ async function showRoute(id) {
         flashMessages({"warning": `No valid route was retrieved nor errors thrown from axios.get(${url}).`});
         return;
     };
-    updateUrl(resp.data.route, false);
+    const qString = newQueryString(resp.data.route);
+    const routeUrl = `${window.location.origin}/route${qString}`;
+    window.history.pushState({path:routeUrl},'',routeUrl);
+    location.reload();
 };
