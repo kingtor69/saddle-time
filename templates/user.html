@@ -51,30 +51,36 @@
   {% endif %}
   {% if routes %}
   <div class="row justify-content-center">
+    {% if is_logged_in_user %}
     <div class="col col-8">
-        <h3>Saved routes:</h3>
-    </div>
-  <div class="row justify-content-center">
-    <div class="col col-8">
+    {% else %}
+    <div class="col col-4">
+    {% endif %}
+    {% if num_routes > 0 %}
       <div class="table-responsive">
         <table class="table">
-          <thead>
+          <thead class="h3">
             <tr>
-              <th>route</th>
+              <th>Saved route{% if num_routes > 1 %}s{% endif %}</th>
+              {% if is_logged_in_user %}
               <th>delete this route</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
             {% for route in routes %}
             <tr>
-              <td><button id="{{ route.id }}s" class="show-route btn btn-outline-info rounded my-2">{{ route.route_name }}</button></td>
-              <td><button class="delete-route btn btn-outline-warning rounded my-2" id="{{ route.id }}d"><i class="fa fa-trash text-warning"></i></button></td>                  
+              <td><button id="{{ route.id }}s" class="route-show btn btn-outline-info rounded my-2">{{ route.route_name }}</button></td>
+              {% if is_logged_in_user %}
+              <td><button class="route-delete btn btn-outline-warning rounded my-2" id="{{ route.id }}d"><i class="fa fa-trash text-warning"></i></button></td>                  
+              {% endif %}
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
+    {% endif %}
   </div>
 </div>
   {% endif %}
