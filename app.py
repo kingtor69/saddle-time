@@ -401,10 +401,15 @@ def retrieve_saved_route(id):
     }
     try:
         cprs = CheckpointRoute.query.filter_by(route_id=id).all()
-        for cpr in cprs:
-            cp = Checkpoint.query.get(cpr.checkpoint_id)
-            lat_key = f'{cpr.route_order}-lat'
-            lng_key = f'{cpr.route_order}-lng'
+        last_i = len(cprs)-1
+        for i in range(len(cprs)):
+            cp = Checkpoint.query.get(cprs[i].checkpoint_id)
+            if not(i == last_i):
+                lat_key = f'{cprs[i].route_order}-lat'
+                lng_key = f'{cprs[i].route_order}-lng'
+            else:
+                lat_key = '999-lat'
+                lng_key = '999-lng'
             route[lat_key] = cp.checkpoint_lat
             route[lng_key] = cp.checkpoint_lng
     except: 
@@ -428,6 +433,23 @@ def delete_route(id):
 @app.route('/api/routes/<int:route_id>', methods=["PATCH"])
 def edit_saved_route(id):
     """The user who created a route can edit their route here. Requires authentication."""
+    route_to_patch = Route.query.get_or_404(id)
+    errors = {'errors': {}}
+    if not request.json:
+        errors['errors']['JSON error'] = 'requests must be of type application/json'
+    try:
+        if 'user_id' in request.json and not request.json['user_id'] == route_to_patch.user_id:
+            route_to_patch.user_id = request.json['user_id']
+        if 'route_name' in request.json and not request.json['route_name'] == route_to_patch.route_name:
+            route_to_patch.route_name = request.json['route_name']
+        if 'bike_type' in request.json and not request.json['bike_type'] == route_to_patch.bike_type:
+            route_to_patch.bike_type = request.json['bike_type']
+        db.session.commit()
+    except:
+        errors['errors']['missing data error'] = "User ID is required to create a new route."
+        
+    return (jsonify(route=route_to_patch.serialize()), 200)
+
 
 #############################
 ##### checkpoint routes #####

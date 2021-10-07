@@ -7,6 +7,9 @@ const deleteCheckpointButts = $('.checkpoint-delete');
 const loginFromRoute = document.querySelector('#login-from-route');
 const signupFromRoute = document.querySelector('#signup-from-route');
 const routeSaveForm = document.querySelector('#route-save-form');
+const routeSaveButt = document.querySelector('#save-route');
+const routeUpdateButt = document.querySelector('#update-route');
+const routeNameInput = document.querySelector('#route-name');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if ('routeInProgress' in localStorage) {
@@ -15,12 +18,13 @@ window.addEventListener('DOMContentLoaded', (event) => {
         updateUrl(routeInProgress, false);
         localStorage.removeItem('routeInProgress');
     };
+    if ('id' in queryString) {
+        routeUpdateButt.hidden = false;
+    };
     if (goodRouteData()) {
         routePreviewButt.hidden = false;
         routeSaveDiv.hidden = false;
         previewRoute();
-    } else if ('id' in queryString) {
-        loadRoute(queryString.id);
     };
 });
 
@@ -49,9 +53,12 @@ if (routeSaveForm) {
             routeRawData[key] = queryString[key];
         };
     };
-    routeSaveForm.addEventListener('submit', (e) => {
+    if ('route_name' in queryString) {
+        routeNameInput.value = queryString.route_name;
+    };
+    routeSaveButt.addEventListener('click', (e) => {
         e.preventDefault();
-        let routeName = e.target[0].value;
+        let routeName = routeNameInput.value;
         const displayMessage = {errors: {}};
         const routeApiPrep = {};
         let routeApiData;
@@ -59,7 +66,31 @@ if (routeSaveForm) {
         if (routeName.length >= 0 && routeName.length <= 40) {
             routeApiPrep['route_name'] = routeName;
             routeApiData = organizeRouteData(routeApiPrep);
-            saveRoutePlus(routeApiData, routeRawData);
+            saveRoutePlus(routeApiData, routeRawData, false);
+        } else if (routeName.length > 0) {
+            displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
+        } else {
+            displayMessage.errors['warning'] = "I didn't think this error message would ever be seen. My bad."
+        };
+        if (displayMessage.errors) {
+            flashMessages(displayMessage.errors)
+        };
+    });
+
+    routeUpdateButt.addEventListener('click', (e) => {
+        e.preventDefault();
+        let routeName = routeNameInput.value;
+        if (routeName = queryString['route_name']) {
+            routeName += 'rev';
+        };
+        const displayMessage = {errors: {}};
+        const routeApiPrep = {};
+        let routeApiData;
+
+        if (routeName.length >= 0 && routeName.length <= 40) {
+            routeApiPrep['route_name'] = routeName;
+            routeApiData = organizeRouteData(routeApiPrep);
+            saveRoutePlus(routeApiData, routeRawData, queryString.id);
         } else if (routeName.length > 0) {
             displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
         } else {
@@ -401,21 +432,21 @@ function organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointId
     return organizedCheckpointRoutesArray;
 };
 
-async function saveRoutePlus (routeObject, routeRawData) {
+async function saveRoutePlus (routeObject, routeRawData, routeId) {
     let routeSaveData;
-    let route_id;
     let checkpointApiData;
-    // let checkpointData;
-    // const checkpoints = [];
-    // const checkpointsArray = [];
     const checkpointIds=[];
-    // const cprArray=[];
     let cprsApiData;
     const checkpointErrors = ['danger'];
     const cprErrors = ['danger'];
-    // let successOrError;
+    let respRoute;
 
-    let respRoute = await axios.post('/api/routes', routeObject);
+    if (routeId) {
+        respRoute = await axios.patch(`/api/routes/${routeId}`, routeObject);
+    } else {
+        respRoute = await axios.post('/api/routes', routeObject);
+    };
+
     if (!respRoute.data) {
         flashMessages({"danger": "the server sent no data back"});
         return;
