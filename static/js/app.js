@@ -303,6 +303,9 @@ async function showRoute(id) {
     };
     if (!("route" in resp.data)) {
         flashMessages({"warning": `No valid route was retrieved nor errors thrown from axios.get(${url}).`});
+        return;
     };
-    
+    const queryString = queryStringFromObject(resp.data.route);
+    const newurl = window.location.origin + window.location.pathname + `${queryString}`;
+    window.history.pushState({path:newurl},'',newurl);
 };
