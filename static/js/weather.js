@@ -9,6 +9,7 @@ const weatherConditions = document.querySelector('#weather-conditions');
 const weatherIcon = document.querySelector('#weather-icon');
 const weatherDetails = document.querySelector('#weather-details');
 
+
 selectTwo(weatherLocationSelector);
 
 let weatherLocation = weatherLocationSelector.select2('data')[0].text; defaultLocation; 
