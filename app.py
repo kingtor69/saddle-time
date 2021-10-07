@@ -374,7 +374,6 @@ def save_new_route():
     """
     errors = {'errors': {}}
     missing_data_errors = []
-    route_object = {}
     checkpoints_array = []
     new_checkpoints = []
     new_checkpoints_routes = []
@@ -399,15 +398,12 @@ def save_new_route():
     # if errors['errors']:
     #     return jsonify(errors, 418)
     
-    import pdb
-    pdb.set_trace()
     
-    route_object = request.json['route']
-    new_route = Route(user_id = route_object['user_id'])
+    new_route = Route(user_id = request.json['route']['user_id'])
     if 'route_name' in request.json:
-        new_route.route_name = request.json['route_name']
+        new_route.route_name = request.json['route']['route_name']
     if 'bike_type' in request.json:
-        new_route.bike_type = request.json['bike_type']
+        new_route.bike_type = request.json['route']['bike_type']
     db.session.add(new_route)
     db.session.commit()
 
