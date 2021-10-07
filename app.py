@@ -163,12 +163,19 @@ def return_user_profile(user_id):
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     user_routes = Route.query.filter_by(user_id=user.id).all()
+<<<<<<< HEAD
     for route in user_routes:
         if not route.route_name:
             route.route_name=logical_date_time(route.timestamp)
     user_routes.sort(key=lambda x: x.timestamp, reverse=True)
+=======
+    num_routes = len(user_routes)
+    is_logged_in_user = False
+    if 'user' in g and g.user.id == user.id:
+        is_logged_in_user = True
+>>>>>>> oldButAutocompleteWorks
 
-    return render_template ('user.html', user=user, routes=user_routes)
+    return render_template ('user.html', user=user, routes=user_routes, num_routes = num_routes, is_logged_in_user=is_logged_in_user)
 
 @app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])
 def edit_user_profile(user_id):
@@ -224,9 +231,15 @@ def logout():
 ##### route routes #####
 ########################
 @app.route('/route')
+<<<<<<< HEAD
 def create_edit_route():
     """prepare for new route or view and edit an existing route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
+=======
+def prepare_new_route():
+    """display existing route, edit or prepare new route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
+>>>>>>> oldButAutocompleteWorks
 
+    # cps is the number of additional checkpoints
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
     new_cp_id = int(request.args['new-id']) if request.args.get('new-id') else -1
     lats = []
@@ -389,22 +402,38 @@ def save_new_route():
         
     return (jsonify(route=new_route.serialize()), 201)
 
-@app.route('/api/routes/<int:route_id>', methods=["PATCH"])
-def edit_saved_route():
-    """Edit an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
+@app.route('/api/routes/<int:id>', methods=["GET"])
+def retrieve_saved_route(id):
+    """Gather all data for a route (includes checkpoints and checkpoints_routes). This can be accessed by any user, or by a guest who is not logged in."""
+    route = Route.query.get_or_404(id)
+    try:
+        cprs = CheckpointRoute.query.filter_by(route_id=id)
+        for cpr in cprs:
+            cp = Checkpoint.query.get(cpr.checkpoint_id)
+            key = f'{cpr.route_order}-lat'
+            route[key] = cp.checkpoint_lat
+    except: 
+        return (jsonify({"errors": {"retrieval error": f"Something went wrong retrieving route #{id}"}}), 500)
+
+    return (jsonify({"route": route}), 200)
+    
 
 @app.route('/api/routes/<int:id>', methods=["DELETE"])
-def delete_saved_route(id):
-    """Delete an existing route. This can only be done by the user who created a route can edit their route here. Requires authentication."""
-    route = Route.query.get_or_404(id)
-    cprs = CheckpointRoute.query.filter_by(route_id=id)
-    for cpr in cprs:
-        db.session.delete(cpr)
-    db.session.commit()
-    db.session.delete(route)
-    db.session.commit()
-    return jsonify({"delete": "confirmed"})
-    
+def delete_route(route_id):
+    route_to_delete = Route.query.get_or_404(id)
+    if not route_to_delete.user_id == g.user.id:
+        return {"errors": {"authentication error": "only the user who created a route can delete it"}}
+    try:
+        db.session.delete(route_to_delete)
+        db.session.commit()
+    except:
+        return (jsonify({"errors": {"delete error": f"unable to delete route #{id}"}}), 500)
+
+    return (jsonify({"delete": f"delete route #{id} confirmed"}), 200)
+
+@app.route('/api/routes/<int:route_id>', methods=["PATCH"])
+def edit_saved_route(id):
+    """The user who created a route can edit their route here. Requires authentication."""
 
 #############################
 ##### checkpoint routes #####
@@ -451,7 +480,11 @@ def create_new_m2m_checkpoint_route():
     )
     db.session.add(new_checkpoint_route)
     db.session.commit()
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> oldButAutocompleteWorks
     return (jsonify(checkpoint_route=new_checkpoint_route.serialize()), 201)
 
 ########################
