@@ -407,7 +407,7 @@ def retrieve_saved_route(id):
     
 
 @app.route('/api/routes/<int:id>', methods=["DELETE"])
-def delete_route(route_id):
+def delete_route(id):
     route_to_delete = Route.query.get_or_404(id)
     if not route_to_delete.user_id == g.user.id:
         return {"errors": {"authentication error": "only the user who created a route can delete it"}}
