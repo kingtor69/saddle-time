@@ -145,7 +145,7 @@ class Checkpoint(db.Model):
     checkpoint_lng = db.Column(db.Float,
                         nullable=False)
 
-    checkpoint_route = db.relationship("CheckpointRoute")
+    checkpoint_route = db.relationship("CheckpointRoute", backref="checkpoint")
 
 
 class CheckpointRoute(db.Model):

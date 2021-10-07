@@ -263,6 +263,9 @@ def logical_date_time(timestamp):
     return f'{timestamp.year} {months[timestamp.month]} {timestamp.day}, {hour}:{timestamp.minute}{am_or_pm}'
 
 def is_today_april_fools():
-    now = datetime.datetime.now()
+    now=datetime.now()
     today = now.strftime("%D")
-    print(today)
+    today_split = today.split('/')
+    if today_split[0] == "04" and today_split[1] == "01":
+        return True
+    return False

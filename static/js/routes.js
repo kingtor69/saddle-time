@@ -61,49 +61,36 @@ if (routeSaveForm) {
     };
     routeSaveButt.addEventListener('click', (e) => {
         e.preventDefault();
-        let routeName = routeNameInput.value;
-        const displayMessage = {errors: {}};
-        const routeApiPrep = {};
-        let routeApiData;
-
-        if (routeName.length >= 0 && routeName.length <= 40) {
-            routeApiPrep['route_name'] = routeName;
-            routeApiData = organizeRouteData(routeApiPrep, routeRawData);
-            saveRoutePlus(routeApiData, false);
-        } else if (routeName.length > 0) {
-            displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
-        } else {
-            displayMessage.errors['warning'] = "I didn't think this error message would ever be seen. My bad."
-        };
-        if (displayMessage.errors) {
-            flashMessages(displayMessage.errors)
-        };
+        routeSaveButt.disabled = true;
+        createOrUpdate(routeRawData);
     });
 
     routeUpdateButt.addEventListener('click', (e) => {
         e.preventDefault();
-        let routeName = routeNameInput.value;
-        if (routeName = queryString['route_name']) {
-            routeName += 'rev';
-        };
-        const displayMessage = {errors: {}};
-        const routeApiPrep = {};
-        let routeApiData;
-
-        if (routeName.length >= 0 && routeName.length <= 40) {
-            routeApiPrep['route_name'] = routeName;
-            routeApiData = organizeRouteData(routeApiPrep);
-            saveRoutePlus(routeApiData, routeRawData, queryString.id);
-        } else if (routeName.length > 0) {
-            displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
-        } else {
-            displayMessage.errors['warning'] = "I didn't think this error message would ever be seen. My bad."
-        };
-        if (displayMessage.errors) {
-            flashMessages(displayMessage.errors)
-        };
+        routeUpdateButt.disabled = true;
+        createOrUpdate(routeRawData);
     });
 };
+
+function createOrUpdate(routeRawData) {
+    let routeName = routeNameInput.value;
+    const displayMessage = {errors: {}};
+    const routeApiPrep = {};
+    let routeApiData;
+
+    if (routeName.length >= 0 && routeName.length <= 40) {
+        routeApiPrep['route_name'] = routeName;
+        routeApiData = organizeRouteData(routeApiPrep, routeRawData);
+        saveRoutePlus(routeApiData, queryString.id);
+    } else if (routeName.length > 0) {
+        displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
+    } else {
+        displayMessage.errors['warning'] = "I didn't think this error message would ever be seen. My bad."
+    };
+    if (displayMessage.errors) {
+        flashMessages(displayMessage.errors)
+    };
+}
 
 for (let checkpointLocation of checkpointLocations) {
     selectTwo(checkpointLocation);
@@ -420,6 +407,8 @@ function organizeRouteData(routeApiData, routeRawData) {
 };
 
 async function saveRoutePlus (routeObject, routeId=false) {
+    debugger;
+
     let routeSaveData;
     let checkpointApiData;
     const checkpointIds=[];
