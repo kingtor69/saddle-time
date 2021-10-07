@@ -261,3 +261,8 @@ def logical_date_time(timestamp):
         hour = 24
 
     return f'{timestamp.year} {months[timestamp.month]} {timestamp.day}, {hour}:{timestamp.minute}{am_or_pm}'
+
+def is_today_april_fools():
+    now = datetime.datetime.now()
+    today = now.strftime("%D")
+    print(today)

@@ -378,26 +378,29 @@ def save_new_route():
     checkpoints_array = []
     new_checkpoints = []
     new_checkpoints_routes = []
-    if not request.json:
-        errors['errors']['JSON error'] = 'requests must be of type application/json'
-    elif not 'route' in request.json or not 'checkpoints' in request.json:
-        if not 'route' in request.json:
-            missing_data_errors.append["No route data found."]
-        else:
-            route_object = request.json['route']
-        if not 'checkpoints' in request.json:
-            missing_data_errors.append["No checkpoint data found."]
-        else:
-            checkpoints_array = request.json['checkpoints']
+    # if not request.json:
+    #     errors['errors']['JSON error'] = 'requests must be of type application/json'
+    # elif not 'route' in request.json or not 'checkpoints' in request.json:
+    #     if not 'route' in request.json:
+    #         missing_data_errors.append["No route data found."]
+    #     else:
+    #         route_object = request.json['route']
+    #     if not 'checkpoints' in request.json:
+    #         missing_data_errors.append["No checkpoint data found."]
+    #     else:
+    #         checkpoints_array = request.json['checkpoints']
 
-    if not 'user_id' in route_object:
-        missing_data_errors.append("User ID is required to create a new route.")
-    if len(checkpoints_array) < 2:
-        missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
-    if len(missing_data_errors) > 0:
-        errors['errors']['missing data errors'] = missing_data_errors
-    if errors['errors']:
-        return jsonify(errors, 418)
+    # if not 'user_id' in route_object:
+    #     missing_data_errors.append("User ID is required to create a new route.")
+    # if len(checkpoints_array) < 2:
+    #     missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
+    # if len(missing_data_errors) > 0:
+    #     errors['errors']['missing data errors'] = missing_data_errors
+    # if errors['errors']:
+    #     return jsonify(errors, 418)
+    
+    import pdb
+    pdb.set_trace()
     
     route_object = request.json['route']
     new_route = Route(user_id = route_object['user_id'])
