@@ -24,7 +24,7 @@ class GeocodeParsingTestCase(TestCase):
 
         sortable_irl_args = {'0': {'lat': '37.746998', 'lng': '-122.418653'}, '999': {'lat': '37.801237', 'lng': '-122.40072'}}
 
-        irl_url = "http://127.0.0.1:5000/routes/new?0-lat=37.746998&0-lng=-122.418653&999-lat=37.801237&999-lng=-122.40072"
+        irl_url = "http://127.0.0.1:5000/route?0-lat=37.746998&0-lng=-122.418653&999-lat=37.801237&999-lng=-122.40072"
 
         expected_irl_code = '-122.418653,37.746998;-122.40072,37.801237'
 
