@@ -163,17 +163,10 @@ def return_user_profile(user_id):
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     user_routes = Route.query.filter_by(user_id=user.id).all()
-<<<<<<< HEAD
-    for route in user_routes:
-        if not route.route_name:
-            route.route_name=logical_date_time(route.timestamp)
-    user_routes.sort(key=lambda x: x.timestamp, reverse=True)
-=======
     num_routes = len(user_routes)
     is_logged_in_user = False
     if 'user' in g and g.user.id == user.id:
         is_logged_in_user = True
->>>>>>> oldButAutocompleteWorks
 
     return render_template ('user.html', user=user, routes=user_routes, num_routes = num_routes, is_logged_in_user=is_logged_in_user)
 
@@ -231,13 +224,8 @@ def logout():
 ##### route routes #####
 ########################
 @app.route('/route')
-<<<<<<< HEAD
-def create_edit_route():
-    """prepare for new route or view and edit an existing route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
-=======
 def prepare_new_route():
     """display existing route, edit or prepare new route, applying query string data to pre-populate the forms including the number of checkpoint forms and the order in which they appear"""
->>>>>>> oldButAutocompleteWorks
 
     # cps is the number of additional checkpoints
     cps = int(request.args.get('cps')) if request.args.get('cps') else 0
@@ -480,11 +468,7 @@ def create_new_m2m_checkpoint_route():
     )
     db.session.add(new_checkpoint_route)
     db.session.commit()
-<<<<<<< HEAD
-
-=======
     
->>>>>>> oldButAutocompleteWorks
     return (jsonify(checkpoint_route=new_checkpoint_route.serialize()), 201)
 
 ########################
