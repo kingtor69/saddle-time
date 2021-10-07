@@ -297,7 +297,12 @@ async function deleteRoute(id) {
 async function showRoute(id) {
     const url = `/api/routes/${id}`;
     let resp = await axios.get(url);
-    if ("errors" in resp.data {
-            
-    })
-}
+    if ("errors" in resp.data) {
+        flashMessages(resp.data.errors);
+        return;
+    };
+    if (!("route" in resp.data)) {
+        flashMessages({"warning": `No valid route was retrieved nor errors thrown from axios.get(${url}).`});
+    };
+    
+};
