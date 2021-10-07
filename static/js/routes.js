@@ -8,7 +8,7 @@ const loginFromRoute = document.querySelector('#login-from-route');
 const signupFromRoute = document.querySelector('#signup-from-route');
 const routeSaveForm = document.querySelector('#route-save-form');
 const routeSaveButt = document.querySelector('#save-route');
-const routeUpdateButt = document.querySelector('#update-route');
+const routeUpdateButt = document.createElement('button');
 const routeNameInput = document.querySelector('#route-name');
 
 window.addEventListener('DOMContentLoaded', (event) => {
@@ -19,7 +19,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
         localStorage.removeItem('routeInProgress');
     };
     if ('id' in queryString) {
-        routeUpdateButt.hidden = false;
+        routeUpdateButt.id = 'update-route';
+        routeUpdateButt.classList.add("btn", "btn-block", "btn-secondary", "rounded", "d-inline", "m-2");
+        routeUpdateButt.innerText="update route"
+        routeSaveForm.appendChild(routeUpdateButt);
     };
     if (goodRouteData()) {
         routePreviewButt.hidden = false;
