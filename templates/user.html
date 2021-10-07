@@ -51,17 +51,32 @@
   {% endif %}
   {% if routes %}
   <div class="row justify-content-center">
-    <div class="col col-4">
-      <div class="col">
-          <h3>Saved routes:</h3>
-          <ul class="h4">
+    <div class="col col-8">
+        <h3>Saved routes:</h3>
+    </div>
+  <div class="row justify-content-center">
+    <div class="col col-8">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>route</th>
+              <th>delete this route</th>
+            </tr>
+          </thead>
+          <tbody>
             {% for route in routes %}
-            <li><a href="/routes/{{ route.id }}" class="btn btn-outline-info rounded my-2">{{ route.id }}: {{ route.route_name }}</a></li>
+            <tr>
+              <td><button id="{{ route.id }}s" class="show-route btn btn-outline-info rounded my-2">{{ route.route_name }}</button></td>
+              <td><button class="delete-route btn btn-outline-warning rounded my-2" id="{{ route.id }}d"><i class="fa fa-trash text-warning"></i></button></td>                  
+            </tr>
             {% endfor %}
-          </ul>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
+</div>
   {% endif %}
 {% endblock %}
 {% block scripts_after %}
