@@ -449,6 +449,7 @@ async function saveRoutePlus (routeObject, routeRawData) {
     };
     if (checkpointIds.length > 1) {
         cprsApiData = organizeCheckpointsRoutesData(checkpointApiData, route_id, checkpointIds);
+        
         let i=1;
         for (let cpr of cprsApiData) {
             let respCprs = await axios.post('/api/checkpoints-routes', cpr);

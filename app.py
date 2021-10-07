@@ -437,6 +437,8 @@ def create_new_m2m_checkpoint_route():
         checkpoint_id=request.json['checkpoint_id'],
         route_order=request.json['route_order']
     )
+    db.session.add(new_checkpoint_route)
+    db.session.commit()
     
     return (jsonify(checkpoint_route=new_checkpoint_route.serialize()), 201)
 
@@ -448,6 +450,6 @@ def display_404_message(err):
     """Display error message for 404."""
     if request.path.startswith('/users/'):
         return render_template('users/404.html'), 404
-    if request.path.startswith('/routes/'):
+    if request.path.startswith('/route/'):
         return render_template('routes/404.html'), 404
     return render_template('404.html'), 404
