@@ -10,6 +10,8 @@ const routeSaveForm = document.querySelector('#route-save-form');
 const routeSaveButt = document.querySelector('#save-route');
 const routeUpdateButt = document.createElement('button');
 const routeNameInput = document.querySelector('#route-name');
+const checkpointRows = document.querySelectorAll('div.checkpoint-rows');
+const checkpointDeleteButts = document.querySelectorAll('button.checkpoint-delete');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if ('routeInProgress' in localStorage) {
@@ -136,9 +138,29 @@ for (let newCheckpointButt of newCheckpointButts) {
 
 for (let deleteCheckpointButt of deleteCheckpointButts) {
     deleteCheckpointButt.addEventListener('click', (e) => {
-        console.log(e)
-    })
-}
+        e.preventDefault()
+        deleteCheckpointButt.addEventListener('click', (e) => {
+            e.preventDefault();
+            deleteIdSplit = deleteCheckpointButt.id.split('-');
+            if (checkpointRows.length > 2) {
+                deleteRow = document.querySelector(`#cpr-${deleteIdSplit[2]}-row`);
+                deleteRow.remove();
+            };
+            for (let key in queryString) {
+                keySplit = key.split('-');
+                if (keySplit[0] === deleteIdSplit[2]) {
+                    delete queryString[key]
+                };
+                if (key === "cps") {
+                    cps = parseInt(queryString[key])
+                    queryString[key] = cps-1;
+                }
+            };
+            updateUrl(queryString, false)
+            location.reload();
+        });
+    });
+};
 
 routePreviewButt.addEventListener('click', (e) => {
     e.preventDefault();
@@ -407,7 +429,6 @@ function organizeRouteData(routeApiData, routeRawData) {
 };
 
 async function saveRoutePlus (routeObject, routeId=false) {
-    debugger;
 
     let routeSaveData;
     let checkpointApiData;
