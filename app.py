@@ -488,7 +488,6 @@ def edit_saved_route(id):
     """The user who created a route can edit their route here. Requires authentication."""
     errors = {'errors': {}}
     missing_data_errors = []
-    checkpoints_array = []
     new_checkpoints = []
     new_checkpoints_routes = []
     if not request.json:
@@ -496,14 +495,12 @@ def edit_saved_route(id):
     elif not 'route' in request.json or not 'checkpoints' in request.json:
         if not 'route' in request.json:
             missing_data_errors.append["No route data found."]
-        else:
-            route_object = request.json['route']
         if not 'checkpoints' in request.json:
             missing_data_errors.append["No checkpoint data found."]
         else:
             checkpoints_array = request.json['checkpoints']
 
-    if not 'user_id' in route_object:
+    if not 'user_id' in request.json['route']:
         missing_data_errors.append("User ID is required to create a new route.")
     if len(request.json['checkpoints']) < 2:
         missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
@@ -514,17 +511,17 @@ def edit_saved_route(id):
         return jsonify(errors, code)
     
     route_to_patch = Route.query.get_or_404(id)
-    if 'route_name' in request.json:
+    if 'route_name' in request.json['route']:
         route_to_patch.route_name = request.json['route']['route_name']
-    if 'bike_type' in request.json:
+    if 'bike_type' in request.json['route']:
         route_to_patch.bike_type = request.json['route']['bike_type']
+
     db.session.commit()
 
     cprs_obsolete = CheckpointRoute.query.filter_by(route_id = id)
-    import pdb
-    pdb.set_trace()
+
     for cpr in cprs_obsolete:
-        cp = Checkpoint.query.filter_by(id = cpr.checkpoint_id)
+        cp = Checkpoint.query.filter_by(id = cpr.checkpoint_id).first()
         db.session.delete(cp)
         db.session.delete(cpr)
     try:
@@ -561,6 +558,10 @@ def edit_saved_route(id):
         serialized_checkpoints.append(cp.serialize())
     for cpr in new_checkpoints_routes:
         serialized_cprs.append(cpr.serialize())
+
+    code = 418 if is_today_april_fools() else 400
+    if errors['errors']:
+        return jsonify(errors['errors'], code)
 
     return (jsonify({
         'route': serialized_route,
