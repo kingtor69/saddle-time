@@ -89,12 +89,6 @@
         <h1 class="text-center">{% block header %}{% endblock %}</h1>
       </div>
     </div>
-    <div class="container text-info text-center" id="development-messages">
-      <p>
-        This is in active development. Please come back soon to see what&lsquo;s been fixed and/or improved.<br>
-        ~ Tor
-      </p>
-    </div>
     <div class="container" id="flashes">
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}

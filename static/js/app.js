@@ -290,8 +290,8 @@ async function deleteRoute(id) {
 async function showRoute(id) {
     const url = `/api/routes/${id}`;
     let resp = await axios.get(url);
-    if ("errors" in resp.data) {
-        flashMessages(resp.data.errors);
+    if ("Errors" in resp.data) {
+        flashMessages(resp.data.Errors);
         return;
     };
     if (!("route" in resp.data)) {

@@ -10,63 +10,38 @@ from app import app
 ##############################
 ##### external API calls #####
 ##############################
-class GeocodeAPITestCase(TestCase):
-    """Test retrieving geocode information from Mapquest API"""
-    def test_geocoding_method(self):
-        good_loc = "9201 Pan American FWY NE, Albuquerque, NM 87113"
-        good_code = (35.190564, -106.580526)
-        unfound_loc = ";"
-        mult_choice_loc = "Albuquerque"
-        mult_choice0_code = (35.084248, -106.649241)
-        mult_choice1_code = (-22.383301, -42.916599)
+class MapboxGeocodeAPITestCase(TestCase):
+    """test mapbox geocoding API calls, forward and reverse"""
+    def test_mapbox_geocode_forward(self):
+        """test forward geocoding (retrieve coordinates from location)"""
 
-        self.assertEqual(geocode_from_location_mq(good_loc)[0], good_code)
-        self.assertFalse(geocode_from_location_mq(unfound_loc))
-        self.assertEqual(len(geocode_from_location_mq(mult_choice_loc)), 2)
-        self.assertEqual((geocode_from_location_mq(mult_choice_loc)), [mult_choice0_code, mult_choice1_code])
 
-    def test_geocoding_API_call(self):
-        good_loc = "9201 Pan American FWY NE, Albuquerque, NM 87113"
-        good_code = (35.190564, -106.580526)
-        unfound_loc = ";"
-        mult_choice_loc = "Albuquerque"
-        mult_choice0_code = (35.084248, -106.649241)
-        mult_choice1_code = (-22.383301, -42.916599)
-
-        good_resp=requests.get(f'{MQ_API_BASE_URL}/address?key={MQ_API_KEY}&location={good_loc}')
-        good_results = good_resp.json()
-        good_lat_lng = good_results["results"][0]["locations"][0]["latLng"]
-        unfound_resp=requests.get(f'{MQ_API_BASE_URL}/address?key={MQ_API_KEY}&location={unfound_loc}')
-
-        mult_choice_resp=requests.get(f'{MQ_API_BASE_URL}/address?key={MQ_API_KEY}&location={mult_choice_loc}')
-        mult_choice_results=mult_choice_resp.json()
-        mult_choice0_lat_lng=mult_choice_results["results"][0]["locations"][0]["latLng"]
-        mult_choice1_lat_lng=mult_choice_results["results"][0]["locations"][1]["latLng"]
-        mult_choice_results = mult_choice_resp.json()
-
-        self.assertEqual(
-            (good_lat_lng["lat"], good_lat_lng["lng"]), good_code
-        )
-        self.assertEqual(
-            len(mult_choice_results["results"][0]["locations"]), 2
-        )
-        self.assertEqual(
-            (mult_choice0_lat_lng["lat"], mult_choice0_lat_lng["lng"]), 
-            mult_choice0_code
-        )
-        self.assertEqual(
-            (mult_choice1_lat_lng["lat"], mult_choice1_lat_lng["lng"]), 
-            mult_choice1_code
-        )            
+    def test_mapbox_geocode_reverse(self):
+        """test reverse geocoding (retrieve location from coordinates)"""
+        good_geocode = "-106.582998,35.191097"
+        bad_geocode = "35.191097,-106.582998"
+        good_resp = requests.get(f'https://api.mapbox.com/geocoding/v5/mapbox.places/{good_geocode}.json?access_token={MB_API_KEY}')
+        bad_resp = requests.get(f'https://api.mapbox.com/geocoding/v5/mapbox.places/{bad_geocode}.json?access_token={MB_API_KEY}')
+        self.assertEqual(good_resp.status_code, 200)
+        self.assertIn("features", good_resp.json())
+        self.assertGreater(len(good_resp.json()["features"]), 0)
+        self.assertEqual(bad_resp.status_code, 200)
+        self.assertEqual(len(bad_resp.json()["features"]), 0)
 
 class RouteAPITestCase(TestCase):
     """test route data API calls"""
     def test_mapbox_api(self):
         """test route data returning from mapbox API"""
         good_geostring = "-106.582998,35.191097;-106.540495,35.12415"
+        bad_geostring = "35.191097,-106.582998;35.12415,-106.540495"
         success_resp = requests.get(f'{MB_DIRECTIONS_BASE_URL}cycling/{good_geostring}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}')
+        fail_resp = requests.get(f'{MB_DIRECTIONS_BASE_URL}cycling/{bad_geostring}?alternatives=true&geometries=geojson&steps=true&access_token={MB_API_KEY}')
 
         self.assertEqual(success_resp.status_code, 200)
+        self.assertIn("routes", success_resp.json())
+        self.assertEqual(fail_resp.status_code, 422)
+        self.assertIn("message", fail_resp.json())
+        self.assertEqual(fail_resp.json()['code'], "InvalidInput")
 
 
 ###################################
@@ -82,26 +57,10 @@ class FlaskRouteAPITestCase (TestCase):
         good_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preview{good_route_qString}')
         bad_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preview{bad_route_qString}')
         bad_url_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preveiw{good_route_qString}')
-        very_bad_url_resp = requests.get(f'http://127.0.0.1:5000/api/routes/preveiw{good_route_qString}')
         
         self.assertEqual(good_resp.status_code, 200)
         self.assertNotIn("Errors", good_resp.json())
         self.assertIn("routes", good_resp.json())
         self.assertEqual(bad_resp.status_code, 200)
         self.assertIn("Errors", bad_resp.json())
-        self.assertEqual(bad_url_resp.status_code, 500)
-        self.assertEqual(very_bad_url_resp.status_code, 404)
-
-
-#########################################
-## RESTful API calls from JS via Flask ##
-#########################################
-# class RESTfulRoutesTestCase (TestCase):
-#     """test RESTful API calls for 'routes' table"""
-#     def test_routes_create(self):
-#         """testing POST to '/api/routes'"""
-#         good_route_post = jsonify({
-#             'route': {
-#                 'user_id': 1
-#             }
-#         })
+        self.assertEqual(bad_url_resp.status_code, 404)

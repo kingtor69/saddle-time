@@ -76,7 +76,7 @@ if (routeSaveForm) {
 
 function createOrUpdate(routeRawData) {
     let routeName = routeNameInput.value;
-    const displayMessage = {errors: {}};
+    const displayMessage = {Errors: {}};
     const routeApiPrep = {};
     let routeApiData;
 
@@ -85,12 +85,12 @@ function createOrUpdate(routeRawData) {
         routeApiData = organizeRouteData(routeApiPrep, routeRawData);
         saveRoutePlus(routeApiData, queryString.id);
     } else if (routeName.length > 0) {
-        displayMessage.errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
+        displayMessage.Errors['info'] = "Route name can only be a maximum of 40 characters long. Please try a shorter name";
     } else {
-        displayMessage.errors['warning'] = "I didn't think this error message would ever be seen. My bad."
+        displayMessage.Errors['warning'] = "I didn't think this error message would ever be seen. My bad."
     };
-    if (displayMessage.errors) {
-        flashMessages(displayMessage.errors)
+    if (displayMessage.Errors) {
+        flashMessages(displayMessage.Errors)
     };
 }
 
@@ -166,7 +166,6 @@ routePreviewButt.addEventListener('click', (e) => {
     e.preventDefault();
     if (goodRouteData()) {
         location.reload();
-        // previewRoute();
     } else if (retrieveRouteData()) {
         
     } else {
@@ -197,8 +196,8 @@ async function previewRoute(routePreviewPrep={}) {
         flashMessages(err);
         return;
     };
-    if ("errors" in resp.data) {
-        flashMessages (resp.data.errors);
+    if ("Errors" in resp.data) {
+        flashMessages (resp.data.Errors);
     } else if ("Errors" in resp.data) {
         flashMessages(resp.data.Errors);
     };
@@ -447,8 +446,8 @@ async function saveRoutePlus (routeObject, routeId=false) {
     if (!respRoute.data) {
         flashMessages({"danger": "Save failed: the server sent no data back."});
         return;
-    } else if (respRoute.data.errors) {
-        flashMessages(respRoute.data.errors);
+    } else if (respRoute.data.Errors) {
+        flashMessages(respRoute.data.Errors);
         return;
     } else {
         try {
@@ -474,7 +473,5 @@ async function loadRoute(routeId) {
         routeObject[`${routeOrder}-lng`] = respCheckpoints.data.lng;           
     }
     
-    // should create an object like this:
-    // {0-lat: '35.191097', 0-lng: '-106.582998', 999-lat: '35.12415', 999-lng: '-106.540495'}
     previewRoute(route);
 };

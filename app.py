@@ -309,15 +309,15 @@ def preview_route():
     try:
         geostring = parse_geocode(request.args.to_dict())
     except: 
-        return jsonify({"Errors": {"garbage error": "Garbage in, garbage out. Look at your URL."}})
+        return jsonify({"Errors": {"Invalid data": "Unable to parse geocode data."}})
     if type(geostring) == dict:
-        return jsonify({"errors": geostring})
+        return jsonify({"Errors": geostring})
     try:
         directions = mapbox_directions(geostring)
         directions_plus_elevations = mapquest_elevation(directions)
         return jsonify(directions_plus_elevations)
     except:
-        return jsonify({"errors": {"WTF error": "Why TF isn't this working?"}})
+        return jsonify({"Errors": {"Invalid data": "Some of the data submitted is invalid."}})
 
 
 @app.route('/api/routes/new')
@@ -350,7 +350,7 @@ def create_new_route():
         else: 
             ret_dic = {}
             if errors:
-                ret_dic["errors"] = errors
+                ret_dic["Errors"] = errors
             if troubleshooting:
                 ret_dic["troubleshooting"] = troubleshooting
         
@@ -372,12 +372,12 @@ def save_new_route():
     along with all checkpoints used in that route,
     and the checkpoints-routes many-to-many table.
     """
-    errors = {'errors': {}}
+    errors = {'Errors': {}}
     missing_data_errors = []
     new_checkpoints = []
     new_checkpoints_routes = []
     if not request.json:
-        errors['errors']['JSON error'] = 'requests must be of type application/json'
+        errors['Errors']['JSON error'] = 'requests must be of type application/json'
     elif not 'route' in request.json or not 'checkpoints' in request.json:
         if not 'route' in request.json:
             missing_data_errors.append["No route data found."]
@@ -389,9 +389,9 @@ def save_new_route():
     if len(request.json['checkpoints']) < 2:
         missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
     if len(missing_data_errors) > 0:
-        errors['errors']['missing data errors'] = missing_data_errors
+        errors['Errors']['missing data errors'] = missing_data_errors
     code = 418 if is_today_april_fools() else 400
-    if errors['errors']:
+    if errors['Errors']:
         return jsonify(errors, code)
     
     new_route = Route(user_id = request.json['route']['user_id'])
@@ -414,7 +414,7 @@ def save_new_route():
         db.session.add_all(new_checkpoints)
         db.session.commit()
     except:
-        errors['errors']['checkpoint error'] = "One or more checkpoints failed to save. Please check the saved route before you trust it's what you meant to save."
+        errors['Errors']['checkpoint error'] = "One or more checkpoints failed to save. Please check the saved route before you trust it's what you meant to save."
 
     try: 
         for i in range(len(new_checkpoints)):
@@ -427,7 +427,7 @@ def save_new_route():
         db.session.add_all(new_checkpoints_routes)
         db.session.commit()
     except:
-        errors['errors']['checkpoint-routing error'] = "One or more of the checkpoints failed to be saved in the correct order. Please check the saved route before you trust it's what you meant to save."
+        errors['Errors']['checkpoint-routing error'] = "One or more of the checkpoints failed to be saved in the correct order. Please check the saved route before you trust it's what you meant to save."
     
     serialized_route = new_route.serialize()
     serialized_checkpoints = []
@@ -466,7 +466,7 @@ def retrieve_saved_route(id):
             route[lat_key] = cp.checkpoint_lat
             route[lng_key] = cp.checkpoint_lng
     except: 
-        return (jsonify({"errors": {"retrieval error": f"Something went wrong retrieving route #{id}"}}), 500)
+        return (jsonify({"Errors": {"retrieval error": f"Something went wrong retrieving route #{id}"}}), 500)
 
     return (jsonify({"route": route}), 200)
 
@@ -474,24 +474,24 @@ def retrieve_saved_route(id):
 def delete_route(id):
     route_to_delete = Route.query.get_or_404(id)
     if not route_to_delete.user_id == g.user.id:
-        return {"errors": {"authentication error": "only the user who created a route can delete it"}}
+        return {"Errors": {"authentication error": "only the user who created a route can delete it"}}
     try:
         db.session.delete(route_to_delete)
         db.session.commit()
     except:
-        return (jsonify({"errors": {"delete error": f"unable to delete route #{id}"}}), 500)
+        return (jsonify({"Errors": {"delete error": f"unable to delete route #{id}"}}), 500)
 
     return (jsonify({"delete": f"delete route #{id} confirmed"}), 200)
 
 @app.route('/api/routes/<int:id>', methods=["PATCH"])
 def edit_saved_route(id):
     """The user who created a route can edit their route here. Requires authentication."""
-    errors = {'errors': {}}
+    errors = {'Errors': {}}
     missing_data_errors = []
     new_checkpoints = []
     new_checkpoints_routes = []
     if not request.json:
-        errors['errors']['JSON error'] = 'requests must be of type application/json'
+        errors['Errors']['JSON error'] = 'requests must be of type application/json'
     elif not 'route' in request.json or not 'checkpoints' in request.json:
         if not 'route' in request.json:
             missing_data_errors.append["No route data found."]
@@ -505,9 +505,9 @@ def edit_saved_route(id):
     if len(request.json['checkpoints']) < 2:
         missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
     if len(missing_data_errors) > 0:
-        errors['errors']['missing data errors'] = missing_data_errors
+        errors['Errors']['missing data errors'] = missing_data_errors
     code = 418 if is_today_april_fools() else 400
-    if errors['errors']:
+    if errors['Errors']:
         return jsonify(errors, code)
     
     route_to_patch = Route.query.get_or_404(id)
@@ -536,7 +536,7 @@ def edit_saved_route(id):
         db.session.add_all(new_checkpoints)
         db.session.commit()
     except:
-        errors['errors']['checkpoint error'] = "One or more checkpoints failed to save. Please check the saved route before you trust it's what you meant to save."
+        errors['Errors']['checkpoint error'] = "One or more checkpoints failed to save. Please check the saved route before you trust it's what you meant to save."
 
     try: 
         for i in range(len(new_checkpoints)):
@@ -549,7 +549,7 @@ def edit_saved_route(id):
         db.session.add_all(new_checkpoints_routes)
         db.session.commit()
     except:
-        errors['errors']['checkpoint-routing error'] = "One or more of the checkpoints failed to be saved in the correct order. Please check the saved route before you trust it's what you meant to save."
+        errors['Errors']['checkpoint-routing error'] = "One or more of the checkpoints failed to be saved in the correct order. Please check the saved route before you trust it's what you meant to save."
     
     serialized_route = route_to_patch.serialize()
     serialized_checkpoints = []
@@ -560,8 +560,8 @@ def edit_saved_route(id):
         serialized_cprs.append(cpr.serialize())
 
     code = 418 if is_today_april_fools() else 400
-    if errors['errors']:
-        return jsonify(errors['errors'], code)
+    if errors['Errors']:
+        return jsonify(errors['Errors'], code)
 
     return (jsonify({
         'route': serialized_route,
