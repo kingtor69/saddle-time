@@ -201,12 +201,7 @@ async function previewRoute(routePreviewPrep={}) {
     } else if ("Errors" in resp.data) {
         flashMessages(resp.data.Errors);
     };
-
-    // try {
-        displayRoutes(resp.data.routes, resp.data.waypoints);
-    // } catch {
-        // flashMessages({"danger": "displayRoutes is failing to show directions and stuff"})
-    // }
+    displayRoutes(resp.data.routes, resp.data.waypoints);
 };
 
 // prepare checkpoint markers with 4 rotating colors for intermediate checkpoints
@@ -332,40 +327,48 @@ function processElevationChange(route, units) {
     // first does the calculations in meters
     const elevationObject = route.geometry.elevation;
     const elevationProfile = elevationObject.elevationProfile
-    let elevationStart = elevationProfile[0].height;
-    let elevationChange = 0;
-    let totalClimbs = 0;
-    let totalDescents = 0;
-    for (let i = 1; i < elevationProfile.length; i++) {
-        let thisStepsChange = elevationProfile[i].height - elevationStart;
-        elevationChange = elevationChange + thisStepsChange;
-        if (thisStepsChange > 0) {
-            totalClimbs += thisStepsChange;
-        } else if (thisStepsChange < 0) {
-            totalDescents += thisStepsChange * -1;
-        }
-        elevationStart = elevationProfile[i].height
+    try {
+        let elevationStart = elevationProfile[0].height;
+        let elevationChange = 0;
+        let totalClimbs = 0;
+        let totalDescents = 0;
+        for (let i = 1; i < elevationProfile.length; i++) {
+            let thisStepsChange = elevationProfile[i].height - elevationStart;
+            elevationChange = elevationChange + thisStepsChange;
+            if (thisStepsChange > 0) {
+                totalClimbs += thisStepsChange;
+            } else if (thisStepsChange < 0) {
+                totalDescents += thisStepsChange * -1;
+            }
+            elevationStart = elevationProfile[i].height
+        };
+        // now converts if needed
+        let elevationUnits = "meters";
+        if (units !== "metric") {
+            elevationUnits = "feet";
+            elevationChange = convertDistance(elevationChange, elevationUnits);
+            totalClimbs = convertDistance(totalClimbs, elevationUnits);
+            totalDescents = convertDistance(totalDescents, elevationUnits);
+        };
+        // and writes calculated values to route object
+        route.geometry.elevation['totalElevationChange'] = elevationChange;
+        route.geometry.elevation['totalClimbs'] = totalClimbs;
+        route.geometry.elevation['totalDescents'] = totalDescents;
+        route.geometry.elevation['elevationUnits'] = elevationUnits;
+    } catch(e) {
+        route.geometry.elevation['totalElevationChange'] = NaN;
+        route.geometry.elevation['totalClimbs'] = NaN;
+        route.geometry.elevation['totalDescents'] = NaN;
+        route.geometry.elevation['elevationUnits'] = '';
     };
-    // now converts if needed
-    let elevationUnits = "meters";
-    if (units !== "metric") {
-        elevationUnits = "feet";
-        elevationChange = convertDistance(elevationChange, elevationUnits);
-        totalClimbs = convertDistance(totalClimbs, elevationUnits);
-        totalDescents = convertDistance(totalDescents, elevationUnits);
-    };
-
-    // and writes calculated values to route object
-    route.geometry.elevation['totalElevationChange'] = elevationChange;
-    route.geometry.elevation['totalClimbs'] = totalClimbs;
-    route.geometry.elevation['totalDescents'] = totalDescents;
-    route.geometry.elevation['elevationUnits'] = elevationUnits;
 };
 
 function showDirections(route) {
     const summaryDiv = document.querySelector('#summary');
     const summaryP = document.createElement('p');
-    summaryP.innerHTML = `Total distance: ${route.distance} ${route.distanceUnits}<br>Elevation change: +${route.geometry.elevation.totalClimbs} ${route.geometry.elevation.elevationUnits}, -${route.geometry.elevation.totalDescents} ${route.geometry.elevation.elevationUnits}`;
+    climbData = route.geometry.elevation.totalClimbs ? `+${route.geometry.elevation.totalClimbs} ${route.geometry.elevation.elevationUnits}, ` : "elevation information unavailable";
+    descentData = route.geometry.elevation.totalDescents ? `-${route.geometry.elevation.totalDescents} ${route.geometry.elevation.elevationUnits}` : ""
+    summaryP.innerHTML = `Total distance: ${route.distance} ${route.distanceUnits}<br>Elevation change: ${climbData} ${descentData}`;
     summaryDiv.appendChild(summaryP);
     const directionsDiv = document.querySelector('#directions');
     const directionsOl = document.createElement('ol');
