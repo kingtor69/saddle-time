@@ -374,7 +374,6 @@ def save_new_route():
     """
     errors = {'errors': {}}
     missing_data_errors = []
-    checkpoints_array = []
     new_checkpoints = []
     new_checkpoints_routes = []
     if not request.json:
@@ -382,16 +381,12 @@ def save_new_route():
     elif not 'route' in request.json or not 'checkpoints' in request.json:
         if not 'route' in request.json:
             missing_data_errors.append["No route data found."]
-        else:
-            route_object = request.json['route']
         if not 'checkpoints' in request.json:
             missing_data_errors.append["No checkpoint data found."]
-        else:
-            checkpoints_array = request.json['checkpoints']
 
-    if not 'user_id' in route_object:
+    if not 'user_id' in request.json['route']:
         missing_data_errors.append("User ID is required to create a new route.")
-    if len(checkpoints_array) < 2:
+    if len(request.json['checkpoints']) < 2:
         missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
     if len(missing_data_errors) > 0:
         errors['errors']['missing data errors'] = missing_data_errors
@@ -400,15 +395,15 @@ def save_new_route():
         return jsonify(errors, code)
     
     new_route = Route(user_id = request.json['route']['user_id'])
-    if 'route_name' in request.json:
+    if 'route_name' in request.json['route']:
         new_route.route_name = request.json['route']['route_name']
-    if 'bike_type' in request.json:
+    if 'bike_type' in request.json['route']:
         new_route.bike_type = request.json['route']['bike_type']
     db.session.add(new_route)
     db.session.commit()
 
     try:
-        for cp in checkpoints_array:
+        for cp in request.json['checkpoints']:
             new_checkpoint = Checkpoint(
                 checkpoint_lat = cp['lat'],
                 checkpoint_lng = cp['lng']
@@ -510,7 +505,7 @@ def edit_saved_route(id):
 
     if not 'user_id' in route_object:
         missing_data_errors.append("User ID is required to create a new route.")
-    if len(checkpoints_array) < 2:
+    if len(request.json['checkpoints']) < 2:
         missing_data_errors.append("Must have 2 or more checkpoints to save a route.")
     if len(missing_data_errors) > 0:
         errors['errors']['missing data errors'] = missing_data_errors
@@ -533,7 +528,7 @@ def edit_saved_route(id):
         db.session.delete(cp)
         db.session.delete(cpr)
     try:
-        for cp in checkpoints_array:
+        for cp in request.json['checkpoints']:
             new_checkpoint = Checkpoint(
                 checkpoint_lat = cp['lat'],
                 checkpoint_lng = cp['lng']
