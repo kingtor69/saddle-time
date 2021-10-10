@@ -12,6 +12,7 @@ const routeUpdateButt = document.createElement('button');
 const routeNameInput = document.querySelector('#route-name');
 const checkpointRows = document.querySelectorAll('div.checkpoint-rows');
 const checkpointDeleteButts = document.querySelectorAll('button.checkpoint-delete');
+let renderedSelects;
 
 window.addEventListener('DOMContentLoaded', (event) => {
     if ('routeInProgress' in localStorage) {
@@ -30,6 +31,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
         routePreviewButt.hidden = false;
         routeSaveDiv.hidden = false;
         previewRoute();
+    };
+    renderedSelects = document.querySelectorAll('span.select2-selection__rendered');
+    for (let select of renderedSelects) {
+        if (!select.innerText) {
+            innerText = findInnerTextForSelect2(select);
+        };
     };
 });
 
@@ -478,3 +485,56 @@ async function loadRoute(routeId) {
     
     previewRoute(route);
 };
+
+function findInnerTextForSelect2(element) {
+    const cpNum = getIntegerSplit(element.id);
+    let keyNum;
+    for (let key in queryString) {
+        if (getIntegerSplit(key) === cpNum) {
+            keyNum = getIntegerSplit(key);
+        };
+    };
+    debugger;
+    const lat = queryString[`${keyNum}-lat`];
+    const lng = queryString[`${keyNum}-lng`];
+    locationFromGeocodeToInnerText(lat, lng, element);
+};
+
+function getIntegerSplit(string) {
+    // gets the first split from a string that parses successfully as an integer
+    // ids and classes where this might be useful are formatted with dashes ('-') separating different parts of the string, with 'cp-3' referring to checkpoint #3
+    for (split of string.split('-')) {
+        if (parseInt(split)) {
+            return split;
+        };
+    };
+};
+
+async function locationFromGeocodeToInnerText (lat, lng, element) {
+    let geoResp = await axios.get(`/api/geocode/reverse?lat=${lat}&lng=${lng}`);
+    element.innerText = geoResp.data;
+};
+
+// the case of the missing "title"
+//////// this shows information onscreen:
+/* <span class="select2 select2-container select2-container--default select2-container--focus" dir="ltr" data-select2-id="select2-data-5-n5dt" style="width: 572.75px;">
+    <span class="selection">
+        <span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-cp-2-selector-container" aria-controls="select2-cp-2-selector-container">
+            <span class="select2-selection__rendered" id="select2-cp-2-selector-container" role="textbox" aria-readonly="true" title="Arroyo Del Oso Golf Course, Arroyo Del Oso Park, Albuquerque, New Mexico 87109, United States">Arroyo Del Oso Golf Course, Arroyo Del Oso Park, Albuquerque, New Mexico 87109, United States</span>
+            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b>
+        </span>
+    </span>
+</span>
+<span class="dropdown-wrapper" aria-hidden="true"></span></span>
+ */
+
+//////// this does not:
+/* <span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="select2-data-7-i1v0" style="width: 572.75px;">
+    <span class="selection">
+        <span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-cp-3-selector-container" aria-controls="select2-cp-3-selector-container">
+            <span class="select2-selection__rendered" id="select2-cp-3-selector-container" role="textbox" aria-readonly="true"></span>
+            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>
+        </span>
+    </span>
+    <span class="dropdown-wrapper" aria-hidden="true"></span>
+</span> */

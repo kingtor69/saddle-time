@@ -111,6 +111,15 @@ def geocode_location():
     except:
         return {"results": {"Errors": {"Geocoding error": "Invalid location entered."}}}
 
+@app.route('/api/geocode/reverse', methods=["GET"])
+def location_from_geocode():
+    try: 
+        lat = request.args['lat']
+        lng = request.args['lng']
+        return jsonify(location_from_geocode_mb(lat, lng))
+    except:
+        return {"results": {"Errors": {"Geocoding error": "Invalid geocode data entered."}}}
+
 @app.route('/api/weather', methods=["GET"])
 def retrieve_weather_data_from_geocode():
     """gather weather data from units & geocode input
@@ -601,7 +610,6 @@ def display_specific_checkpoint():
 @app.route('/api/checkpoints/<int:checkpoint_id>/edit')
 def edit_checkpoint():
     """Allows logged in user to edit their checkpoints."""
-
 
 #######################################
 #### checkpoints-routes m2m routes ####
