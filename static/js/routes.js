@@ -239,12 +239,8 @@ function goodRouteData() {
     // Check that query string has enough data to complete a route. Returns boolean.
     let data = parseCurrentQueryString();
     const dataKeys = Object.keys(data);
-    // there must be at least 4 keys in a valid route
-    if (dataKeys.length < 4) {
-        return false;
-    };
+    // const howManyKeys = dataKeys.length;
     dataKeys.sort();
-    let checkpoints = 0;
     const dataKeysSplit = [];
     for (let key of dataKeys) {
         if (isCheckpointKey(key)) {
@@ -260,6 +256,7 @@ function goodRouteData() {
     cpKeysSplit = dataKeysSplit.filter(splitKey => (splitKey[1] === "lat" || splitKey[1] === "lng"));
     
     // there should be exactly two of each checkpoint number (dataKeysSplit[i][0]), one "lat" and one "lng" (dataKeysSplit[i][1]);
+    let numCheckpoints = 0;
     for (let i=0; i<dataKeysSplit.length; i+=2) {
         let thisKey = dataKeysSplit[i];
         let nextKey = dataKeysSplit[i+1];
@@ -269,8 +266,13 @@ function goodRouteData() {
         if ((thisKey[1] !== "lat" || nextKey[1] !== "lng") && (thisKey[1] !== "lng" || nextKey[1] !== "lat")) {
             return false;
         };
+        numCheckpoints ++;
     };
-    return true;
+    if (numCheckpoints >= 2) {
+        return true;
+    } else {
+        return false;
+    };
 };
 
 function displayRoutes(routes, checkpoints) {
@@ -489,15 +491,24 @@ async function loadRoute(routeId) {
 function findInnerTextForSelect2(element) {
     const cpNum = getIntegerSplit(element.id);
     let keyNum;
+    let gotAMatch = false;
     for (let key in queryString) {
         if (getIntegerSplit(key) === cpNum) {
             keyNum = getIntegerSplit(key);
+            gotAMatch = true;
         };
     };
-    debugger;
-    const lat = queryString[`${keyNum}-lat`];
-    const lng = queryString[`${keyNum}-lng`];
-    locationFromGeocodeToInnerText(lat, lng, element);
+    if (gotAMatch) {
+        const lat = queryString[`${keyNum}-lat`];
+        const lng = queryString[`${keyNum}-lng`];
+        locationFromGeocodeToInnerText(lat, lng, element);
+    } else {
+        if (goodRouteData()) {
+            flashMessages({info: "please either fill in or delete missing checkpoint information"})
+        } else {
+            flashMessages({info: "please enter at least 2 checkpoints to create a route"});
+        };
+    };
 };
 
 function getIntegerSplit(string) {
