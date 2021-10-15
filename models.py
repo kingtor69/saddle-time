@@ -92,7 +92,7 @@ class User(db.Model):
         return False
 
 class Route(db.Model):
-    """Route model for basic routes. Routes are linked to user_id of the user who created or claims the route. If another user sees a route they like and wants to make it their own, it will be copied to a new entry so that user can change or adapt the route without changing anything for the original user. 
+    """Route model for basic routes. Routes are linked to user_id of the user who created the route.  
     """
 
     __tablename__ = "routes"
@@ -120,7 +120,7 @@ class Route(db.Model):
     checkpoint_route = db.relationship("CheckpointRoute", cascade="all, delete", backref="route_cpr")
 
 class Checkpoint(db.Model):
-    """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. Checkpoints are saved with user who created them and associated with routes in the ORM CheckpointRoute (below). They can be copied by other users who see a checkpoint they want to use in their own route. 
+    """Checkpoint model for intermediate geocoded points used as either stopping places or to alter route. 
     """
 
     __tablename__ = "checkpoints"
@@ -149,7 +149,7 @@ class Checkpoint(db.Model):
 
 
 class CheckpointRoute(db.Model):
-    """Route-checkpoint model shows in what route and in what order checkpoints are used. These are not linked directly to user who created them because both the route and the checkpoint are. 
+    """Route-checkpoint model shows in what route and in what order checkpoints are used. 
     """
 
     __tablename__ = "checkpoints_routes"

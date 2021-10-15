@@ -305,7 +305,7 @@ def delete_user(user_id):
         db.session.delete(user)
         db.session.commit()
         return jsonify({"delete": "confirmed"})
-    return jsonify({"Errors": "delete error": "A logged-in user can only delete themselves."})
+    return jsonify({"Errors": {"danger": "Only a logged-in user can delete themself."}})
 
 ############################
 ##### route API routes #####

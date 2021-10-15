@@ -99,7 +99,7 @@ def location_from_geocode_mb(lat, lng):
     return resp['features'][0]['place_name']
     
 def current_weather_from_geocode(geocode, units="metric"):
-    """Returns current weather data from OpenWeather API for a geocode, entered as a tuple (lat, lng). Defaults to metric units because cycling, but imperical can be specified by guest and/or saved with registered user profile. In case of error, returns False."""
+    """Returns current weather data from OpenWeather API for a geocode, entered as a tuple (lat, lng). In case of error, returns False."""
     try:
         (deg, vel) = unit_markers(units)
         response = requests.get(f'{OW_API_BASE_URL}weather?appid={OW_API_KEY}&lon={geocode[1]}&lat={geocode[0]}&units={units}')
