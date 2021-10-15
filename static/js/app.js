@@ -1,4 +1,3 @@
-console.log('app.js');
 const queryString = parseCurrentQueryString();
 const loggedInUserId = $('#g-user') ? $('#g-user')[0].value : false;
 const routeDeleteButts = document.querySelectorAll('.route-delete');

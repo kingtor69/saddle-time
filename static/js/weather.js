@@ -1,4 +1,3 @@
-console.log('weather.js');
 // mapLat and mapLng are declared in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
 const unitsOptionMetric = document.querySelector('option.metric-option');
