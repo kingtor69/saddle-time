@@ -134,7 +134,6 @@ function placeMarker(color, id, lngLat) {
     });
 };
 
-
 function drawRoute(routeData, index) {
     try {
         map.removeLayer(`line${index}`)
@@ -142,7 +141,7 @@ function drawRoute(routeData, index) {
     } catch (err) {
         console.error(`no existing layer ${index} to remove`)
     }
-    let color = '#aaa';
+    let color = '#aaa0';
     if (routeData.preferred) {
         color = '#0080ff';
     };

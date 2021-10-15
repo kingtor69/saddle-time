@@ -49,9 +49,9 @@ async function updateWeather(units, lat, lng) {
                 errorObj[error] = rawErrorObj[error];
             };
         };
-        displayErrors(errorObj);
+        flashMessages(errorObj);
     } else if (!resp.data) {
-        displayErrors({'error': `no data returned from ${weatherUrl}`});
+        flashMessages({'API error': `no data returned from ${weatherUrl}`});
     } else {
         updateWeatherDOM(resp.data, lat, lng);
     };
