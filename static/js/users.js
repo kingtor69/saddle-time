@@ -1,9 +1,7 @@
-console.log('users.js');
 const defaultLocationTd = document.querySelector('#default-location-autocomplete');
 selectTwo(defaultLocationSelector);
 defaultLocationSelector.change((evt) => {
     evt.preventDefault();
-    console.log('elementid: ', defaultLocationSelector[0].id);
     cpId = parseCpId(defaultLocationSelector[0].id);
     cpLatLng = processAutocomplete(evt, defaultLocationSelector, cpId);
     cpLatLng.shift();

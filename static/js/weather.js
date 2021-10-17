@@ -1,4 +1,3 @@
-console.log('weather.js');
 // mapLat and mapLng are declared in mapbox.js, which has already run when this does.
 const unitsSelector = document.querySelector('#units-selector');
 const unitsOptionMetric = document.querySelector('option.metric-option');
@@ -49,9 +48,9 @@ async function updateWeather(units, lat, lng) {
                 errorObj[error] = rawErrorObj[error];
             };
         };
-        displayErrors(errorObj);
+        flashMessages(errorObj);
     } else if (!resp.data) {
-        displayErrors({'error': `no data returned from ${weatherUrl}`});
+        flashMessages({'API error': `no data returned from ${weatherUrl}`});
     } else {
         updateWeatherDOM(resp.data, lat, lng);
     };

@@ -1,4 +1,3 @@
-console.log('routes.js');
 const routeForm = document.querySelector('#route-form');
 const newCheckpointButts = $('.new-checkpoint-button');
 const routeSaveDiv = document.querySelector('#save-div')
@@ -105,7 +104,6 @@ for (let checkpointLocation of checkpointLocations) {
     selectTwo(checkpointLocation);
     checkpointLocation.change((evt) => {
         evt.preventDefault();
-        console.log('elementid: ', checkpointLocation[0].id);
         cpId = parseCpId(checkpointLocation[0].id);
         cpLatLng = processAutocomplete(evt, checkpointLocation, cpId);
         cpLatLng.shift();
@@ -121,8 +119,6 @@ for (let checkpointLocation of checkpointLocations) {
 
 for (let newCheckpointButt of newCheckpointButts) {
     newCheckpointButt.addEventListener('click', (e) => {
-        console.log('clicked on a button');
-        console.log(newCheckpointButt);
         let buttId = newCheckpointButt.id;
         let splitId = buttId.split('-');
         let id = parseInt(splitId[2]);
@@ -199,7 +195,6 @@ async function previewRoute(routePreviewPrep={}) {
     try {
         resp = await axios.get(url);
     } catch (err) {
-        console.error(err);
         flashMessages(err);
         return;
     };

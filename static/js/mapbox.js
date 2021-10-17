@@ -1,5 +1,4 @@
 // This file contains code that is either directly from or lightly adapted from code in mapbox' docs (https://docs.mapbox.com)
-console.log('mapbox.js');
 let mapLat = defaultLoc_lat;
 let mapLng = defaultLoc_lng;
 const geocode = [mapLng, mapLat];
@@ -96,13 +95,12 @@ function centerMap(lat, lng) {
 };
 
 function placeMarker(color, id, lngLat) {
-    console.log(`placeMarker(${color}, ${id}, ${lngLat})`)
     map.loadImage(`/static/images/mapbox-icons/${checkpointFilename}${color}.png`, function (error, image) {
         if (error) throw error;
         try {
             map.removeImage(`${id}Pointer`)
         } catch(err) {
-            console.log(`no pointer with id ${id} exists... yet`)
+            console.error(`no pointer with id ${id} exists... yet`)
         }
         map.addImage(`${id}Pointer`, image);
         map.addSource('point', {
@@ -134,7 +132,6 @@ function placeMarker(color, id, lngLat) {
     });
 };
 
-
 function drawRoute(routeData, index) {
     try {
         map.removeLayer(`line${index}`)
@@ -142,7 +139,7 @@ function drawRoute(routeData, index) {
     } catch (err) {
         console.error(`no existing layer ${index} to remove`)
     }
-    let color = '#aaa';
+    let color = '#aaa0';
     if (routeData.preferred) {
         color = '#0080ff';
     };

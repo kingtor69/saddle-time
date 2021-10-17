@@ -1,4 +1,3 @@
-console.log('app.js');
 const queryString = parseCurrentQueryString();
 const loggedInUserId = $('#g-user') ? $('#g-user')[0].value : false;
 const routeDeleteButts = document.querySelectorAll('.route-delete');
@@ -8,25 +7,6 @@ const flashDiv = document.querySelector('#flashes');
 if (document.querySelector('#error-table')) {
     const deleteMe = document.querySelector('#error-table');
     deleteMe.remove()
-};
-
-function displayErrors(errorObj) {
-    const errorTable = document.createElement('table');
-    errorTable.classList.add("table","error-table","table-striped")
-    errorTable.id="error-table"
-    for (let error in errorObj) {
-        const errorTr = document.createElement('tr');
-        const errorTds = [document.createElement('td'), document.createElement('td')];
-        errorTds[0].classList.add('error-type')
-        errorTds[1].classList.add('error-message')
-        errorTds[0].innerText = error;
-        errorTds[1].innerText = errorObj[error];
-        for (let td of errorTds) {
-            errorTr.appendChild(td);
-        };
-        errorTable.appendChild(errorTr);
-    };
-    flashDiv.appendChild(errorTable);
 };
 
 function selectTwo(jQueryElement) {

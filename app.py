@@ -31,8 +31,7 @@ def add_user_to_g():
 @app.route('/', methods=["GET"])
 def load_home_page():
     """Loads home page.
-    If there is a logged in user, page shows weather from user's default location and most recently created route.
-    If no one is logged in, page shows weather from default location (Coffee Shop in The Mission, San Francisco) in imperial units. Offer the user option to change the location and the units. (Location change handled in app.js; units change handled here.)
+    Page defaults to weather from default location (Coffee Shop in The Mission, San Francisco) in imperial units. Offers the user option to change the location and the units.
     """
     # default values: 
     location = DEFAULT_LOCATION
@@ -168,7 +167,7 @@ def list_all_users():
 
 @app.route('/users/<int:user_id>')
 def return_user_profile(user_id):
-    """Show user profile to anyone. Show user's default current weather location and most recent route to a logged in user viewing their own page. This is the user's landing page after logging in."""
+    """Show user profile to anyone and allow user to edit or delete themself. This is also the user's landing page after logging in."""
     user = User.query.get_or_404(user_id)
     user.full_name = user.make_full_name()
     user_routes = Route.query.filter_by(user_id=user.id).all()
@@ -301,19 +300,20 @@ def api_return_user_profile(user_id):
 @app.route('/api/users/<int:user_id>', methods=["DELETE"])
 def delete_user(user_id):
     """Permanently deletes a user from the database using HTTP API call."""
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({"delete": "confirmed"})
+    if g.user.id == user_id:
+        user = User.query.get_or_404(user_id)
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"delete": "confirmed"})
+    return jsonify({"Errors": {"danger": "Only a logged-in user can delete themself."}})
 
 ############################
 ##### route API routes #####
 ############################
 @app.route('/api/routes/preview', methods=["GET"])
 def preview_route():
-    """Returns a route or choices of routes. Commented-out code will be for future development, but for now the routes all come from the Mapbox API. 
+    """Returns a route or choices of routes. 
     Accepts coordinates grouped in checkpoints (latitude and longitude need to be grouped by checkpoint, but checkpoints come with numbers and do not need to be in order.
-    Also will accept profile type, defaults to "regular" (which is translated to "cycle" for mapbox)
     """
     try:
         geostring = parse_geocode(request.args.to_dict())
@@ -332,42 +332,35 @@ def preview_route():
 @app.route('/api/routes/new')
 def create_new_route():
     """Gather route information. 
-    With GET the raw data comes from the query string and is sent to the Mapbox API. 
-    POST saves new route to database. 
-    Requires authentication of logged-in user for POST. 
     """
-    if request.method == 'GET':
-        cps = request.args['cps'] or False
-        coordinates = ""
-        success = False
-        errors = False
-        troubleshooting = False
-        try: 
-            for i in range((int(cps)+1)):
-                lng = request.args[f'{int(i)}-lng'] or i
-                lat = request.args[f'{int(i)}-lat'] or i
-                if i > 0:
-                    coordinates = coordinates + ';'
-                coordinates = coordinates + f'{lng},{lat}'
-            
-            success = mapbox_directions(coordinates)
-        except: 
-            errors = {"api error": "route API failed"}
-            troubleshooting = {"troubleshooting": {"cps": cps, "coordinates": coordinates}}
-        if success:
-            ret_dic = success
-        else: 
-            ret_dic = {}
-            if errors:
-                ret_dic["Errors"] = errors
-            if troubleshooting:
-                ret_dic["troubleshooting"] = troubleshooting
+    cps = request.args['cps'] or False
+    coordinates = ""
+    success = False
+    errors = False
+    troubleshooting = False
+    try: 
+        for i in range((int(cps)+1)):
+            lng = request.args[f'{int(i)}-lng'] or i
+            lat = request.args[f'{int(i)}-lat'] or i
+            if i > 0:
+                coordinates = coordinates + ';'
+            coordinates = coordinates + f'{lng},{lat}'
         
-        return ret_dic
+        success = mapbox_directions(coordinates)
+    except: 
+        errors = {"api error": "route API failed"}
+        troubleshooting = {"troubleshooting": {"cps": cps, "coordinates": coordinates}}
+    if success:
+        ret_dic = success
+    else: 
+        ret_dic = {}
+        if errors:
+            ret_dic["Errors"] = errors
+        if troubleshooting:
+            ret_dic["troubleshooting"] = troubleshooting
+    
+    return ret_dic
         
-    else:
-        return "POST"
-
 @app.route('/api/routes')
 def display_available_routes():
     """GET returns a list of available routes sorted from most to least recent update.

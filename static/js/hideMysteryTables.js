@@ -1,5 +1,3 @@
-console.log(`hideMysteryTables.js`);
-
 window.addEventListener('DOMContentLoaded', (event) => {
     const tables = document.querySelectorAll('table');
     for (let table of tables) {
