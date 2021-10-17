@@ -126,11 +126,12 @@ This is accessed in this front end by the `update route` button on the `route` p
 
 ## External API information:
 APIs used can be found in helpers.py
- - Open Weather: gives weather information (current and forecast) about route location
- - Mapbox: used for:
-   - maps
-   - geocoding (forward and reverse)
-   - bicycle directions (one-size fits all)
- - Mapquest: used for elevation data
+ | API | used for: | variable name | API docs link |
+ | :------- | :------------- | :------------------------------------ | :-------------------------------------------- |
+ | Mapquest | elevation data | MQ_API_KEY = os.environ['MQ_API_KEY'] | https://developer.mapquest.com/documentation/open/elevation-api/ |
+ | Open Weather Service | current weather conditions | OW_API_KEY = os.environ['OW_API_KEY'] | https://openweathermap.org/current |
+ | Mapbox | maps | MB_API_KEY = os.environ['MB_API_KEY'] | https://docs.mapbox.com/api/maps/ |
+ |  | geocoding |  | https://docs.mapbox.com/api/search/geocoding/ |
+ | Mabox | directions |  | https://docs.mapbox.com/api/navigation/directions/ |
 
-All APIs personal keys/tokens are saved as environment variables, so you'll need your own to make a clone work. All are free.
+You will need your own tokens. All are free. 
