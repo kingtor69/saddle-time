@@ -132,12 +132,12 @@ This is accessed in this front end by the `update route` button on the `route` p
 
 ## External API information:
 APIs used can be found in helpers.py
- | API | used for: | variable name | API docs link |
+ | API | environmental variable name | used for: | API docs link |
  | :------- | :------------- | :------------------------------------ | :-------------------------------------------- |
- | Mapquest | elevation data | MQ_API_KEY = os.environ['MQ_API_KEY'] | https://developer.mapquest.com/documentation/open/elevation-api/ |
- | Open Weather Service | current weather conditions | OW_API_KEY = os.environ['OW_API_KEY'] | https://openweathermap.org/current |
- | Mapbox | maps | MB_API_KEY = os.environ['MB_API_KEY'] | https://docs.mapbox.com/api/maps/ |
- |  | geocoding |  | https://docs.mapbox.com/api/search/geocoding/ |
- | Mabox | directions |  | https://docs.mapbox.com/api/navigation/directions/ |
+ | Mapquest | MQ_API_KEY = os.environ['MQ_API_KEY'] | elevation data | https://developer.mapquest.com/documentation/open/elevation-api/ |
+ | Open Weather Service | OW_API_KEY = os.environ['OW_API_KEY'] | current weather conditions | https://openweathermap.org/current |
+ | Mapbox | MB_API_KEY = os.environ['MB_API_KEY'] | maps | https://docs.mapbox.com/api/maps/ |
+ |  |  | geocoding | https://docs.mapbox.com/api/search/geocoding/ |
+ |  |  | directions | https://docs.mapbox.com/api/navigation/directions/ |
 
 You will need your own tokens. All are free. 
