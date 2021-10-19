@@ -1,4 +1,4 @@
-# SaddleTime
+# SaddleTime v1.1
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
 ## *Changes in v1.1*
