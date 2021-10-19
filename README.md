@@ -1,6 +1,10 @@
 # SaddleTime
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
+## *Changes in v1.1*
+ - *metric wind mesaurements are not in km/h instead of m/s*
+
+
 ## Implementing on your computer:
 ```
  git clone https://github.com/kingtor69/saddle-time.git

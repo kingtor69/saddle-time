@@ -79,10 +79,10 @@
           <form action="/" method="POST" id="weather-units" class="d-inline">
             <select id="units-selector" class="form-select py-0 my-0 px-4 bg-info" id="unitSelect" aria-label="Floating label select example">
               {% if units == 'imperial' %}
-                <option class="metric-option" value="metric">℃/kmph</option>
+                <option class="metric-option" value="metric">℃/km/h</option>
                 <option class="imperial-option" selected value="imperial">℉/mph</option>
               {% else %}
-                <option class="metric-option" selected value="metric">℃/kmph</option>
+                <option class="metric-option" selected value="metric">℃/km/h</option>
                 <option class="imperial-option" value="imperial">℉/mph</option>
               {% endif %}
             </select>

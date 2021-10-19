@@ -17,7 +17,7 @@ class UserNewForm(FlaskForm):
     profile_pic_image_url = StringField("profile pic link", validators=[Optional()])
     fav_bike = StringField("your favorite bike", validators=[Length(max=40, message="Wow, your bike has a long name. Please abbreviate that to 40 characters or fewer."), Optional()])
     bike_image_url = StringField("bike picture link", validators=[Optional()])
-    units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
+    units = SelectField("default weather units", choices=[('metric', '℃/km/h'), ('imperial', '℉/mph')])
 
 class UserEditForm(FlaskForm):
     """Form for editing a user's profile."""
@@ -27,7 +27,7 @@ class UserEditForm(FlaskForm):
     profile_pic_image_url = StringField("profile pic link")
     fav_bike = StringField("your favorite bike", validators=[Length(max=40, message="Wow, your bike has a long name. Please abbreviate that to 40 characters or fewer."), Optional()])
     bike_image_url = StringField("bike picture link")
-    units = SelectField("default weather units", choices=[('metric', '℃/kmph'), ('imperial', '℉/mph')])
+    units = SelectField("default weather units", choices=[('metric', '℃/km/h'), ('imperial', '℉/mph')])
 
 class LoginForm(FlaskForm):
     """Form to log in existing user."""

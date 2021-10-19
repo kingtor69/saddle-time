@@ -107,13 +107,16 @@ def current_weather_from_geocode(geocode, units="metric"):
         city = resp["name"]
         conditions = resp["weather"][0]["description"].title()
         weather_icon_url = f'{WEATHER_ICON_BASE_URL}{resp["weather"][0]["icon"]}{WEATHER_ICON_SUFFIX}'
+        windspeed = f'{round (resp["wind"]["speed"], 1)} {vel}'
+        if units == "metric":
+            windspeed = f'{round((resp["wind"]["speed"] * 3.6), 1)} {vel}'
         current_weather_details = {
             "Temperature": f'{round(resp["main"]["temp"], 1)}{deg}',
             "Feels Like": f'{round(resp["main"]["feels_like"], 1)}{deg}',
             "High": f'{round(resp["main"]["temp_max"], 1)}{deg}',
             "Low": f'{round(resp["main"]["temp_min"], 1)}{deg}',
             "Relative Humidity": f'{resp["main"]["humidity"]}%',
-            "Wind Speed": f'{round (resp["wind"]["speed"], 1)} {vel}',
+            "Wind Speed": windspeed,
             "Wind Direction": f'{resp["wind"]["deg"]}° {wind_direction_logical(resp["wind"]["deg"])}'
         }
         return {
@@ -164,7 +167,7 @@ def unit_markers(units):
     if units=="imperial":
         return ("℉", "mph")
     elif units=="metric":
-        return ("℃", "m/s")
+        return ("℃", "km/h")
     return ("°K", "m/s")
 
 def wind_direction_logical(degrees):
