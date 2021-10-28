@@ -3,6 +3,7 @@
 
 ## *Changes in v1.1*
  - *metric wind mesaurements are not in km/h instead of m/s*
+ - *a few bug fixes*
 
 
 ## Implementing on your computer:
