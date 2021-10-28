@@ -7,7 +7,6 @@ const loginFromRoute = document.querySelector('#login-from-route');
 const signupFromRoute = document.querySelector('#signup-from-route');
 const routeSaveForm = document.querySelector('#route-save-form');
 const routeSaveButt = document.querySelector('#save-route');
-const routeUpdateButt = document.createElement('button');
 const routeNameInput = document.querySelector('#route-name');
 const checkpointRows = document.querySelectorAll('div.checkpoint-rows');
 const checkpointDeleteButts = document.querySelectorAll('button.checkpoint-delete');
@@ -19,12 +18,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
         const routeInProgress = JSON.parse(routeJSON);
         updateUrl(routeInProgress, false);
         localStorage.removeItem('routeInProgress');
-    };
-    if ('id' in queryString) {
-        routeUpdateButt.id = 'update-route';
-        routeUpdateButt.classList.add("btn", "btn-block", "btn-secondary", "rounded", "d-inline", "m-2");
-        routeUpdateButt.innerText="update route"
-        routeSaveForm.appendChild(routeUpdateButt);
     };
     if (goodRouteData()) {
         routePreviewButt.hidden = false;
@@ -64,18 +57,17 @@ if (routeSaveForm) {
             routeRawData[key] = queryString[key];
         };
     };
+    if ('id' in queryString) {
+        routeSaveButt.innerText = "update route";
+        routeSaveButt.classList.remove('btn-primary');
+        routeSaveButt.classList.add('btn-secondary');
+    };
     if ('route_name' in queryString) {
         routeNameInput.value = queryString.route_name;
     };
     routeSaveButt.addEventListener('click', (e) => {
         e.preventDefault();
         routeSaveButt.disabled = true;
-        createOrUpdate(routeRawData);
-    });
-
-    routeUpdateButt.addEventListener('click', (e) => {
-        e.preventDefault();
-        routeUpdateButt.disabled = true;
         createOrUpdate(routeRawData);
     });
 };
@@ -520,27 +512,3 @@ async function locationFromGeocodeToInnerText (lat, lng, element) {
     let geoResp = await axios.get(`/api/geocode/reverse?lat=${lat}&lng=${lng}`);
     element.innerText = geoResp.data;
 };
-
-// the case of the missing "title"
-//////// this shows information onscreen:
-/* <span class="select2 select2-container select2-container--default select2-container--focus" dir="ltr" data-select2-id="select2-data-5-n5dt" style="width: 572.75px;">
-    <span class="selection">
-        <span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-cp-2-selector-container" aria-controls="select2-cp-2-selector-container">
-            <span class="select2-selection__rendered" id="select2-cp-2-selector-container" role="textbox" aria-readonly="true" title="Arroyo Del Oso Golf Course, Arroyo Del Oso Park, Albuquerque, New Mexico 87109, United States">Arroyo Del Oso Golf Course, Arroyo Del Oso Park, Albuquerque, New Mexico 87109, United States</span>
-            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b>
-        </span>
-    </span>
-</span>
-<span class="dropdown-wrapper" aria-hidden="true"></span></span>
- */
-
-//////// this does not:
-/* <span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="select2-data-7-i1v0" style="width: 572.75px;">
-    <span class="selection">
-        <span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-cp-3-selector-container" aria-controls="select2-cp-3-selector-container">
-            <span class="select2-selection__rendered" id="select2-cp-3-selector-container" role="textbox" aria-readonly="true"></span>
-            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>
-        </span>
-    </span>
-    <span class="dropdown-wrapper" aria-hidden="true"></span>
-</span> */
