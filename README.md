@@ -1,8 +1,12 @@
-# SaddleTime v1.1
+# SaddleTime v1.2
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
 ## *Changes in v1.1*
  - *metric wind mesaurements are not in km/h instead of m/s*
+ - *a few minor bug fixes*
+
+## *Changes in v1.2*
+
 
 
 ## Implementing on your computer:
