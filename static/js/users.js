@@ -11,6 +11,6 @@ defaultLocationSelector.change((evt) => {
         location.reload();
         previewRoute();
     } else {
-        flashMessages({"warning": "there is not enough valid route data to preview a route (within 'change' eventListener)"})
-    }
+        flashMessages({"info": "route will preview when there are at least 2 valid checkpoints in the route"});
+    };
 });
