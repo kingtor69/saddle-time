@@ -1,12 +1,12 @@
 # SaddleTime v1.2
 ## Bicycle-Friendly Bicycle Directions and Route Planning
 
-## *Changes in v1.1*
- - *metric wind mesaurements are not in km/h instead of m/s*
- - *a few minor bug fixes*
-
 ## *Changes in v1.2*
 
+
+## *Changes in v1.1*
+ - *metric wind mesaurements are now in km/h instead of m/s*
+ - *a few minor bug fixes*
 
 
 ## Implementing on your computer:
@@ -29,6 +29,19 @@
  python -m seed.py
  flask run
 ```
+
+## External API information:
+APIs used can be found in helpers.py
+ | API | environmental variable name | used for: | API docs link |
+ | :------- | :------------- | :------------------------------------ | :-------------------------------------------- |
+ | Mapquest | MQ_API_KEY = os.environ['MQ_API_KEY'] | elevation data | https://developer.mapquest.com/documentation/open/elevation-api/ |
+ | Open Weather Service | OW_API_KEY = os.environ['OW_API_KEY'] | current weather conditions | https://openweathermap.org/current |
+ | Mapbox | MB_API_KEY = os.environ['MB_API_KEY'] | maps | https://docs.mapbox.com/api/maps/ |
+ |  |  | geocoding | https://docs.mapbox.com/api/search/geocoding/ |
+ |  |  | directions | https://docs.mapbox.com/api/navigation/directions/ |
+
+You will need your own tokens. All are free. 
+
 
 ## This is also deployed on Heroku: https://saddle-time.herokuapp.com/
 
@@ -136,16 +149,3 @@ This is accessed in this front end by the `update route` button on the `route` p
 ## TESTING
 ##### Python unittest files are in the `tests` folder
 ##### I wrote some JS Jasmine tests early on in static/js/tests, but most of the testing was done in Python unittests
-
-
-## External API information:
-APIs used can be found in helpers.py
- | API | environmental variable name | used for: | API docs link |
- | :------- | :------------- | :------------------------------------ | :-------------------------------------------- |
- | Mapquest | MQ_API_KEY = os.environ['MQ_API_KEY'] | elevation data | https://developer.mapquest.com/documentation/open/elevation-api/ |
- | Open Weather Service | OW_API_KEY = os.environ['OW_API_KEY'] | current weather conditions | https://openweathermap.org/current |
- | Mapbox | MB_API_KEY = os.environ['MB_API_KEY'] | maps | https://docs.mapbox.com/api/maps/ |
- |  |  | geocoding | https://docs.mapbox.com/api/search/geocoding/ |
- |  |  | directions | https://docs.mapbox.com/api/navigation/directions/ |
-
-You will need your own tokens. All are free. 
